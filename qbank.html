@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DL Question Bank</title>
+<meta name="description" content="Every likely exam question for RTU 8AID4-01 Deep Learning, with detailed English and Hinglish answers, priority, probability, weightage and difficulty ratings.">
+<link rel="stylesheet" href="style.css">
+<style>
+  .wrap{max-width:1000px}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:12px 0}
+  .stats div{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}
+  .stats b{display:block;font-size:26px;color:var(--accent);line-height:1.2}
+  .stats span{font-size:12.5px;color:var(--muted)}
+  .panel{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:#fff;margin:14px 0}
+  .panel h3{margin:0 0 10px}
+  .hbar{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:13.5px}
+  .hbar .lab{width:150px;flex:none}
+  .hbar .trk{flex:1;height:16px;background:var(--soft);border-radius:5px;overflow:hidden;display:flex}
+  .hbar .trk i{display:block;height:100%}
+  .hbar .val{width:70px;flex:none;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+  .c-must{background:#d84b3f}.c-high{background:#ef8d22}.c-med{background:#4f9d55}.c-low{background:#9aa5b4}.c-acc{background:var(--accent)}
+  .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-top:6px}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+  .top li{margin:5px 0}
+  .top a{text-decoration:none}
+  .pct{display:inline-block;min-width:42px;font-weight:700;color:var(--must);font-variant-numeric:tabular-nums}
+  .ctrl{position:sticky;top:45px;z-index:20;background:rgba(255,255,255,.97);backdrop-filter:blur(4px);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:16px 0}
+  .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 0}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 11px;font:inherit;font-size:13px;cursor:pointer;color:var(--ink)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .chip.must.on{background:var(--must);border-color:var(--must)}
+  .chip.high.on{background:var(--high);border-color:var(--high)}
+  .chip.med.on{background:var(--med);border-color:var(--med)}
+  .chip.low.on{background:#6b7480;border-color:#6b7480}
+  .ctrl input[type=search]{flex:1 1 200px;min-width:0;padding:7px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:14px}
+  .ctrl select{padding:6px 8px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13px;background:#fff}
+  .lbl2{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-right:2px}
+  .count{font-size:13px;color:var(--muted);margin-left:auto}
+  .qb{border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:12px;background:#fff;margin:12px 0}
+  .qb.must{border-left-color:var(--must)}.qb.high{border-left-color:var(--high)}.qb.med{border-left-color:var(--med)}.qb.low{border-left-color:#9aa5b4}
+  .qb.done{opacity:.62}
+  .qb summary{list-style:none;cursor:pointer;padding:12px 14px}
+  .qb summary::-webkit-details-marker{display:none}
+  .qb .meta1{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+  .qb .id{font-weight:700;font-size:12.5px;color:var(--muted)}
+  .qb .topic{font-size:12px;color:var(--muted)}
+  .qb .qq{font-size:16px;font-weight:600;margin:6px 0 2px}
+  .qb .alt{font-size:13px;color:var(--muted);margin:2px 0}
+  .qb .why{font-size:12.5px;color:#6a5a00;margin-top:3px}
+  .pbar{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700}
+  .pbar .t{width:60px;height:7px;background:var(--soft);border-radius:4px;overflow:hidden}
+  .pbar .t i{display:block;height:100%}
+  .body{padding:0 14px 14px;border-top:1px dashed var(--line)}
+  .shortbox{background:var(--accent-soft);border-radius:8px;padding:8px 10px;margin:10px 0}
+  .lang{border-radius:10px;padding:10px 12px;margin:10px 0}
+  .lang.en{background:#fff;border:1px solid var(--line)}
+  .lang.hi{background:var(--hing-soft)}
+  .lang > .lt{font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:4px}
+  .lang.en > .lt{color:var(--accent)} .lang.hi > .lt{color:var(--hing)}
+  .lang h4{margin:10px 0 4px}
+  .keys span{display:inline-block;background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:1px 7px;margin:2px;font-size:12.5px}
+  .foot2{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:13px;margin-top:8px}
+  .donebox{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;cursor:pointer}
+  .empty{padding:30px;text-align:center;color:var(--muted)}
+  .grp{margin:26px 0 4px;font-size:18px;color:var(--accent);border-bottom:2px solid var(--accent-soft);padding-bottom:4px}
+  .prog{height:6px;background:var(--soft);border-radius:4px;overflow:hidden;margin:4px 0 0}
+  .prog i{display:block;height:100%;background:var(--med)}
+  table.ana td,table.ana th{font-size:13.5px}
+  @media (max-width:700px){ .hbar .lab{width:96px} .ctrl{top:44px;position:static} .hbar .val{width:56px} }
+  body.print .ctrl,body.print .topnav,body.print #ana-top{display:none}
+  @media print{ .ctrl{display:none} .qb{break-inside:auto} .qb summary{break-after:avoid} .lang{break-inside:auto} }
+</style>
+</head>
+<body>
+<nav class="topnav"><div class="navin">
+<a href="index.html" class="brand">🧠 DL Prep</a>
+<a href="plan.html">PYQ &amp; Plan</a><a href="qbank.html" class="active">📚 Question Bank</a><a href="quick.html">⚡ Quick Revision</a>
+<a href="unit1.html">Unit 1</a><a href="unit2.html">Unit 2</a><a href="unit3.html">Unit 3</a><a href="unit4.html">Unit 4</a><a href="unit5.html">Unit 5</a>
+<a href="quiz.html" class="quizlink">📝 Quiz</a></div></nav>
+<div class="wrap">
+
+<div class="banner">
+  <h1>📚 Complete Question Bank + Analysis</h1>
+  <p>Every likely question of every unit · detailed answers in English &amp; Hinglish · each one rated for priority, chance of coming, marks weightage and difficulty.</p>
+</div>
+
+<div class="stats" id="stats"></div>
+
+<div id="ana-top">
+<div class="panel">
+  <h3>📊 Unit-wise analysis</h3>
+  <div style="overflow-x:auto"><table class="ana" id="unitTable"></table></div>
+  <p class="meta">"Avg marks offered" = average marks the unit carried in the two full past papers (8AID4-01 2025 and 7CAI4-01 2025). "Importance score" = Σ (chance × biggest marks) over the unit's questions. It is a relative score for ranking units, not real exam marks. Higher means study it first.</p>
+</div>
+
+<div class="panel">
+  <h3>🎯 Priority mix per unit</h3>
+  <div id="prioBars"></div>
+  <div class="legend"><span><i class="c-must"></i>🔥 Must</span><span><i class="c-high"></i>⭐ High</span><span><i class="c-med"></i>✔ Medium</span><span><i class="c-low"></i>Low</span></div>
+</div>
+
+<div class="panel">
+  <h3>🔮 Top 15 predicted questions (all units)</h3>
+  <ol class="top" id="topList"></ol>
+</div>
+
+<div class="panel">
+  <h3>🧭 How the ratings work</h3>
+  <ul>
+    <li><b>Chance %</b>: estimated probability that this question or a close variant appears in your paper. Asked in 2–3 past papers → 75–95%; asked once → 55–80%; core syllabus but never asked ("due") → 30–60%; minor → below 35%.</li>
+    <li><b>Priority</b>: 🔥 Must (≥ 70%) · ⭐ High (50–69%) · ✔ Medium (30–49%) · Low (&lt; 30%).</li>
+    <li><b>Weightage</b>: the marks forms it can come in: 2 (Part A), 4 (Part B), 10 (Part C). Answers are written for the biggest form; the blue box is the 2-mark version.</li>
+    <li><b>Difficulty</b>: ★ (very easy) to ★★★★★ (tough).</li>
+    <li>Based on only 3 RTU papers (2024 Part A, 2025 and 7CAI 2025), so treat the % as guidance, not a guarantee.</li>
+  </ul>
+</div>
+</div>
+
+<div class="ctrl" id="ctrl">
+  <div class="row"><span class="lbl2">Unit</span><span id="fUnit"></span></div>
+  <div class="row"><span class="lbl2">Priority</span><span id="fPrio"></span>
+    <span class="lbl2" style="margin-left:8px">Marks</span><span id="fMarks"></span></div>
+  <div class="row">
+    <input type="search" id="fSearch" placeholder="Search questions, topics, keywords…">
+    <select id="fSort"><option value="prob">Sort: chance (high → low)</option><option value="unit">Sort: unit order</option><option value="easy">Sort: easiest first</option><option value="marks">Sort: 10-markers first</option></select>
+    <select id="fLang"><option value="both">English + Hinglish</option><option value="en">English only</option><option value="hi">Hinglish only</option></select>
+  </div>
+  <div class="row">
+    <button class="chip" id="tPyq">Only PYQ-asked</button>
+    <button class="chip" id="tNum">Hide numericals</button>
+    <button class="chip" id="tDone">Hide done ✓</button>
+    <button class="chip" id="tGroup">Group by topic</button>
+    <button class="chip" id="expAll">Expand all</button>
+    <button class="chip" id="colAll">Collapse all</button>
+    <span class="count" id="count"></span>
+  </div>
+</div>
+
+<div id="list"></div>
+
+<div class="footer">Answers prepared for the RTU 8AID4-01 syllabus from the 2024/2025 papers, the class notes and standard references (Goodfellow et al., <i>Deep Learning</i>). "Done ✓" marks are saved only in this browser. <a href="pdf/qbank.pdf">⬇ Download the full question bank as PDF</a></div>
+</div>
+
+<script src="qbank/unit1.js"></script>
+<script src="qbank/unit2.js"></script>
+<script src="qbank/unit3.js"></script>
+<script src="qbank/unit4.js"></script>
+<script src="qbank/unit5.js"></script>
+<script>
+const QB=(window.QB||[]).slice();
+const UNAME={1:"Deep Network Basics",2:"DL Architectures",3:"CNNs",4:"Sequence Modelling (RNN)",5:"Autoencoders"};
+const AVG_MARKS={1:13,2:27,3:22,4:19,5:17};   // avg marks offered in the two full papers
+const PR={must:{t:"🔥 MUST",c:"must",r:0},high:{t:"⭐ HIGH",c:"high",r:1},med:{t:"✔ MED",c:"med",r:2},low:{t:"LOW",c:"low",r:3}};
+const $=id=>document.getElementById(id);
+const print=new URLSearchParams(location.search).has('print');
+if(print)document.body.classList.add('print');
+const store={get(){try{return JSON.parse(localStorage.getItem('dlqb_done')||'{}')}catch(e){return {}}},set(o){try{localStorage.setItem('dlqb_done',JSON.stringify(o))}catch(e){}}};
+let done=store.get();
+const st={unit:'all',prio:new Set(),marks:new Set(),q:'',sort:'prob',lang:'both',pyq:false,num:false,hideDone:false,group:false};
+const maxM=x=>Math.max(...(x.marks||[2]));
+const stars=n=>'★'.repeat(n)+'☆'.repeat(5-n);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pcol=p=>p>=70?'#d84b3f':p>=50?'#ef8d22':p>=30?'#4f9d55':'#9aa5b4';
+
+/* ---------- analysis ---------- */
+function analysis(){
+  const units=[1,2,3,4,5];
+  const by=u=>QB.filter(x=>x.unit===u);
+  const pyqN=QB.filter(x=>x.pyq&&x.pyq.length).length;
+  $('stats').innerHTML=`<div><b>${QB.length}</b><span>questions in the bank</span></div>
+   <div><b>${QB.filter(x=>x.priority==='must').length}</b><span>🔥 MUST DO questions</span></div>
+   <div><b>${pyqN}</b><span>already asked in PYQs</span></div>
+   <div><b>${QB.filter(x=>maxM(x)===10).length}</b><span>possible 10-markers</span></div>
+   <div><b id="doneStat">0</b><span>marked done by you</span></div>`;
+  let h=`<tr><th>Unit</th><th>Questions</th><th>🔥 Must</th><th>Avg chance</th><th>Avg marks offered</th><th>Importance score</th><th>Your progress</th></tr>`;
+  for(const u of units){
+    const a=by(u); if(!a.length){h+=`<tr><td>${u}. ${UNAME[u]}</td><td colspan=6 class="meta">loading…</td></tr>`;continue}
+    const avg=Math.round(a.reduce((s,x)=>s+x.prob,0)/a.length);
+    const exp=Math.round(a.reduce((s,x)=>s+x.prob/100*maxM(x),0));
+    const d=a.filter(x=>done[x.id]).length;
+    h+=`<tr><td><b>${u}.</b> ${UNAME[u]}</td><td>${a.length}</td><td>${a.filter(x=>x.priority==='must').length}</td><td>${avg}%</td><td>${AVG_MARKS[u]}</td><td>${exp}</td>
+      <td>${d}/${a.length}<div class="prog"><i style="width:${a.length?d/a.length*100:0}%"></i></div></td></tr>`;
+  }
+  $('unitTable').innerHTML=h;
+  $('prioBars').innerHTML=units.map(u=>{const a=by(u),n=a.length||1;
+    const seg=['must','high','med','low'].map(p=>{const c=a.filter(x=>x.priority===p).length;return c?`<i class="c-${p}" style="width:${c/n*100}%" title="${PR[p].t}: ${c}"></i>`:''}).join('');
+    return `<div class="hbar"><span class="lab">Unit ${u}</span><span class="trk">${seg}</span><span class="val">${a.length} Qs</span></div>`}).join('');
+  const top=QB.slice().sort((a,b)=>b.prob-a.prob||maxM(b)-maxM(a)).slice(0,15);
+  $('topList').innerHTML=top.map(x=>`<li><span class="pct" style="color:${pcol(x.prob)}">${x.prob}%</span> <a href="#${x.id}" onclick="openQ('${x.id}')">${esc(x.q)}</a> <span class="meta">· U${x.unit} · ${x.marks.join('/')} marks</span></li>`).join('');
+  $('doneStat').textContent=Object.keys(done).filter(k=>done[k]).length;
+}
+
+/* ---------- controls ---------- */
+function chips(){
+  $('fUnit').innerHTML=['all',1,2,3,4,5].map(u=>`<button class="chip ${st.unit==u?'on':''}" data-u="${u}">${u==='all'?'All units':'Unit '+u}</button>`).join('');
+  $('fUnit').querySelectorAll('button').forEach(b=>b.onclick=()=>{st.unit=b.dataset.u==='all'?'all':+b.dataset.u;chips();render()});
+  $('fPrio').innerHTML=Object.keys(PR).map(p=>`<button class="chip ${p} ${st.prio.has(p)?'on':''}" data-p="${p}">${PR[p].t}</button>`).join('');
+  $('fPrio').querySelectorAll('button').forEach(b=>b.onclick=()=>{const p=b.dataset.p;st.prio.has(p)?st.prio.delete(p):st.prio.add(p);chips();render()});
+  $('fMarks').innerHTML=[2,4,10].map(m=>`<button class="chip ${st.marks.has(m)?'on':''}" data-m="${m}">${m}m</button>`).join('');
+  $('fMarks').querySelectorAll('button').forEach(b=>b.onclick=()=>{const m=+b.dataset.m;st.marks.has(m)?st.marks.delete(m):st.marks.add(m);chips();render()});
+  for(const [id,k] of [['tPyq','pyq'],['tNum','num'],['tDone','hideDone'],['tGroup','group']])$(id).classList.toggle('on',st[k]);
+}
+for(const [id,k] of [['tPyq','pyq'],['tNum','num'],['tDone','hideDone'],['tGroup','group']])$(id).onclick=()=>{st[k]=!st[k];chips();render()};
+$('fSearch').oninput=e=>{st.q=e.target.value.trim().toLowerCase();render()};
+$('fSort').onchange=e=>{st.sort=e.target.value;render()};
+$('fLang').onchange=e=>{st.lang=e.target.value;render(true)};
+$('expAll').onclick=()=>document.querySelectorAll('#list details').forEach(d=>d.open=true);
+$('colAll').onclick=()=>document.querySelectorAll('#list details').forEach(d=>d.open=false);
+
+function filtered(){
+  let a=QB.filter(x=>(st.unit==='all'||x.unit===st.unit)&&(!st.prio.size||st.prio.has(x.priority))
+    &&(!st.marks.size||x.marks.some(m=>st.marks.has(m)))&&(!st.pyq||(x.pyq&&x.pyq.length))&&(!st.num||!x.num)&&(!st.hideDone||!done[x.id]));
+  if(st.q)a=a.filter(x=>[x.q,x.topic,(x.alt||[]).join(' '),(x.keys||[]).join(' '),x.short].join(' ').toLowerCase().includes(st.q));
+  const s={prob:(x,y)=>y.prob-x.prob||PR[x.priority].r-PR[y.priority].r,unit:(x,y)=>x.unit-y.unit||x.id.localeCompare(y.id),
+    easy:(x,y)=>x.diff-y.diff||y.prob-x.prob,marks:(x,y)=>maxM(y)-maxM(x)||y.prob-x.prob}[st.sort];
+  return a.sort(s);
+}
+
+function card(x,open){
+  const pyq=(x.pyq||[]).map(p=>`<span class="tag pyq">${esc(p)}</span>`).join('');
+  const lang=print?'both':st.lang;
+  const en=lang!=='hi'?`<div class="lang en"><span class="lt">📝 Detailed answer: English</span>${x.en}</div>`:'';
+  const hi=lang!=='en'?`<div class="lang hi"><span class="lt">💜 Detailed answer: Hinglish</span>${x.hi}</div>`:'';
+  return `<details class="qb ${x.priority} ${done[x.id]?'done':''}" id="${x.id}" ${open||print?'open':''}>
+  <summary>
+   <div class="meta1"><span class="id">${x.id}</span><span class="tag ${PR[x.priority].c}">${PR[x.priority].t}</span>
+    <span class="pbar" title="Chance of coming"><span class="t"><i style="width:${x.prob}%;background:${pcol(x.prob)}"></i></span>${x.prob}%</span>
+    <span class="tag marks">${x.marks.join(' / ')} marks</span><span class="tag stars">${stars(x.diff)}</span>${x.num?'<span class="tag high">🧮 numerical</span>':''}${pyq}</div>
+   <div class="qq">${esc(x.q)}</div>
+   ${x.alt&&x.alt.length?`<div class="alt">Also asked as: ${x.alt.map(esc).join(' · ')}</div>`:''}
+   <div class="topic">Unit ${x.unit} · ${esc(x.topic)}</div>
+   ${x.why?`<div class="why">📌 ${esc(x.why)}</div>`:''}
+  </summary>
+  <div class="body">
+   <div class="shortbox"><b>2-mark answer:</b> ${esc(x.short)}</div>
+   ${en}${hi}
+   ${x.keys&&x.keys.length?`<div class="keys"><b style="font-size:13px">🔑 Must-write keywords:</b> ${x.keys.map(k=>`<span>${esc(k)}</span>`).join('')}</div>`:''}
+   <div class="foot2">${x.draw?`<span>✏️ <b>Draw:</b> ${esc(x.draw)}</span>`:''}${x.fig?`<a href="${esc(x.fig)}">📊 See the diagram →</a>`:''}
+    <label class="donebox"><input type="checkbox" data-done="${x.id}" ${done[x.id]?'checked':''}> Done ✓</label></div>
+  </div></details>`;
+}
+
+function render(keepOpen){
+  const openIds=keepOpen?new Set([...document.querySelectorAll('#list details[open]')].map(d=>d.id)):new Set();
+  const a=filtered();
+  $('count').textContent=`${a.length} of ${QB.length} questions`;
+  if(!a.length){$('list').innerHTML='<div class="empty">No questions match these filters.</div>';return}
+  let h='';
+  if(st.group){
+    const groups=new Map();
+    for(const x of a){const k=`Unit ${x.unit} · ${x.topic}`;if(!groups.has(k))groups.set(k,[]);groups.get(k).push(x)}
+    for(const [k,v] of groups)h+=`<div class="grp">${esc(k)} <span class="meta">(${v.length})</span></div>`+v.map(x=>card(x,openIds.has(x.id))).join('');
+  } else h=a.map(x=>card(x,openIds.has(x.id))).join('');
+  $('list').innerHTML=h;
+  $('list').querySelectorAll('input[data-done]').forEach(cb=>cb.onchange=()=>{
+    done[cb.dataset.done]=cb.checked;if(!cb.checked)delete done[cb.dataset.done];store.set(done);
+    cb.closest('details').classList.toggle('done',cb.checked);analysis()});
+}
+function openQ(id){
+  st.unit='all';st.prio.clear();st.marks.clear();st.q='';st.pyq=st.num=st.hideDone=false;$('fSearch').value='';chips();render();
+  const d=$(id);if(d){d.open=true;setTimeout(()=>d.scrollIntoView({behavior:'smooth',block:'start'}),30)}
+}
+const u0=new URLSearchParams(location.search).get('unit');if(u0&&/^[1-5]$/.test(u0))st.unit=+u0;
+analysis();chips();render();
+if(location.hash){const d=document.querySelector(location.hash);if(d){d.open=true;d.scrollIntoView()}}
+</script>
+</body></html>

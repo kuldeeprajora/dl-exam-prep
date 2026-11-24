@@ -6,6 +6,7 @@ One-stop revision site for **RTU Kota 8AID4-01 Deep Learning and Its Application
 - **PYQ analysis & study plan**: topic frequency across the 2024 and 2025 papers, unit weightage, most likely questions, a 3-day / 1-day plan.
 - **Unit pages (1–5)**: priority-ranked questions with difficulty stars, full exam answers, Hinglish explanations, easy English and Hindi examples, diagrams and exam tips.
 - **Quick revision**: all 33 topics, theory + diagrams only.
+- **Question bank**: 127 questions across all 5 units, each with a detailed English + Hinglish answer, a 2-mark short answer, chance %, priority, marks weightage, difficulty and PYQ tags. Includes a unit-wise analysis dashboard, filters, search and done-tracking. Data lives in `qbank/unitN.js`.
 - **Quiz**: 75 MCQs (15 per unit) + a 25-question mixed mock test, with explanations. Best scores are saved in your browser.
 - **PDFs** of every page in `pdf/` for offline reading.
 
