@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unit 1 – Deep Network Basics</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body><nav class="topnav"><div class="navin">
+<a href="index.html" class="brand">🧠 DL Prep</a>
+<a href="plan.html" data-p="plan">PYQ &amp; Plan</a><a href="quick.html" data-p="quick">⚡ Quick Revision</a>
+<a href="unit1.html" data-p="unit1" class="active">Unit 1</a><a href="unit2.html" data-p="unit2">Unit 2</a><a href="unit3.html" data-p="unit3">Unit 3</a><a href="unit4.html" data-p="unit4">Unit 4</a><a href="unit5.html" data-p="unit5">Unit 5</a>
+<a href="quiz.html" data-p="quiz" class="quizlink">📝 Quiz</a></div></nav><div class="wrap">
+
+<div class="banner">
+  <h1>Unit 1 — Deep Networks Basics</h1>
+  <p>RTU 8AID4-01 · Deep Learning and Its Applications · Syllabus item 2 (8 hrs)</p>
+  <p>Learning algorithms · MLE · Building an ML algorithm · MLP · Backpropagation &amp; variants · SGD · Curse of Dimensionality · Deep feed-forward networks</p>
+</div>
+
+<div class="box">
+  <b>How to read the tags:</b>
+  <span class="tag must">🔥 MUST DO</span> asked in PYQ / almost sure to come ·
+  <span class="tag high">⭐ HIGH</span> strong chance ·
+  <span class="tag med">✔ MEDIUM</span> do if time allows ·
+  <span class="tag stars">★★★☆☆</span> difficulty (1 = very easy, 5 = tough) ·
+  <span class="tag pyq">PYQ 2025</span> asked in the April/May 2025 paper.
+  <p class="meta">Each answer has: 📝 exam answer (write this) → 💜 Hinglish samjho → 🟢 easy English example → 🌸 Hindi example → diagram → exam tip.</p>
+</div>
+
+<div class="box">
+  <b>Unit 1 weight in past papers:</b> 2025 (8AID4-01): 6 questions (A2, A5, A9, B1, B2, B4) ≈ <b>20 marks</b> · 2024: A2, A4 · 7CAI 2025: A1, A8, B1.<br>
+  <b>Backpropagation appeared in ALL 3 papers.</b> This is the most scoring unit. Do <b>Q1–Q4 for sure</b>.
+</div>
+
+<div class="box toc">
+<b>Questions in this unit (priority order)</b>
+<ol>
+  <li><a href="#q1">Backpropagation algorithm + numerical</a></li>
+  <li><a href="#q2">Curse of Dimensionality &amp; how DL handles it</a></li>
+  <li><a href="#q3">Stochastic Gradient Descent &amp; variants</a></li>
+  <li><a href="#q4">Design a 3-layer NN for binary classification (MLP)</a></li>
+  <li><a href="#q5">Maximum Likelihood Estimation</a></li>
+  <li><a href="#q6">Deep Feed-forward Networks (+ XOR)</a></li>
+  <li><a href="#q7">Perceptron &amp; its learning rule</a></li>
+  <li><a href="#q8">Building a Machine Learning algorithm</a></li>
+  <li><a href="#q9">Learning algorithms (T, P, E)</a></li>
+  <li><a href="#quick">Part-A 2-mark quick answers</a></li>
+</ol>
+</div>
+
+<!-- ===================== Q1 ===================== -->
+<div class="q must" id="q1">
+  <div class="qhead"><span class="qno">Q1</span>
+    <span class="tag must">🔥 MUST DO</span><span class="tag stars">★★★★☆</span>
+    <span class="tag marks">2 / 4 / 10 marks</span><span class="tag pyq">PYQ 2025 A5 + B4</span><span class="tag pyq">PYQ 2024 A2</span><span class="tag pyq">7CAI 2025 B1</span></div>
+  <div class="qtitle">Explain the Backpropagation algorithm. Derive the weight update rule for an MLP. Solve for updated weights for a single-layer perceptron with given inputs, weights and target.</div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p><b>Definition:</b> Backpropagation (backward propagation of errors) is a supervised learning algorithm that trains a neural network by computing the gradient of the loss with respect to every weight using the <b>chain rule</b>, moving from the output layer back to the input layer. Then gradient descent updates the weights.</p>
+    <h4>Steps</h4>
+    <ol>
+      <li><b>Initialise</b> weights and biases with small random values; choose learning rate η.</li>
+      <li><b>Forward pass:</b> for each layer compute net = Σ wᵢxᵢ + b and output o = f(net).</li>
+      <li><b>Compute error / loss:</b> e.g. E = ½ Σ (t − o)².</li>
+      <li><b>Backward pass:</b> compute error term δ for each neuron.
+        <div class="formula">Output neuron: δₖ = (tₖ − oₖ) · f′(netₖ)<br>
+        Hidden neuron: δⱼ = f′(netⱼ) · Σₖ wⱼₖ δₖ</div></li>
+      <li><b>Update weights:</b> <span class="formula" style="display:inline-block;padding:2px 8px">Δwᵢⱼ = η · δⱼ · xᵢ ,  w<sub>new</sub> = w<sub>old</sub> + Δw</span></li>
+      <li>Repeat for all samples and many <b>epochs</b> until the error is small.</li>
+    </ol>
+    <p>For sigmoid, f′(net) = o(1 − o). For ReLU, f′ = 1 if net &gt; 0 else 0.</p>
+    <h4>Derivation of the weight update rule (MLP, sigmoid, E = ½Σ(tₖ − oₖ)²) <span class="tag pyq">7CAI 2025 B1</span></h4>
+    <pre>Gradient descent:  Δw = −η ∂E/∂w
+
+(a) Hidden→output weight wⱼₖ   (netₖ = Σⱼ wⱼₖ hⱼ ,  oₖ = σ(netₖ))
+    ∂E/∂wⱼₖ = ∂E/∂oₖ · ∂oₖ/∂netₖ · ∂netₖ/∂wⱼₖ          (chain rule)
+            = −(tₖ − oₖ) · oₖ(1 − oₖ) · hⱼ
+    Let δₖ = (tₖ − oₖ) oₖ(1 − oₖ)   ⇒   Δwⱼₖ = η δₖ hⱼ
+
+(b) Input→hidden weight wᵢⱼ   (netⱼ = Σᵢ wᵢⱼ xᵢ ,  hⱼ = σ(netⱼ))
+    hⱼ affects every output k, so sum over k:
+    ∂E/∂wᵢⱼ = Σₖ [∂E/∂netₖ · ∂netₖ/∂hⱼ] · ∂hⱼ/∂netⱼ · ∂netⱼ/∂wᵢⱼ
+            = Σₖ (−δₖ wⱼₖ) · hⱼ(1 − hⱼ) · xᵢ
+    Let δⱼ = hⱼ(1 − hⱼ) Σₖ wⱼₖ δₖ   ⇒   Δwᵢⱼ = η δⱼ xᵢ
+
+General rule:  w_new = w_old + η · δ(of receiving neuron) · input(to that weight)</pre>
+    <h4>Variants of backpropagation</h4>
+    <ul>
+      <li><b>Batch (full) GD</b>: update after the whole dataset.</li>
+      <li><b>Stochastic GD</b>: update after every single sample.</li>
+      <li><b>Mini-batch GD</b>: update after small batches (32, 64…), used in practice.</li>
+      <li><b>With momentum / Nesterov, AdaGrad, RMSProp, Adam</b>: smarter step sizes.</li>
+      <li><b>BPTT</b>: backprop through time for RNNs (Unit 4).</li>
+    </ul>
+    <h4>Advantages / limitations</h4>
+    <ul><li>✔ Efficient (one forward + one backward pass), works for any differentiable network.</li>
+    <li>✘ Vanishing/exploding gradients in deep nets, can get stuck in local minima, needs labelled data, sensitive to η.</li></ul>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 640 272" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="13">
+      <defs>
+        <marker id="ab" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#2457c5"/></marker>
+        <marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#c62828"/></marker>
+      </defs>
+      <g fill="#e8efff" stroke="#2457c5" stroke-width="1.5">
+        <circle cx="70" cy="70" r="20"/><circle cx="70" cy="150" r="20"/>
+        <circle cx="250" cy="50" r="20"/><circle cx="250" cy="110" r="20"/><circle cx="250" cy="170" r="20"/>
+        <circle cx="430" cy="110" r="20"/>
+      </g>
+      <g stroke="#9aa5b4" stroke-width="1">
+        <line x1="90" y1="70" x2="230" y2="50"/><line x1="90" y1="70" x2="230" y2="110"/><line x1="90" y1="70" x2="230" y2="170"/>
+        <line x1="90" y1="150" x2="230" y2="50"/><line x1="90" y1="150" x2="230" y2="110"/><line x1="90" y1="150" x2="230" y2="170"/>
+        <line x1="270" y1="50" x2="410" y2="110"/><line x1="270" y1="110" x2="410" y2="110"/><line x1="270" y1="170" x2="410" y2="110"/>
+      </g>
+      <rect x="500" y="88" width="110" height="44" rx="8" fill="#fdecea" stroke="#c62828"/>
+      <text x="555" y="107" text-anchor="middle">Loss E</text><text x="555" y="124" text-anchor="middle" font-size="11">½(t − o)²</text>
+      <line x1="450" y1="110" x2="498" y2="110" stroke="#2457c5" stroke-width="2" marker-end="url(#ab)"/>
+      <text x="70" y="205" text-anchor="middle">Input x</text><text x="250" y="205" text-anchor="middle">Hidden h</text><text x="430" y="205" text-anchor="middle">Output o</text>
+      <line x1="60" y1="18" x2="440" y2="18" stroke="#2457c5" stroke-width="2.5" marker-end="url(#ab)"/>
+      <text x="250" y="13" text-anchor="middle" fill="#2457c5" font-weight="bold">① Forward pass: compute outputs</text>
+      <path d="M555,134 Q555,240 300,242 L60,242" fill="none" stroke="#c62828" stroke-width="2.5" marker-end="url(#ar)"/>
+      <text x="300" y="262" text-anchor="middle" fill="#c62828" font-weight="bold">② Backward pass: δ and ∂E/∂w flow back (chain rule)</text>
+    </svg>
+    <figcaption>Forward pass computes the output; the error flows backward and every weight gets its gradient. (Self-drawn, easy to copy in the exam.)</figcaption>
+  </figure>
+
+  <div class="blk ans"><span class="lbl">🧮 Solved numerical 1: perceptron (step function) — the type asked in 2025 B4</span>
+    <p><b>Given:</b> x₁ = 1, x₂ = 1, w₁ = 0.5, w₂ = −0.4, bias b = −0.2, target t = 1, η = 0.1, activation = step (o = 1 if net ≥ 0 else 0).</p>
+    <pre>net = w1·x1 + w2·x2 + b = 0.5(1) + (−0.4)(1) + (−0.2) = −0.1
+o   = step(−0.1) = 0          error = t − o = 1 − 0 = 1
+
+Perceptron rule: w_new = w + η (t − o) x
+w1 = 0.5  + 0.1(1)(1) = 0.6
+w2 = −0.4 + 0.1(1)(1) = −0.3
+b  = −0.2 + 0.1(1)    = −0.1
+
+Check: net = 0.6 − 0.3 − 0.1 = 0.2 ≥ 0  →  o = 1 = target ✔</pre>
+  </div>
+
+  <div class="blk ans"><span class="lbl">🧮 Solved numerical 2: sigmoid neuron with gradient descent (delta rule)</span>
+    <p><b>Given:</b> x₁ = 1, x₂ = 0.5, w₁ = 0.4, w₂ = 0.6, b = 0, t = 1, η = 0.5, sigmoid activation, E = ½(t − o)².</p>
+    <pre>Forward:  net = 0.4(1) + 0.6(0.5) + 0 = 0.7
+          o   = 1 / (1 + e^−0.7) = 1 / 1.4966 = 0.6682
+          error (t − o) = 0.3318
+
+Backward: δ = (t − o) · o(1 − o) = 0.3318 × 0.6682 × 0.3318 = 0.0736
+
+Update:   Δw1 = η δ x1 = 0.5 × 0.0736 × 1   = 0.0368 → w1 = 0.4368
+          Δw2 = η δ x2 = 0.5 × 0.0736 × 0.5 = 0.0184 → w2 = 0.6184
+          Δb  = η δ    = 0.0368              → b  = 0.0368
+
+Check:    new net = 0.7828 → o = 0.6863  (error falls 0.3318 → 0.3137 ✔)</pre>
+    <p class="meta">Always end with a "check" line. It shows the examiner that the error went down.</p>
+  </div>
+
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>Network ne answer diya, answer galat tha. Ab "galti kiski hai?" yeh pata karna hai. Backprop output se peeche ki taraf jaata hai aur har weight ko batata hai ki "tumhari wajah se itni galti hui" (yahi gradient hai). Phir har weight thoda sa adjust hota hai: <b>naya weight = purana + η × δ × input</b>. Yeh baar-baar (epochs) karo, galti kam hoti jaayegi.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>A cricket team loses a match. The coach goes backwards through the game: last over → bowlers → batting order, and gives each player feedback in proportion to their mistake. Next match everyone corrects a little. That's backpropagation.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>परीक्षा में कम नंबर आए। आप पीछे की ओर देखते हैं — किस अध्याय में गलती हुई, कितनी हुई — और अगली बार उसी हिसाब से पढ़ाई बदलते हैं। जिस अध्याय में ज़्यादा गलती, उस पर ज़्यादा सुधार। यही बैकप्रोपेगेशन है।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span>
+    <p>For 10 marks write: definition → diagram → 6 steps → formulas (δ output, δ hidden, Δw) → small numerical → advantages/limits. For 2 marks: "computes gradient of loss w.r.t. weights using chain rule, from output to input, then updates weights by gradient descent."</p>
+  </div>
+</div>
+
+<!-- ===================== Q2 ===================== -->
+<div class="q must" id="q2">
+  <div class="qhead"><span class="qno">Q2</span>
+    <span class="tag must">🔥 MUST DO</span><span class="tag stars">★★☆☆☆</span>
+    <span class="tag marks">2 / 4 marks</span><span class="tag pyq">PYQ 2025 A2 + B1</span><span class="tag pyq">PYQ 2024 A4</span></div>
+  <div class="qtitle">What is the Curse of Dimensionality? Given a high-dimensional dataset, how would you address it using deep learning techniques?</div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p><b>Definition:</b> The curse of dimensionality (term by Richard Bellman) refers to the problems that arise when the number of features (dimensions) becomes very large. The volume of the space grows exponentially, so the available data becomes <b>sparse</b>, and models need exponentially more data to generalise.</p>
+    <h4>Problems caused</h4>
+    <ul>
+      <li><b>Data sparsity:</b> with 10 bins per feature, d features need 10ᵈ cells (1D = 10, 2D = 100, 3D = 1000, 10D = 10¹⁰).</li>
+      <li><b>Distances lose meaning:</b> nearest and farthest points become almost equally far, so k-NN and clustering fail.</li>
+      <li><b>Overfitting:</b> too many features and too few samples, so the model memorises noise.</li>
+      <li><b>High computation and memory cost.</b></li>
+      <li><b>Hughes phenomenon:</b> beyond a point, adding features reduces accuracy.</li>
+    </ul>
+    <h4>How deep learning addresses it</h4>
+    <ol>
+      <li><b>Autoencoders:</b> a bottleneck layer learns a low-dimensional code (non-linear PCA).</li>
+      <li><b>Representation learning:</b> hidden layers learn compact, useful features automatically.</li>
+      <li><b>CNNs:</b> local connectivity and parameter sharing cut parameters massively; pooling reduces spatial size.</li>
+      <li><b>Embeddings:</b> words or categories mapped from huge one-hot vectors to small dense vectors (e.g. 50,000 → 300).</li>
+      <li><b>Regularisation:</b> dropout, L1 (also does feature selection), L2, early stopping.</li>
+      <li><b>Data augmentation</b> to increase the effective sample size; <b>PCA / feature selection</b> as preprocessing.</li>
+    </ol>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 640 170" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="13">
+      <g stroke="#2457c5" fill="#e8efff">
+        <rect x="20" y="70" width="150" height="15"/>
+      </g>
+      <g stroke="#2457c5">
+        <line x1="35" y1="70" x2="35" y2="85"/><line x1="50" y1="70" x2="50" y2="85"/><line x1="65" y1="70" x2="65" y2="85"/><line x1="80" y1="70" x2="80" y2="85"/><line x1="95" y1="70" x2="95" y2="85"/><line x1="110" y1="70" x2="110" y2="85"/><line x1="125" y1="70" x2="125" y2="85"/><line x1="140" y1="70" x2="140" y2="85"/><line x1="155" y1="70" x2="155" y2="85"/>
+      </g>
+      <circle cx="42" cy="78" r="3" fill="#c62828"/><circle cx="88" cy="78" r="3" fill="#c62828"/><circle cx="133" cy="78" r="3" fill="#c62828"/>
+      <text x="95" y="115" text-anchor="middle">1-D: 10 cells</text><text x="95" y="132" text-anchor="middle" font-size="11">3 points fill 30%</text>
+      <g stroke="#2457c5" fill="#e8efff"><rect x="240" y="20" width="110" height="110"/></g>
+      <g stroke="#b9c7ea">
+        <line x1="251" y1="20" x2="251" y2="130"/><line x1="262" y1="20" x2="262" y2="130"/><line x1="273" y1="20" x2="273" y2="130"/><line x1="284" y1="20" x2="284" y2="130"/><line x1="295" y1="20" x2="295" y2="130"/><line x1="306" y1="20" x2="306" y2="130"/><line x1="317" y1="20" x2="317" y2="130"/><line x1="328" y1="20" x2="328" y2="130"/><line x1="339" y1="20" x2="339" y2="130"/>
+        <line x1="240" y1="31" x2="350" y2="31"/><line x1="240" y1="42" x2="350" y2="42"/><line x1="240" y1="53" x2="350" y2="53"/><line x1="240" y1="64" x2="350" y2="64"/><line x1="240" y1="75" x2="350" y2="75"/><line x1="240" y1="86" x2="350" y2="86"/><line x1="240" y1="97" x2="350" y2="97"/><line x1="240" y1="108" x2="350" y2="108"/><line x1="240" y1="119" x2="350" y2="119"/>
+      </g>
+      <circle cx="256" cy="36" r="3" fill="#c62828"/><circle cx="300" cy="80" r="3" fill="#c62828"/><circle cx="333" cy="113" r="3" fill="#c62828"/>
+      <text x="295" y="150" text-anchor="middle">2-D: 100 cells → 3%</text>
+      <g stroke="#2457c5" fill="#e8efff">
+        <polygon points="430,50 520,50 520,130 430,130"/><polygon points="430,50 460,25 550,25 520,50" fill="#d7e3ff"/><polygon points="520,50 550,25 550,105 520,130" fill="#c6d6ff"/>
+      </g>
+      <circle cx="470" cy="90" r="3" fill="#c62828"/><circle cx="500" cy="70" r="3" fill="#c62828"/><circle cx="535" cy="60" r="3" fill="#c62828"/>
+      <text x="490" y="150" text-anchor="middle">3-D: 1000 cells → 0.3%</text>
+      <text x="566" y="85" font-size="20" fill="#c62828">→ 10ᵈ</text>
+    </svg>
+    <figcaption>The same 3 data points cover less and less of the space as dimensions grow. The data becomes "sparse". (Self-drawn.)</figcaption>
+  </figure>
+
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>Features (columns) jitne zyada, space utna bada, aur data utna "khaali-khaali" lagta hai. Model ko pattern seekhne ke liye bahut zyada data chahiye hota hai. Solution: features ko <b>compress</b> karo (autoencoder, PCA, embeddings), parameters kam karo (CNN sharing), aur overfitting roko (dropout, regularisation).</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>Finding a friend on a single road (1D) is easy. Finding them in a whole city (2D) is harder. Finding them in a 100-floor building complex with many towers (3D+) is very hard with the same number of clues. More dimensions mean more searching for the same amount of information.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>एक लाइन में खोई हुई अंगूठी ढूँढना आसान है, पूरे खेत (2D) में मुश्किल, और पूरी बिल्डिंग (3D) में बहुत मुश्किल। जितने ज़्यादा आयाम (dimensions), उतना ज़्यादा डेटा चाहिए — यही "आयामों का अभिशाप" है।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span><p>Always write the "10ᵈ cells" example. It is the fastest way to prove you understand. For the B1 (4 marks) version, list 4–5 DL techniques with one line each.</p></div>
+</div>
+
+<!-- ===================== Q3 ===================== -->
+<div class="q must" id="q3">
+  <div class="qhead"><span class="qno">Q3</span>
+    <span class="tag must">🔥 MUST DO</span><span class="tag stars">★★★☆☆</span>
+    <span class="tag marks">2 / 4 / 10 marks</span><span class="tag pyq">PYQ 2025 A9</span></div>
+  <div class="qtitle">Explain Stochastic Gradient Descent (SGD). Compare it with Batch and Mini-batch Gradient Descent. Explain its variants.</div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p><b>Gradient Descent</b> minimises the loss by moving the weights opposite to the gradient:</p>
+    <div class="formula">w ← w − η · ∂L/∂w   (η = learning rate)</div>
+    <p><b>Stochastic Gradient Descent</b> computes the gradient on <b>one randomly picked training sample</b> at a time and updates the weights immediately:</p>
+    <div class="formula">for each sample i (shuffled):  w ← w − η · ∇L<sub>i</sub>(w)</div>
+    <h4>Algorithm</h4>
+    <ol><li>Initialise w, choose η.</li><li>Shuffle the training data.</li><li>For each sample: forward pass → loss → gradient → update w.</li><li>Repeat for several epochs until convergence.</li></ol>
+    <table>
+      <tr><th>Point</th><th>Batch GD</th><th>Stochastic GD</th><th>Mini-batch GD</th></tr>
+      <tr><td>Data per update</td><td>Whole dataset</td><td>1 sample</td><td>Small batch (32–256)</td></tr>
+      <tr><td>Updates per epoch</td><td>1</td><td>N</td><td>N / batch size</td></tr>
+      <tr><td>Path to minimum</td><td>Smooth</td><td>Noisy, zig-zag</td><td>Fairly smooth</td></tr>
+      <tr><td>Speed / memory</td><td>Slow, high memory</td><td>Fast, low memory</td><td>Best balance, GPU friendly</td></tr>
+      <tr><td>Local minima</td><td>Can get stuck</td><td>Noise helps escape</td><td>Some escape</td></tr>
+    </table>
+    <h4>Variants (improvements)</h4>
+    <ul>
+      <li><b>Momentum:</b> v = βv + η∇L,  w = w − v. Adds "velocity", which reduces zig-zag (β ≈ 0.9).</li>
+      <li><b>Nesterov (NAG):</b> looks ahead before computing the gradient.</li>
+      <li><b>AdaGrad:</b> per-parameter learning rate, larger for rare features.</li>
+      <li><b>RMSProp:</b> uses a moving average of squared gradients so the learning rate doesn't shrink to zero.</li>
+      <li><b>Adam:</b> Momentum + RMSProp; the default choice in deep learning.</li>
+    </ul>
+  </div>
+  <div class="figrow">
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Gradient_descent.svg" alt="Gradient descent on contour plot">
+      <figcaption>Gradient descent steps toward the minimum on a contour plot. Source: Wikimedia Commons</figcaption></figure>
+    <figure>
+      <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+        <g fill="none" stroke="#b9c7ea"><ellipse cx="150" cy="100" rx="130" ry="80"/><ellipse cx="150" cy="100" rx="95" ry="58"/><ellipse cx="150" cy="100" rx="60" ry="36"/><ellipse cx="150" cy="100" rx="25" ry="15"/></g>
+        <circle cx="150" cy="100" r="4" fill="#1b1f24"/>
+        <polyline points="35,60 70,72 100,82 125,92 145,99" fill="none" stroke="#2457c5" stroke-width="2.5"/>
+        <polyline points="40,150 70,110 85,150 105,95 118,135 132,92 140,118 148,101" fill="none" stroke="#c62828" stroke-width="2"/>
+        <text x="20" y="20" fill="#2457c5">— Batch GD (smooth)</text>
+        <text x="20" y="38" fill="#c62828">— SGD (noisy zig-zag)</text>
+      </svg>
+      <figcaption>Batch GD vs SGD path (self-drawn)</figcaption></figure>
+  </div>
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>Batch GD: poori class ki copies check karke ek baar feedback. SGD: har ek student ki copy dekhte hi turant feedback, isliye fast hai par thoda "hilta-dulta" (noisy) hai. Mini-batch: 32-32 copies ka group, dono ka best. Momentum = gaadi ki speed, chhote gaddhon (zig-zag) mein nahi atakti. Adam = sabse smart, default.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>You are blindfolded on a hill and want to reach the valley. You feel the slope under your feet and take a small step downhill. Step size = learning rate. If you decide each step after asking only one random friend for directions (SGD), you move fast but wobble. Asking everyone first (Batch GD) is slow but steady.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>आँखों पर पट्टी बाँधकर पहाड़ से नीचे उतरना है। पैरों से ढलान महसूस करो और नीचे की तरफ़ छोटा कदम रखो। कदम का आकार = learning rate। हर कदम पर सिर्फ़ एक दोस्त से रास्ता पूछना = SGD (तेज़ पर डगमगाता हुआ)।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span><p>The comparison table alone can earn 4 marks. For 2 marks: "SGD updates weights using the gradient of one random sample at a time: w ← w − η∇Lᵢ. It is fast and memory-efficient but noisy."</p></div>
+</div>
+
+<!-- ===================== Q4 ===================== -->
+<div class="q must" id="q4">
+  <div class="qhead"><span class="qno">Q4</span>
+    <span class="tag must">🔥 MUST DO</span><span class="tag stars">★★★☆☆</span>
+    <span class="tag marks">4 / 10 marks</span><span class="tag pyq">PYQ 2025 B2</span><span class="tag pyq">7CAI 2025 A1</span></div>
+  <div class="qtitle">Explain the Multilayer Perceptron (MLP). Design a simple neural network with three layers for binary classification and explain its working.</div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p><b>MLP:</b> a fully-connected feed-forward neural network with an <b>input layer</b>, one or more <b>hidden layers</b> with non-linear activation, and an <b>output layer</b>. Every neuron computes a = f(Σwx + b). It is trained with backpropagation and can learn non-linear decision boundaries (e.g. XOR), which a single perceptron cannot.</p>
+    <h4>Design: binary classification (e.g. "Will a student pass? Yes/No")</h4>
+    <table>
+      <tr><th>Layer</th><th>Neurons</th><th>Activation</th><th>Role</th></tr>
+      <tr><td>Input</td><td>2 (hours studied, attendance %)</td><td>none</td><td>Passes the features forward</td></tr>
+      <tr><td>Hidden</td><td>3 (or 4–16)</td><td>ReLU</td><td>Learns non-linear feature combinations</td></tr>
+      <tr><td>Output</td><td>1</td><td>Sigmoid</td><td>Gives probability P(pass) in 0–1</td></tr>
+    </table>
+    <ul>
+      <li><b>Loss:</b> Binary cross-entropy  L = −[y log ŷ + (1 − y) log(1 − ŷ)]</li>
+      <li><b>Optimiser:</b> SGD / Adam, learning rate 0.01</li>
+      <li><b>Decision:</b> if ŷ ≥ 0.5 → class 1 (Pass), else class 0 (Fail)</li>
+    </ul>
+    <h4>Working</h4>
+    <ol>
+      <li><b>Forward pass:</b> h = ReLU(W₁x + b₁) → ŷ = σ(W₂h + b₂).</li>
+      <li><b>Loss</b> compares ŷ with the true label y.</li>
+      <li><b>Backpropagation</b> finds gradients; <b>gradient descent</b> updates W₁, b₁, W₂, b₂.</li>
+      <li>Repeat over epochs; evaluate with accuracy, precision, recall on test data.</li>
+    </ol>
+    <p>Parameter count: (2×3 + 3) + (3×1 + 1) = 9 + 4 = <b>13 parameters</b>.</p>
+  </div>
+  <div class="figrow">
+  <figure>
+    <svg viewBox="0 0 420 230" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <g stroke="#9aa5b4">
+        <line x1="80" y1="80" x2="200" y2="50"/><line x1="80" y1="80" x2="200" y2="115"/><line x1="80" y1="80" x2="200" y2="180"/>
+        <line x1="80" y1="150" x2="200" y2="50"/><line x1="80" y1="150" x2="200" y2="115"/><line x1="80" y1="150" x2="200" y2="180"/>
+        <line x1="200" y1="50" x2="320" y2="115"/><line x1="200" y1="115" x2="320" y2="115"/><line x1="200" y1="180" x2="320" y2="115"/>
+      </g>
+      <g stroke-width="1.5">
+        <circle cx="80" cy="80" r="20" fill="#e8f5e9" stroke="#2e7d32"/><circle cx="80" cy="150" r="20" fill="#e8f5e9" stroke="#2e7d32"/>
+        <circle cx="200" cy="50" r="20" fill="#e8efff" stroke="#2457c5"/><circle cx="200" cy="115" r="20" fill="#e8efff" stroke="#2457c5"/><circle cx="200" cy="180" r="20" fill="#e8efff" stroke="#2457c5"/>
+        <circle cx="320" cy="115" r="22" fill="#fdecea" stroke="#c62828"/>
+      </g>
+      <text x="80" y="84" text-anchor="middle">x₁</text><text x="80" y="154" text-anchor="middle">x₂</text>
+      <text x="200" y="54" text-anchor="middle">h₁</text><text x="200" y="119" text-anchor="middle">h₂</text><text x="200" y="184" text-anchor="middle">h₃</text>
+      <text x="320" y="119" text-anchor="middle">ŷ</text>
+      <text x="80" y="222" text-anchor="middle" font-weight="bold">Input</text><text x="200" y="222" text-anchor="middle" font-weight="bold">Hidden (ReLU)</text><text x="320" y="222" text-anchor="middle" font-weight="bold">Output (σ)</text>
+      <text x="350" y="100">≥ 0.5 → 1</text><text x="350" y="140">&lt; 0.5 → 0</text>
+      <text x="140" y="30" fill="#5b6470">W₁, b₁</text><text x="255" y="70" fill="#5b6470">W₂, b₂</text>
+    </svg>
+    <figcaption>2-3-1 network for binary classification (self-drawn, draw this in the exam)</figcaption>
+  </figure>
+  <figure><img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Colored_neural_network.svg" alt="MLP">
+    <figcaption>General MLP: input, hidden and output layers. Source: Wikimedia Commons</figcaption></figure>
+  </div>
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>Input layer = data andar aata hai. Hidden layer = "sochne waala dimaag", ReLU lagake complex pattern pakadta hai. Output layer = ek neuron + sigmoid jo 0 se 1 ke beech probability deta hai. 0.5 se upar = Yes, neeche = No. Loss = binary cross-entropy, training = backprop.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>Spam filter: inputs = number of links and number of words like "FREE". The hidden layer learns combos like "many links AND many FREE words". The output gives P(spam) = 0.92, so the mail is spam.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>छात्र पास होगा या फेल? इनपुट: पढ़ाई के घंटे और उपस्थिति। हिडन लेयर इनका मेल समझती है ("घंटे कम पर उपस्थिति ज़्यादा")। आउटपुट: पास होने की संभावना 0.8, यानी पास।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span><p>"Design" questions want a <b>table</b> (layer, neurons, activation) + loss + optimiser + diagram. Always justify: sigmoid at output because the answer is a probability for two classes.</p></div>
+</div>
+
+<!-- ===================== Q5 ===================== -->
+<div class="q high" id="q5">
+  <div class="qhead"><span class="qno">Q5</span>
+    <span class="tag high">⭐ HIGH</span><span class="tag stars">★★★★☆</span>
+    <span class="tag marks">2 / 4 / 10 marks</span></div>
+  <div class="qtitle">What is Maximum Likelihood Estimation (MLE)? How is it used in deep learning?</div>
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p><b>MLE</b> is a method of estimating the parameters θ of a model by choosing the values that make the observed data <b>most probable</b>.</p>
+    <div class="formula">Likelihood: L(θ) = Πᵢ p(xᵢ ; θ)<br>θ<sub>ML</sub> = argmax<sub>θ</sub> Πᵢ p(xᵢ ; θ) = argmax<sub>θ</sub> Σᵢ log p(xᵢ ; θ)</div>
+    <p>We take the <b>log</b> because a product of many small probabilities underflows; the log turns it into a sum and doesn't change the argmax.</p>
+    <h4>Worked example (coin)</h4>
+    <pre>Toss a coin 10 times: 7 Heads, 3 Tails. Find p = P(Head).
+L(p)      = p^7 (1 − p)^3
+log L(p)  = 7 log p + 3 log(1 − p)
+d/dp = 7/p − 3/(1 − p) = 0   →   7(1 − p) = 3p   →   p = 7/10 = 0.7</pre>
+    <h4>Link to deep learning</h4>
+    <ul>
+      <li>Training a network = MLE. We minimise the <b>negative log-likelihood (NLL)</b>.</li>
+      <li>For classification (softmax/sigmoid output), NLL = <b>cross-entropy loss</b>.</li>
+      <li>For regression with Gaussian noise, NLL = <b>Mean Squared Error</b>.</li>
+      <li>Properties: consistent (with more data it approaches the true θ) and efficient; but it can overfit on small data (so we add regularisation, i.e. MAP).</li>
+    </ul>
+  </div>
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>Data dekh ke ulta sochna: "kaunsa parameter hota toh yeh data aane ka chance sabse zyada hota?" 10 mein 7 heads aaye, toh sabse believable p = 0.7. Deep learning mein cross-entropy loss minimise karna = asal mein MLE karna hai.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>You see 8 out of 10 people on a street carrying umbrellas. The most likely explanation is "it is going to rain" (high rain probability). You pick the explanation that best fits what you observed.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>सड़क पर 10 में से 8 लोग छाता लेकर चल रहे हैं। सबसे संभावित कारण — "बारिश होने वाली है"। जो कारण देखे गए डेटा को सबसे अच्छी तरह समझाए, उसे चुनना ही MLE है।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span><p>Write the formula + coin derivation + "cross-entropy = NLL". That's a complete 4–5 mark answer.</p></div>
+</div>
+
+<!-- ===================== Q6 ===================== -->
+<div class="q high" id="q6">
+  <div class="qhead"><span class="qno">Q6</span>
+    <span class="tag high">⭐ HIGH</span><span class="tag stars">★★☆☆☆</span>
+    <span class="tag marks">2 / 4 marks</span><span class="tag pyq">7CAI 2025 A8</span></div>
+  <div class="qtitle">What are Deep Feed-forward Networks? Why do we need hidden layers? (XOR problem)</div>
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p>A <b>deep feed-forward network</b> (DFN / MLP) approximates a function y = f*(x). Information flows <b>only forward</b> from input → hidden layers → output, with <b>no feedback loops</b> (unlike RNNs). It is a chain of functions:</p>
+    <div class="formula">f(x) = f⁽³⁾( f⁽²⁾( f⁽¹⁾(x) ) )  — number of layers in the chain = <b>depth</b></div>
+    <ul>
+      <li><b>Hidden layers</b>: their outputs are not seen in the training data, so the network decides what they compute.</li>
+      <li><b>Non-linear activation</b> (ReLU) is necessary. Without it, many layers collapse into one linear layer.</li>
+      <li><b>Universal Approximation Theorem</b>: one hidden layer with enough neurons can approximate any continuous function; deeper networks do it with far fewer neurons.</li>
+    </ul>
+    <h4>XOR example</h4>
+    <table><tr><th>x₁</th><th>x₂</th><th>XOR</th></tr><tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>1</td></tr><tr><td>1</td><td>0</td><td>1</td></tr><tr><td>1</td><td>1</td><td>0</td></tr></table>
+    <p>No single straight line separates the 1s from the 0s, so a single perceptron fails. One hidden layer with 2 ReLU units maps the points to a new space where they become linearly separable. This shows why <b>depth / hidden layers</b> are needed.</p>
+  </div>
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>Data seedha aage badhta hai, koi loop nahi. Hidden layers = beech ke "kaarigar" jo raw data ko naye form mein badalte hain. XOR ek line se nahi kat-ta, hidden layer usko aisa modta hai ki kat jaaye.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span><p>A factory assembly line: raw metal → cut → shaped → painted → car. Each station (layer) does one job and passes it forward, never backward.</p></div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span><p>रोटी बनाना: आटा → गूँधना → बेलना → सेकना → रोटी। हर स्टेप आगे ही जाता है, पीछे नहीं। यही feed-forward है।</p></div>
+</div>
+
+<!-- ===================== Q7 ===================== -->
+<div class="q high" id="q7">
+  <div class="qhead"><span class="qno">Q7</span>
+    <span class="tag high">⭐ HIGH</span><span class="tag stars">★★☆☆☆</span>
+    <span class="tag marks">2 / 4 marks</span></div>
+  <div class="qtitle">Explain the Perceptron and its learning rule. What is its limitation?</div>
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p>The <b>perceptron</b> (Rosenblatt, 1958) is the simplest neural unit. It takes inputs x, multiplies them by weights, adds a bias and passes the result through a step function:</p>
+    <div class="formula">y = step(Σ wᵢxᵢ + b),   step(z) = 1 if z ≥ 0 else 0</div>
+    <p><b>Learning rule:</b> wᵢ ← wᵢ + η (t − y) xᵢ,  b ← b + η (t − y). Weights change only when the prediction is wrong.</p>
+    <p><b>Perceptron convergence theorem:</b> if the data is linearly separable, the rule finds a separating line in finite steps.</p>
+    <p><b>Limitation:</b> it can only solve <b>linearly separable</b> problems (AND, OR) and not XOR (Minsky &amp; Papert, 1969). Solution: the multilayer perceptron.</p>
+  </div>
+  <figure><img src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Perceptron_moj.png" alt="Perceptron">
+    <figcaption>Perceptron: inputs × weights → sum → activation → output. Source: Wikimedia Commons</figcaption></figure>
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span><p>Perceptron = ek chhota decision-maker. Sab inputs ko importance (weight) se multiply karo, jodo, threshold paar hua toh 1 warna 0. Galat hua toh weight thoda badlo. Sirf seedhi line se alag hone waale problem solve karta hai.</p></div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span><p>Should I go out? Inputs: sunny (weight 0.6), friend coming (0.5), exam tomorrow (−0.9). If the weighted sum is above 0, go out.</p></div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span><p>बाहर घूमने जाऊँ? धूप है (+), दोस्त आ रहा है (+), कल परीक्षा है (−)। सबको उनके महत्व से गुणा करके जोड़ो; कुल योग 0 से ज़्यादा हुआ तो जाओ।</p></div>
+</div>
+
+<!-- ===================== Q8 ===================== -->
+<div class="q med" id="q8">
+  <div class="qhead"><span class="qno">Q8</span>
+    <span class="tag med">✔ MEDIUM</span><span class="tag stars">★★☆☆☆</span>
+    <span class="tag marks">4 marks</span></div>
+  <div class="qtitle">Explain the steps / components of building a machine learning algorithm.</div>
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p>Almost every ML/DL algorithm is a recipe of <b>four components</b> (Goodfellow, Deep Learning book):</p>
+    <ol>
+      <li><b>Dataset:</b> the examples (X, y) we learn from.</li>
+      <li><b>Model:</b> a family of functions, e.g. linear model or neural network y = f(x; θ).</li>
+      <li><b>Cost / loss function:</b> measures error, e.g. MSE, cross-entropy (NLL), plus regularisation.</li>
+      <li><b>Optimisation procedure:</b> finds θ that minimises the cost, e.g. gradient descent / SGD.</li>
+    </ol>
+    <p><b>Practical pipeline (6 steps):</b> Problem definition → Data collection &amp; preprocessing → Model selection → Training → Evaluation (validation/test) → Deployment &amp; monitoring.</p>
+  </div>
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span><p>Recipe ki tarah: ingredients = data, bartan = model, taste check = loss, aanch adjust karna = optimiser. Charon change karke alag-alag algorithm ban jaate hain.</p></div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span><p>House-price predictor: data = old sale records; model = linear regression; loss = MSE; optimiser = gradient descent.</p></div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span><p>खाना बनाना: सामग्री = डेटा, बर्तन = मॉडल, स्वाद चखना = लॉस, आँच कम-ज़्यादा करना = ऑप्टिमाइज़र।</p></div>
+</div>
+
+<!-- ===================== Q9 ===================== -->
+<div class="q med" id="q9">
+  <div class="qhead"><span class="qno">Q9</span>
+    <span class="tag med">✔ MEDIUM</span><span class="tag stars">★☆☆☆☆</span>
+    <span class="tag marks">2 marks</span></div>
+  <div class="qtitle">What is a learning algorithm? (Task, Performance, Experience)</div>
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p><b>Tom Mitchell's definition:</b> "A computer program is said to learn from experience <b>E</b> with respect to some task <b>T</b> and performance measure <b>P</b>, if its performance at T, as measured by P, improves with experience E."</p>
+    <p><b>Example:</b> Spam filter. T = classify emails, P = % correctly classified, E = labelled emails.</p>
+    <p><b>Types:</b> Supervised (labelled data), Unsupervised (no labels), Reinforcement (rewards). Common DL learning algorithms: FNN, CNN, RNN/LSTM, Autoencoders, GANs, Transformers.</p>
+  </div>
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span><p>Jo program practice (E) se kisi kaam (T) mein behtar (P) hota jaaye, woh "seekh raha hai".</p></div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span><p>A child learning to ride a cycle: T = ride, P = distance without falling, E = practice days.</p></div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span><p>बच्चा साइकिल चलाना सीखता है: काम = चलाना, माप = बिना गिरे कितनी दूरी, अनुभव = रोज़ का अभ्यास।</p></div>
+</div>
+
+<!-- ===================== QUICK ===================== -->
+<h2 id="quick">⚡ Part-A quick answers (2 marks, ~25 words each)</h2>
+<ol class="quick">
+  <li><b>Curse of dimensionality?</b> As the number of features grows, the space grows exponentially, the data becomes sparse, distances lose meaning and models overfit and need exponentially more data. <span class="tag pyq">2025</span> <span class="tag pyq">2024</span></li>
+  <li><b>Backpropagation?</b> An algorithm that computes the gradient of the loss w.r.t. each weight using the chain rule, from output to input, and updates the weights via gradient descent. <span class="tag pyq">2025</span> <span class="tag pyq">2024</span></li>
+  <li><b>SGD?</b> Gradient descent that updates the weights using one random training sample at a time: w ← w − η∇Lᵢ. It is fast and noisy. <span class="tag pyq">2025</span></li>
+  <li><b>Learning rate?</b> A hyper-parameter η that controls the step size of weight updates. Too high: diverges. Too low: very slow.</li>
+  <li><b>Epoch vs batch vs iteration?</b> Epoch = one full pass over the data; batch = subset used per update; iteration = one update step.</li>
+  <li><b>MLE?</b> Choose the parameters θ that maximise the probability of the observed data: θ = argmax Σ log p(xᵢ;θ).</li>
+  <li><b>MLP?</b> A feed-forward network with input, ≥1 hidden layer with non-linear activation, and an output layer, trained with backpropagation. <span class="tag pyq">7CAI</span></li>
+  <li><b>Why is a non-linear activation needed?</b> Without it, stacked layers collapse into one linear function, so the network can't learn non-linear patterns like XOR.</li>
+  <li><b>Vanishing gradient?</b> Gradients become tiny as they flow back through many sigmoid/tanh layers, so early layers stop learning. Fix: ReLU, batch-norm, ResNet.</li>
+  <li><b>Momentum?</b> Adds a fraction of the previous update to the current one (v = βv + η∇L). This speeds up training and reduces oscillation.</li>
+  <li><b>Overfitting vs underfitting?</b> Overfitting: good on training data, bad on test data (memorises). Underfitting: bad on both (too simple).</li>
+  <li><b>Deep feed-forward network?</b> A network where information flows only forward (input → hidden layers → output) with no feedback loops, approximating y = f*(x). <span class="tag pyq">7CAI</span></li>
+  <li><b>Universal approximation theorem?</b> A feed-forward net with one hidden layer and enough neurons can approximate any continuous function.</li>
+</ol>
+
+<div class="footer"><a href="pdf/unit1.pdf">⬇ Download this page as PDF</a> · <a href="quiz.html">Test yourself with the quiz →</a><br>Diagram credits: images marked "Wikimedia Commons" are hot-linked from commons.wikimedia.org under their respective free licences; the others are self-drawn SVGs. Prepared from the RTU 8AID4-01 syllabus, your class notes and the RTU April/May 2025 paper (8E1961).</div>
+</div></body></html>

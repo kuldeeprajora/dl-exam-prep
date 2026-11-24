@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unit 2 – Deep Learning Architectures</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body><nav class="topnav"><div class="navin">
+<a href="index.html" class="brand">🧠 DL Prep</a>
+<a href="plan.html" data-p="plan">PYQ &amp; Plan</a><a href="quick.html" data-p="quick">⚡ Quick Revision</a>
+<a href="unit1.html" data-p="unit1">Unit 1</a><a href="unit2.html" data-p="unit2" class="active">Unit 2</a><a href="unit3.html" data-p="unit3">Unit 3</a><a href="unit4.html" data-p="unit4">Unit 4</a><a href="unit5.html" data-p="unit5">Unit 5</a>
+<a href="quiz.html" data-p="quiz" class="quizlink">📝 Quiz</a></div></nav><div class="wrap">
+
+<div class="banner">
+  <h1>Unit 2 — Deep Learning Architectures</h1>
+  <p>RTU 8AID4-01 · Deep Learning and Its Applications · Syllabus item 3 (8 hrs)</p>
+  <p>ML vs DL · Representation Learning · Width &amp; Depth · Activation functions (ReLU, LReLU, ELU) · Unsupervised training · RBMs · Autoencoders (intro) · DL Applications</p>
+</div>
+
+<div class="box">
+  <b>How to read the tags:</b>
+  <span class="tag must">🔥 MUST DO</span> asked in PYQ / almost sure to come ·
+  <span class="tag high">⭐ HIGH</span> strong chance ·
+  <span class="tag med">✔ MEDIUM</span> do if time allows ·
+  <span class="tag stars">★★★☆☆</span> difficulty (1 = very easy, 5 = tough) ·
+  <span class="tag pyq">PYQ 2025</span> asked in a previous paper.
+  <p class="meta">Each answer has: 📝 exam answer (write this) → 💜 Hinglish samjho → 🟢 easy English example → 🌸 Hindi example → diagram → exam tip.</p>
+  <p class="meta">Papers used: <b>8AID4-01 2024</b> (Part A only available) · <b>8AID4-01 2025</b> (full) · <b>7CAI4-01 Nov-Dec 2025</b> (same subject for CSE-AI, full).</p>
+</div>
+
+<div class="box">
+  <b>Unit 2 weight across the papers. This is the heaviest unit:</b>
+  <table>
+    <tr><th>Paper</th><th>Questions from this unit</th><th>≈ Marks</th></tr>
+    <tr><td>8AID4-01 2025</td><td>A1, A3, A4, A6, B3, C2</td><td>~22</td></tr>
+    <tr><td>8AID4-01 2024 (Part A)</td><td>A1, A3, A5, A6, A7</td><td>10 (Part A alone)</td></tr>
+    <tr><td>7CAI4-01 2025</td><td>A2, A6, A9, B2, B7, C1, C2</td><td>~34</td></tr>
+  </table>
+  <p><b>Unsupervised training, RBM and activation functions appeared in all three papers.</b> Do Q1–Q4 for sure.</p>
+</div>
+
+<div class="box toc">
+<b>Questions in this unit (priority order)</b>
+<ol>
+  <li><a href="#q1">Unsupervised training of neural networks</a></li>
+  <li><a href="#q2">Restricted Boltzmann Machines (RBMs)</a></li>
+  <li><a href="#q3">Activation functions: ReLU, LReLU, ELU…</a></li>
+  <li><a href="#q4">ML vs DL, definition &amp; scope of DL</a></li>
+  <li><a href="#q5">Representation Learning</a></li>
+  <li><a href="#q6">Width and Depth of Neural Networks</a></li>
+  <li><a href="#q7">Deep Learning Applications</a></li>
+  <li><a href="#quick">Part-A 2-mark quick answers</a></li>
+</ol>
+</div>
+
+<!-- ===================== Q1 ===================== -->
+<div class="q must" id="q1">
+  <div class="qhead"><span class="qno">Q1</span>
+    <span class="tag must">🔥 MUST DO</span><span class="tag stars">★★★☆☆</span>
+    <span class="tag marks">2 / 4 / 10 marks</span>
+    <span class="tag pyq">PYQ 2025 C2 + A4</span><span class="tag pyq">PYQ 2024 A6</span><span class="tag pyq">7CAI 2025 B7 + A9</span></div>
+  <div class="qtitle">How is an unsupervised neural network trained? Explain in detail with an example. Differentiate supervised and unsupervised training.</div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p><b>Unsupervised training</b> means training a neural network on <b>unlabelled data</b> (only X, no y). There is no "correct answer", so the network learns by optimising an objective made from the data itself: <b>reconstructing</b> the input, <b>modelling its probability distribution</b>, or <b>grouping</b> similar inputs.</p>
+
+    <h4>Main approaches</h4>
+    <ol>
+      <li><b>Autoencoders (reconstruction-based):</b> encoder compresses x to code h, decoder rebuilds x̂. Loss = reconstruction error
+        <div class="formula">L = ‖x − x̂‖²  (MSE)  or binary cross-entropy</div>
+        Trained with ordinary backprop + SGD, using the input itself as the target.</li>
+      <li><b>Energy-based models / RBMs:</b> learn the probability distribution p(v) of the data. Trained with <b>Contrastive Divergence (CD-k)</b>: ΔW = η(⟨vhᵀ⟩<sub>data</sub> − ⟨vhᵀ⟩<sub>recon</sub>).</li>
+      <li><b>Competitive learning / Self-Organising Maps (Kohonen):</b> neurons compete; the <b>winner</b> (closest weight vector) and its neighbours move towards the input: w ← w + η(x − w). The result is clustering and a topology-preserving map.</li>
+      <li><b>Hebbian learning:</b> "neurons that fire together wire together": Δw = η·x·y.</li>
+      <li><b>Generative models:</b> GANs, VAEs. <b>Self-supervised learning</b>: predict the masked or next part of the data.</li>
+    </ol>
+
+    <h4>Greedy layer-wise unsupervised pre-training (classic deep-net method)</h4>
+    <ol>
+      <li>Train layer 1 (an RBM or autoencoder) on raw input x and get features h₁.</li>
+      <li>Freeze it, then train layer 2 on h₁ to get h₂, and so on. Each layer learns a higher-level representation.</li>
+      <li>Stack the layers to form a deep network (a Deep Belief Network or stacked autoencoder).</li>
+      <li><b>Fine-tune</b> the whole network with backprop using a small amount of labelled data (optional).</li>
+    </ol>
+    <p>Benefits: good initial weights, avoids poor local minima and vanishing gradients, uses cheap unlabelled data.</p>
+
+    <h4>Worked example: compressing handwritten digits (MNIST)</h4>
+    <pre>Data: 60,000 images, 28×28 = 784 pixels, labels NOT used.
+Network: 784 → 256 → 64 (code) → 256 → 784   (autoencoder)
+Step 1: forward pass  x → h (64 numbers) → x̂ (784 pixels)
+Step 2: loss = mean (x − x̂)²   e.g. epoch 1: 0.090 … epoch 20: 0.012
+Step 3: backprop + Adam update all weights; repeat for epochs
+Result: the 64-number code captures stroke shape. Similar digits
+        get similar codes, so k-means on the codes groups the 0s, 1s, 2s…
+        without ever seeing a label.</pre>
+    <p class="meta">(Loss values are illustrative.)</p>
+
+    <h4>Supervised vs Unsupervised training</h4>
+    <table>
+      <tr><th>Point</th><th>Supervised</th><th>Unsupervised</th></tr>
+      <tr><td>Data</td><td>Labelled (x, y)</td><td>Unlabelled (x only)</td></tr>
+      <tr><td>Goal</td><td>Predict y for new x</td><td>Find hidden structure / representation</td></tr>
+      <tr><td>Loss</td><td>Compare prediction with label (cross-entropy, MSE)</td><td>Reconstruction error, energy / likelihood, cluster distance</td></tr>
+      <tr><td>Feedback</td><td>Direct, from the "teacher"</td><td>None; self-organised</td></tr>
+      <tr><td>Examples</td><td>MLP classifier, CNN on ImageNet</td><td>Autoencoder, RBM, SOM, k-means, GAN</td></tr>
+      <tr><td>Tasks</td><td>Classification, regression</td><td>Clustering, dimensionality reduction, anomaly detection, pre-training</td></tr>
+    </table>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <defs><marker id="u1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#2457c5"/></marker></defs>
+      <rect x="10" y="60" width="90" height="70" rx="8" fill="#e8f5e9" stroke="#2e7d32"/><text x="55" y="92" text-anchor="middle">Unlabelled</text><text x="55" y="108" text-anchor="middle">input x</text>
+      <rect x="140" y="40" width="110" height="110" rx="8" fill="#e8efff" stroke="#2457c5"/><text x="195" y="90" text-anchor="middle" font-weight="bold">Layer 1</text><text x="195" y="106" text-anchor="middle">RBM / AE → h₁</text>
+      <rect x="290" y="55" width="100" height="80" rx="8" fill="#e8efff" stroke="#2457c5"/><text x="340" y="92" text-anchor="middle" font-weight="bold">Layer 2</text><text x="340" y="108" text-anchor="middle">trained on h₁</text>
+      <rect x="430" y="70" width="80" height="50" rx="8" fill="#e8efff" stroke="#2457c5"/><text x="470" y="99" text-anchor="middle">Layer 3…</text>
+      <rect x="545" y="60" width="85" height="70" rx="8" fill="#fdecea" stroke="#c62828"/><text x="587" y="88" text-anchor="middle">Fine-tune</text><text x="587" y="104" text-anchor="middle">(few labels)</text>
+      <g stroke="#2457c5" stroke-width="2"><line x1="100" y1="95" x2="138" y2="95" marker-end="url(#u1)"/><line x1="250" y1="95" x2="288" y2="95" marker-end="url(#u1)"/><line x1="390" y1="95" x2="428" y2="95" marker-end="url(#u1)"/><line x1="510" y1="95" x2="543" y2="95" marker-end="url(#u1)"/></g>
+      <text x="320" y="180" text-anchor="middle" fill="#5b6470">Greedy layer-wise unsupervised pre-training: train one layer at a time, freeze it, stack, then fine-tune</text>
+    </svg>
+    <figcaption>Greedy layer-wise pre-training (self-drawn, easy to copy)</figcaption>
+  </figure>
+
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>Unsupervised = koi teacher nahi, koi answer key nahi. Network khud se data ka pattern dhoondhta hai. Sabse common tareeka: <b>autoencoder</b>, input ko chhota karo phir wapas banao, aur jitna original jaisa bane utna achha (loss = reconstruction error). RBM data ki probability seekhta hai (contrastive divergence se). SOM mein neurons "competition" karte hain, jeetne waala input ki taraf khiskta hai. Deep nets mein pehle har layer alag-alag unsupervised train karo, phir thode labels se fine-tune.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>You give a child a box of mixed buttons without telling them anything. They sort them by colour and size by themselves. Nobody gave labels, but structure was found. That's unsupervised learning. Supervised is when a teacher says "this is red, this is blue".</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>बच्चे को बिना कुछ बताए रंग-बिरंगे बटनों का डिब्बा दे दो। वह खुद ही रंग और आकार के हिसाब से अलग-अलग ढेर बना देगा। किसी ने नाम (label) नहीं बताए, फिर भी समूह बन गए — यही unsupervised training है। जब शिक्षक बताए "यह लाल है, यह नीला" — वह supervised है।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span>
+    <p>For the 10-mark C2: definition → 4 approaches (AE, RBM+CD, SOM, Hebbian) → greedy layer-wise pre-training diagram → worked MNIST example → comparison table. For 2 marks (A4/A9): "Supervised uses labelled data (x, y) and learns a mapping to y; unsupervised uses only x and discovers structure such as clusters or compressed features."</p>
+  </div>
+</div>
+
+<!-- ===================== Q2 ===================== -->
+<div class="q must" id="q2">
+  <div class="qhead"><span class="qno">Q2</span>
+    <span class="tag must">🔥 MUST DO</span><span class="tag stars">★★★★☆</span>
+    <span class="tag marks">2 / 4 / 10 marks</span>
+    <span class="tag pyq">PYQ 2025 A6</span><span class="tag pyq">PYQ 2024 A7</span><span class="tag pyq">7CAI 2025 B2</span></div>
+  <div class="qtitle">What are Restricted Boltzmann Machines (RBMs)? Explain their architecture and working principle.</div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p><b>Definition:</b> An RBM is a <b>two-layer, generative, energy-based</b> stochastic neural network that learns the probability distribution of its input in an <b>unsupervised</b> way. Proposed by Smolensky (1986) and made popular by Geoffrey Hinton.</p>
+
+    <h4>Architecture</h4>
+    <ul>
+      <li><b>Visible layer v</b> (input units, e.g. pixels) and <b>hidden layer h</b> (feature detectors). Units are usually binary (0/1).</li>
+      <li>Every visible unit is connected to every hidden unit with <b>symmetric (undirected) weights W</b>.</li>
+      <li><b>"Restricted":</b> there are <b>no connections within a layer</b> (no v–v or h–h edges), so the graph is <b>bipartite</b>. This makes sampling easy.</li>
+      <li>Biases: <b>a</b> for visible units, <b>b</b> for hidden units.</li>
+    </ul>
+
+    <h4>Energy and probability</h4>
+    <div class="formula">E(v, h) = − aᵀv − bᵀh − vᵀW h<br>
+      P(v, h) = e<sup>−E(v,h)</sup> / Z ,   Z = Σ<sub>v,h</sub> e<sup>−E(v,h)</sup> (partition function)</div>
+    <p>Low energy means a high probability configuration. Training lowers the energy of real data.</p>
+    <p><b>Conditional probabilities</b> (easy because of the bipartite structure):</p>
+    <div class="formula">P(hⱼ = 1 | v) = σ( bⱼ + Σᵢ vᵢ wᵢⱼ )<br>
+      P(vᵢ = 1 | h) = σ( aᵢ + Σⱼ wᵢⱼ hⱼ )   where σ = sigmoid</div>
+
+    <h4>Working / training: Contrastive Divergence (CD-1)</h4>
+    <ol>
+      <li><b>Positive phase:</b> put a training sample v⁽⁰⁾ on the visible layer, compute P(h|v⁽⁰⁾) and sample h⁽⁰⁾.</li>
+      <li><b>Reconstruction (negative phase):</b> from h⁽⁰⁾ compute P(v|h⁽⁰⁾) and get the reconstruction v⁽¹⁾; then compute h⁽¹⁾ from v⁽¹⁾.</li>
+      <li><b>Update:</b>
+        <div class="formula">ΔW = η ( v⁽⁰⁾h⁽⁰⁾ᵀ − v⁽¹⁾h⁽¹⁾ᵀ ) ,  Δa = η(v⁽⁰⁾ − v⁽¹⁾) ,  Δb = η(h⁽⁰⁾ − h⁽¹⁾)</div></li>
+      <li>Repeat for all data and epochs. The reconstruction becomes closer and closer to the real data.</li>
+    </ol>
+    <p>Idea: "data statistics − model statistics". Increase the probability of real data and decrease the probability of the model's own fantasies.</p>
+
+    <h4>Applications</h4>
+    <ul>
+      <li>Feature learning and dimensionality reduction</li>
+      <li>Collaborative filtering / recommender systems (Netflix Prize)</li>
+      <li>Pre-training of deep networks: stacking RBMs gives a <b>Deep Belief Network (DBN)</b> (Hinton, 2006)</li>
+      <li>Classification, topic modelling, image denoising</li>
+    </ul>
+    <h4>Limitations</h4>
+    <p>Z is intractable, so exact likelihood can't be computed; training is tricky (CD is only approximate). Today it is largely replaced by autoencoders/VAEs and GANs.</p>
+  </div>
+
+  <div class="figrow">
+    <figure>
+      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+        <g stroke="#9aa5b4">
+          <line x1="60" y1="160" x2="90" y2="60"/><line x1="60" y1="160" x2="180" y2="60"/><line x1="60" y1="160" x2="270" y2="60"/>
+          <line x1="140" y1="160" x2="90" y2="60"/><line x1="140" y1="160" x2="180" y2="60"/><line x1="140" y1="160" x2="270" y2="60"/>
+          <line x1="220" y1="160" x2="90" y2="60"/><line x1="220" y1="160" x2="180" y2="60"/><line x1="220" y1="160" x2="270" y2="60"/>
+          <line x1="300" y1="160" x2="90" y2="60"/><line x1="300" y1="160" x2="180" y2="60"/><line x1="300" y1="160" x2="270" y2="60"/>
+        </g>
+        <g stroke-width="1.5">
+          <circle cx="90" cy="60" r="18" fill="#fdecea" stroke="#c62828"/><circle cx="180" cy="60" r="18" fill="#fdecea" stroke="#c62828"/><circle cx="270" cy="60" r="18" fill="#fdecea" stroke="#c62828"/>
+          <circle cx="60" cy="160" r="18" fill="#e8efff" stroke="#2457c5"/><circle cx="140" cy="160" r="18" fill="#e8efff" stroke="#2457c5"/><circle cx="220" cy="160" r="18" fill="#e8efff" stroke="#2457c5"/><circle cx="300" cy="160" r="18" fill="#e8efff" stroke="#2457c5"/>
+        </g>
+        <text x="90" y="64" text-anchor="middle">h₁</text><text x="180" y="64" text-anchor="middle">h₂</text><text x="270" y="64" text-anchor="middle">h₃</text>
+        <text x="60" y="164" text-anchor="middle">v₁</text><text x="140" y="164" text-anchor="middle">v₂</text><text x="220" y="164" text-anchor="middle">v₃</text><text x="300" y="164" text-anchor="middle">v₄</text>
+        <text x="180" y="22" text-anchor="middle" font-weight="bold" fill="#c62828">Hidden layer h (bias b)</text>
+        <text x="180" y="205" text-anchor="middle" font-weight="bold" fill="#2457c5">Visible layer v (bias a)</text>
+        <text x="335" y="115" text-anchor="end" fill="#5b6470">W (symmetric)</text>
+        <text x="10" y="115" fill="#5b6470" font-size="11">no v–v / h–h links</text>
+      </svg>
+      <figcaption>RBM = bipartite graph, no links inside a layer (self-drawn, copy this)</figcaption>
+    </figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/Restricted_Boltzmann_machine.svg" alt="Restricted Boltzmann machine">
+      <figcaption>RBM with 3 hidden and 4 visible units. Source: Wikimedia Commons</figcaption></figure>
+  </div>
+
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>RBM mein sirf 2 layers hain: visible (jo data dikhta hai) aur hidden (chhupe features). Har visible har hidden se juda hai, par ek hi layer ke andar koi connection nahi, isliye "Restricted". Kaam: data → hidden features banao → unse data wapas banao (reconstruct) → asli aur bane hue ka difference dekh ke weights update karo (contrastive divergence). Energy kam = woh pattern zyada "natural". Kai RBMs stack karo toh Deep Belief Network.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>Movie recommendation: the visible units are movies you liked (1/0). The hidden units learn "taste features" like <i>likes action</i> or <i>likes romance</i>. From your hidden tastes, the RBM reconstructs the visible layer and switches on movies you haven't watched yet but will probably like.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>फ़िल्म सुझाव: दिखने वाली परत (visible) = आपको पसंद आई फ़िल्में। छिपी परत (hidden) = आपकी "रुचि" जैसे एक्शन पसंद, कॉमेडी पसंद। इन रुचियों से RBM वापस फ़िल्मों की सूची बनाता है और ऐसी नई फ़िल्में सुझाता है जो आपने अभी तक नहीं देखीं पर पसंद आएँगी।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span>
+    <p>Draw the bipartite diagram, write the energy formula and the two sigmoid conditionals, and list the 3 CD steps. That covers the 4-mark (7CAI B2) version fully. 2-mark answer: "An RBM is a two-layer (visible-hidden) undirected, energy-based generative network with no intra-layer connections, trained unsupervised by contrastive divergence; used for feature learning and DBNs."</p>
+  </div>
+</div>
+
+<!-- ===================== Q3 ===================== -->
+<div class="q must" id="q3">
+  <div class="qhead"><span class="qno">Q3</span>
+    <span class="tag must">🔥 MUST DO</span><span class="tag stars">★★★☆☆</span>
+    <span class="tag marks">2 / 4 / 10 marks</span>
+    <span class="tag pyq">PYQ 2025 A3 + B3</span><span class="tag pyq">PYQ 2024 A5</span><span class="tag pyq">7CAI 2025 A2</span></div>
+  <div class="qtitle">Explain activation functions: ReLU, Leaky ReLU, ELU (and sigmoid, tanh, softmax). Analyse the effect of different activation functions on a network's performance with an example.</div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p>An <b>activation function</b> decides a neuron's output from its weighted input z = Σwx + b. It adds <b>non-linearity</b>. Without it, any deep network collapses into one linear model and cannot learn complex patterns.</p>
+
+    <table>
+      <tr><th>Function</th><th>Formula f(z)</th><th>Derivative f′(z)</th><th>Range</th><th>Pros</th><th>Cons</th></tr>
+      <tr><td><b>Sigmoid</b></td><td>1 / (1 + e<sup>−z</sup>)</td><td>f(1 − f), max 0.25</td><td>(0, 1)</td><td>Probability output</td><td>Vanishing gradient, not zero-centred</td></tr>
+      <tr><td><b>Tanh</b></td><td>(e<sup>z</sup> − e<sup>−z</sup>)/(e<sup>z</sup> + e<sup>−z</sup>)</td><td>1 − f², max 1</td><td>(−1, 1)</td><td>Zero-centred</td><td>Still saturates, so vanishing gradient</td></tr>
+      <tr><td><b>ReLU</b></td><td>max(0, z)</td><td>1 if z &gt; 0, else 0</td><td>[0, ∞)</td><td>Simple, fast, no vanishing for z &gt; 0, sparse</td><td><b>Dying ReLU</b> (z &lt; 0 gives gradient 0)</td></tr>
+      <tr><td><b>Leaky ReLU</b></td><td>z if z &gt; 0, else αz (α = 0.01)</td><td>1 or α</td><td>(−∞, ∞)</td><td>Fixes dying ReLU</td><td>α is a fixed guess (PReLU learns α)</td></tr>
+      <tr><td><b>ELU</b></td><td>z if z &gt; 0, else α(e<sup>z</sup> − 1)</td><td>1 or f(z) + α</td><td>(−α, ∞)</td><td>Smooth, mean output near 0, faster convergence, robust to noise</td><td>exp() is slower to compute</td></tr>
+      <tr><td><b>Softmax</b></td><td>e<sup>zᵢ</sup> / Σⱼ e<sup>zⱼ</sup></td><td>—</td><td>(0, 1), sum = 1</td><td>Multi-class probabilities</td><td>Only for the output layer</td></tr>
+    </table>
+
+    <h4>Worked values (z = −2, 0, 2)</h4>
+    <pre>             z = −2      z = 0     z = 2
+Sigmoid      0.1192      0.5       0.8808
+Tanh        −0.9640      0         0.9640
+ReLU         0           0         2
+Leaky ReLU  −0.02        0         2        (α = 0.01)
+ELU         −0.8647      0         2        (α = 1:  e^−2 − 1 = 0.1353 − 1)
+
+Softmax of logits [2, 1, 0.1]:
+e^2 = 7.389, e^1 = 2.718, e^0.1 = 1.105, sum = 11.212
+→ probabilities [0.659, 0.242, 0.099]  (sum = 1)</pre>
+
+    <h4>Effect on performance (analysis)</h4>
+    <ul>
+      <li><b>Vanishing gradient with sigmoid/tanh:</b> σ′ ≤ 0.25. In a 10-layer sigmoid network the gradient is multiplied by ≤ 0.25 ten times: 0.25¹⁰ ≈ 9.5 × 10⁻⁷. Early layers almost stop learning, so training is very slow.</li>
+      <li><b>ReLU</b> has gradient 1 for z &gt; 0, so the gradient flows freely. Deep networks (AlexNet) trained about <b>6× faster</b> with ReLU than with tanh.</li>
+      <li><b>Dying ReLU:</b> if a neuron's z stays negative (e.g. after a large learning-rate update), its output and gradient are always 0, so it never recovers. Many dead neurons reduce model capacity.</li>
+      <li><b>Problem LReLU solves:</b> it gives a small slope α for z &lt; 0, so the gradient is never exactly zero and dead neurons can recover.</li>
+      <li><b>ELU:</b> negative outputs push the mean activation towards 0. This acts like batch-norm, speeds up convergence and often gives slightly better accuracy.</li>
+      <li><b>Choice:</b> hidden layers use ReLU (default), LReLU/ELU if neurons die; output uses sigmoid (binary), softmax (multi-class), linear (regression).</li>
+    </ul>
+    <p><b>Example experiment:</b> train the same 5-hidden-layer MLP on MNIST for 5 epochs. Typically sigmoid gives the slowest progress (loss decreases slowly because of vanishing gradients), while ReLU/LReLU/ELU reach about 97–98% test accuracy. ELU and LReLU are a little more stable when the learning rate is high. (These are typical observed trends; exact numbers vary.)</p>
+  </div>
+
+  <div class="figrow">
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/8/88/Logistic-curve.svg" alt="Sigmoid"><figcaption>Sigmoid. Source: Wikimedia Commons</figcaption></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Activation_rectified_linear.svg" alt="ReLU"><figcaption>ReLU. Source: Wikimedia Commons</figcaption></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/a/ae/Activation_prelu.svg" alt="Leaky ReLU / PReLU"><figcaption>Leaky ReLU / PReLU. Source: Wikimedia Commons</figcaption></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/b/bc/Activation_elu.svg" alt="ELU"><figcaption>ELU. Source: Wikimedia Commons</figcaption></figure>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <g stroke="#9aa5b4"><line x1="20" y1="130" x2="180" y2="130"/><line x1="100" y1="20" x2="100" y2="180"/>
+        <line x1="220" y1="130" x2="380" y2="130"/><line x1="300" y1="20" x2="300" y2="180"/>
+        <line x1="420" y1="130" x2="580" y2="130"/><line x1="500" y1="20" x2="500" y2="180"/></g>
+      <polyline points="20,130 100,130 170,60" fill="none" stroke="#2457c5" stroke-width="3"/>
+      <polyline points="220,138 300,130 370,60" fill="none" stroke="#e46c00" stroke-width="3"/>
+      <path d="M420,158 C450,157 480,150 500,130 L570,60" fill="none" stroke="#2e7d32" stroke-width="3"/>
+      <text x="100" y="195" text-anchor="middle" font-weight="bold">ReLU: max(0,z)</text>
+      <text x="300" y="195" text-anchor="middle" font-weight="bold">Leaky ReLU: small slope αz</text>
+      <text x="500" y="195" text-anchor="middle" font-weight="bold">ELU: α(eᶻ − 1), smooth</text>
+      <text x="40" y="122" fill="#c62828" font-size="11">flat = dead</text>
+      <text x="425" y="175" fill="#5b6470" font-size="11">→ −α</text>
+    </svg>
+    <figcaption>Quick sketch for the exam: how ReLU, LReLU and ELU differ for negative z (self-drawn)</figcaption>
+  </figure>
+
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>Activation function = neuron ka "switch" jo decide karta hai kitna signal aage bhejna hai, aur network ko non-linear banata hai. Sigmoid/tanh bade inputs pe flat ho jaate hain, gradient chhota ho jaata hai (vanishing), toh deep network seekhta hi nahi. ReLU = negative ko 0, positive ko waisa hi, fast aur simple. Par negative side pe gradient 0, toh neuron "mar" sakta hai (dying ReLU). Leaky ReLU negative side pe thoda slope (0.01z) deta hai taaki neuron zinda rahe. ELU negative side pe smooth curve deta hai jo −α tak jaata hai.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>Think of a water tap. ReLU: if the pressure is negative, no water at all; if positive, water flows as much as the pressure. Leaky ReLU: even at negative pressure a few drops leak, so the pipe never fully dries up and jams. Sigmoid: a tap that can only open between 0 and 100%. Pushing harder at the extremes changes nothing (saturation).</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>पानी का नल सोचिए। ReLU: दबाव नकारात्मक हो तो पानी बिल्कुल बंद, सकारात्मक हो तो जितना दबाव उतना पानी। Leaky ReLU: नकारात्मक दबाव पर भी कुछ बूँदें टपकती रहती हैं, ताकि पाइप पूरी तरह सूखकर जाम न हो। Sigmoid: नल 0 से 100% तक ही खुलता है — उसके बाद ज़ोर लगाने से कुछ नहीं बदलता।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span>
+    <p>The comparison table + "vanishing gradient (0.25ⁿ)" + "dying ReLU, fixed by LReLU" covers B3 fully. 2 marks (A3/A5): name 2–4 functions with formulas, e.g. "ReLU f(z) = max(0, z); Sigmoid f(z) = 1/(1 + e⁻ᶻ)". The syllabus names ReLU, LReLU and ELU explicitly, so always include those three.</p>
+  </div>
+</div>
+
+<!-- ===================== Q4 ===================== -->
+<div class="q must" id="q4">
+  <div class="qhead"><span class="qno">Q4</span>
+    <span class="tag must">🔥 MUST DO</span><span class="tag stars">★★☆☆☆</span>
+    <span class="tag marks">2 / 10 marks</span>
+    <span class="tag pyq">PYQ 2025 A1</span><span class="tag pyq">PYQ 2024 A1 + A3</span><span class="tag pyq">7CAI 2025 C1 + A6</span></div>
+  <div class="qtitle">Define Deep Learning and its significance / scope in AI. Differentiate Machine Learning and Deep Learning, and explain how deep learning improves representation power over traditional ML.</div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p><b>Deep Learning</b> is a subset of machine learning that uses <b>artificial neural networks with many hidden layers</b> to automatically learn hierarchical representations (features) from raw data such as images, text and audio.</p>
+    <p><b>AI ⊃ ML ⊃ DL</b>: AI = machines acting intelligently; ML = learning from data; DL = ML with deep neural networks.</p>
+    <p><b>Significance / scope in AI:</b> state-of-the-art results in computer vision, speech recognition, NLP and translation, medical imaging, self-driving cars, recommendation systems and generative AI (ChatGPT, image generation). It scales with big data and GPUs, and removes the need for manual feature engineering.</p>
+
+    <table>
+      <tr><th>Point</th><th>Machine Learning</th><th>Deep Learning</th></tr>
+      <tr><td>Features</td><td>Hand-crafted by experts (feature engineering)</td><td>Learned automatically from raw data</td></tr>
+      <tr><td>Data needed</td><td>Works with small/medium data</td><td>Needs large data; performance keeps rising with data</td></tr>
+      <tr><td>Hardware</td><td>CPU is enough</td><td>GPU/TPU needed</td></tr>
+      <tr><td>Training time</td><td>Short (minutes)</td><td>Long (hours to weeks)</td></tr>
+      <tr><td>Models</td><td>Linear/logistic regression, SVM, decision tree, k-NN, random forest</td><td>MLP, CNN, RNN/LSTM, autoencoders, transformers</td></tr>
+      <tr><td>Interpretability</td><td>Easier to explain</td><td>"Black box"</td></tr>
+      <tr><td>Problem solving</td><td>Breaks the problem into parts</td><td>End-to-end learning</td></tr>
+      <tr><td>Best for</td><td>Structured / tabular data</td><td>Unstructured data: images, audio, text</td></tr>
+    </table>
+
+    <h4>How DL improves representation power</h4>
+    <ul>
+      <li><b>Hierarchical features:</b> layer 1 learns edges, layer 2 shapes, layer 3 parts, the last layer whole objects. Traditional ML uses one fixed feature set (e.g. SIFT/HOG) designed by a human.</li>
+      <li><b>Composition of non-linear functions:</b> depth lets the network represent very complex functions with fewer units (exponential efficiency).</li>
+      <li><b>Distributed representations:</b> each concept is encoded by many neurons, and each neuron takes part in many concepts, which gives far more expressiveness than one-hot features.</li>
+      <li><b>End-to-end optimisation:</b> features and classifier are learned together for the task.</li>
+    </ul>
+    <p><b>Example:</b> Cat vs dog images. ML pipeline: engineer HOG + colour histogram, then an SVM gives roughly 80% accuracy and needs expert effort. DL: a CNN takes raw pixels, learns its own features and reaches 95%+ with enough data (typical figures).</p>
+  </div>
+
+  <figure><img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/AI_hierarchy.svg" alt="AI hierarchy"><figcaption>AI ⊃ Machine Learning ⊃ Deep Learning. Source: Wikimedia Commons</figcaption></figure>
+
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>ML mein insaan ko batana padta hai ki "kaunse features dekho" (feature engineering). DL mein network khud raw data se features nikaal leta hai, layer-by-layer: pehle edges, phir shapes, phir pura object. Isliye DL ko bahut data aur GPU chahiye, par images, voice aur text pe jabardast kaam karta hai.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>ML is like a student who is given a checklist: "a cat has pointy ears, whiskers, small nose". DL is like a child who sees thousands of cat photos and figures out on their own what makes a cat a cat.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>ML: शिक्षक ने सूची दी — "बिल्ली के नुकीले कान, मूँछें, छोटी नाक होती है" — उसी से पहचानो। DL: बच्चा हज़ारों बिल्लियों की तस्वीरें देखकर खुद समझ जाता है कि बिल्ली कैसी दिखती है। किसी ने विशेषताएँ नहीं बताईं।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span>
+    <p>For the 10-mark C1: definition + Venn (AI ⊃ ML ⊃ DL) + 8-row table + the "representation power" bullets + the cat/dog example. For 2 marks: "DL is a subset of ML using multi-layer neural networks that learn hierarchical features from raw data automatically; it powers vision, speech and NLP in AI."</p>
+  </div>
+</div>
+
+<!-- ===================== Q5 ===================== -->
+<div class="q high" id="q5">
+  <div class="qhead"><span class="qno">Q5</span>
+    <span class="tag high">⭐ HIGH</span><span class="tag stars">★★★☆☆</span>
+    <span class="tag marks">4 / 10 marks</span>
+    <span class="tag pyq">7CAI 2025 C2</span></div>
+  <div class="qtitle">What is Representation Learning? Explain how deep learning automates feature engineering, with an example from image or speech recognition.</div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p><b>Representation learning</b> is a set of techniques that let a system <b>automatically discover the features (representations)</b> needed for a task from raw data, instead of hand-designing them. A good representation makes the later task (classification, regression, clustering) easy, often linearly separable.</p>
+    <h4>How DL automates feature engineering</h4>
+    <ol>
+      <li>Raw input (pixels / audio samples) goes straight into the network.</li>
+      <li>Each hidden layer transforms its input: h = f(Wx + b). The weights W are learned by backprop, so <b>the features are learned, not designed</b>.</li>
+      <li><b>Hierarchy:</b> low layers capture simple patterns, deeper layers combine them into abstract concepts.</li>
+      <li>The last layer uses these learned features for the task (softmax classifier).</li>
+    </ol>
+    <h4>Types</h4>
+    <ul>
+      <li><b>Supervised</b>: CNN features learned while training a classifier.</li>
+      <li><b>Unsupervised</b>: autoencoders, RBMs, PCA (linear).</li>
+      <li><b>Self-supervised</b>: word2vec, BERT (predict masked words), contrastive learning.</li>
+      <li><b>Transfer learning</b>: reuse ImageNet CNN features for a new task with little data.</li>
+    </ul>
+    <h4>Example: face recognition (image)</h4>
+    <p>Pixels → <b>Layer 1</b>: edges, colour blobs → <b>Layer 2</b>: corners, textures, contours → <b>Layer 3</b>: eyes, nose, mouth → <b>Layer 4</b>: whole faces / identity. Earlier systems needed hand-made features (Haar, HOG, SIFT).</p>
+    <h4>Example: speech recognition</h4>
+    <p>Old pipeline: hand-designed MFCC features + HMM/GMM. Deep pipeline: spectrogram → CNN/LSTM layers learn phoneme-like features → words. Learned features gave large drops in word error rate.</p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 640 170" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <defs><marker id="r1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#2457c5"/></marker></defs>
+      <rect x="10" y="40" width="100" height="80" rx="8" fill="#f5f7fa" stroke="#5b6470"/>
+      <g fill="#9aa5b4"><rect x="20" y="50" width="12" height="12"/><rect x="36" y="50" width="12" height="12" fill="#5b6470"/><rect x="52" y="50" width="12" height="12"/><rect x="68" y="66" width="12" height="12" fill="#5b6470"/><rect x="20" y="82" width="12" height="12" fill="#5b6470"/><rect x="84" y="98" width="12" height="12"/><rect x="52" y="98" width="12" height="12" fill="#5b6470"/></g>
+      <text x="60" y="140" text-anchor="middle">Raw pixels</text>
+      <rect x="140" y="40" width="100" height="80" rx="8" fill="#e8efff" stroke="#2457c5"/>
+      <g stroke="#2457c5" stroke-width="2"><line x1="155" y1="60" x2="185" y2="60"/><line x1="200" y1="50" x2="200" y2="80"/><line x1="160" y1="105" x2="190" y2="85"/><line x1="210" y1="90" x2="230" y2="110"/></g>
+      <text x="190" y="140" text-anchor="middle">L1: edges</text>
+      <rect x="270" y="40" width="100" height="80" rx="8" fill="#e8efff" stroke="#2457c5"/>
+      <g fill="none" stroke="#2457c5" stroke-width="2"><circle cx="300" cy="70" r="14"/><path d="M325,95 L345,60 L360,95 z"/><rect x="285" y="95" width="20" height="16"/></g>
+      <text x="320" y="140" text-anchor="middle">L2: shapes, textures</text>
+      <rect x="400" y="40" width="100" height="80" rx="8" fill="#e8efff" stroke="#2457c5"/>
+      <g fill="none" stroke="#2457c5" stroke-width="2"><ellipse cx="425" cy="65" rx="12" ry="7"/><ellipse cx="470" cy="65" rx="12" ry="7"/><path d="M447,72 L442,92 L452,92"/><path d="M430,104 Q448,114 466,104"/></g>
+      <text x="450" y="140" text-anchor="middle">L3: parts (eye, nose)</text>
+      <rect x="530" y="40" width="100" height="80" rx="8" fill="#fdecea" stroke="#c62828"/>
+      <circle cx="580" cy="80" r="30" fill="none" stroke="#c62828" stroke-width="2"/><circle cx="570" cy="72" r="3" fill="#c62828"/><circle cx="590" cy="72" r="3" fill="#c62828"/><path d="M568,92 Q580,100 592,92" fill="none" stroke="#c62828" stroke-width="2"/>
+      <text x="580" y="140" text-anchor="middle">L4: face / object</text>
+      <g stroke="#2457c5" stroke-width="2"><line x1="110" y1="80" x2="138" y2="80" marker-end="url(#r1)"/><line x1="240" y1="80" x2="268" y2="80" marker-end="url(#r1)"/><line x1="370" y1="80" x2="398" y2="80" marker-end="url(#r1)"/><line x1="500" y1="80" x2="528" y2="80" marker-end="url(#r1)"/></g>
+      <text x="320" y="20" text-anchor="middle" font-weight="bold" fill="#2457c5">Simple → complex features, all learned automatically</text>
+    </svg>
+    <figcaption>Hierarchical representation learning in a deep network (self-drawn, copy this)</figcaption>
+  </figure>
+
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>Pehle engineers khud baithke features banate the (edges kaise detect karein, MFCC kaise nikaalein). Representation learning mein network yeh kaam khud karta hai. Har layer pichhli layer ke features ko jodke zyada "samajhdaar" features banati hai: edges → shapes → aankh/naak → chehra. Isi ko "DL automates feature engineering" kehte hain.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>Learning to read: first you recognise strokes, then letters, then words, then sentences and their meaning. Nobody hands you a rule for each word; you build up from simple pieces. A deep network builds features the same way.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>पढ़ना सीखना: पहले रेखाएँ पहचानते हैं, फिर अक्षर, फिर शब्द, फिर वाक्य और उनका अर्थ। हर शब्द का नियम कोई नहीं बताता — हम छोटे टुकड़ों से बड़ी समझ बनाते हैं। डीप नेटवर्क भी इसी तरह परत-दर-परत विशेषताएँ खुद सीखता है।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span><p>The hierarchy diagram (pixels → edges → shapes → parts → object) is the key mark-scorer. Add one line on transfer learning to show depth.</p></div>
+</div>
+
+<!-- ===================== Q6 ===================== -->
+<div class="q high" id="q6">
+  <div class="qhead"><span class="qno">Q6</span>
+    <span class="tag high">⭐ HIGH</span><span class="tag stars">★★☆☆☆</span>
+    <span class="tag marks">2 / 4 marks</span></div>
+  <div class="qtitle">Explain the width and depth of neural networks. Why are deeper networks preferred?</div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <ul>
+      <li><b>Width</b> = number of neurons in a layer.</li>
+      <li><b>Depth</b> = number of layers (hidden + output) with learnable weights.</li>
+    </ul>
+    <table>
+      <tr><th>Point</th><th>Wide &amp; shallow</th><th>Narrow &amp; deep</th></tr>
+      <tr><td>What it captures</td><td>Many features at one level</td><td>Hierarchical, compositional features</td></tr>
+      <tr><td>Parameters for the same power</td><td>Can need exponentially many neurons</td><td>Far fewer parameters</td></tr>
+      <tr><td>Training</td><td>Easier, parallel, fewer gradient problems</td><td>Vanishing/exploding gradients, harder to optimise</td></tr>
+      <tr><td>Overfitting</td><td>Risk with very large width</td><td>Risk with depth; needs regularisation</td></tr>
+      <tr><td>Example</td><td>1 hidden layer with 10,000 units</td><td>ResNet-152 (152 layers)</td></tr>
+    </table>
+    <p><b>Why depth helps:</b> (1) The Universal Approximation Theorem says one wide layer is enough <i>in theory</i>, but it may need exponentially many units; (2) deep networks reuse features (composition), giving exponential gains in expressiveness; (3) they match the hierarchical structure of real data. <b>Making depth trainable:</b> ReLU, batch normalisation, residual (skip) connections, good initialisation (He/Xavier). <b>Balance:</b> EfficientNet scales width, depth and resolution together.</p>
+  </div>
+  <figure><img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Artificial_neural_network.svg" alt="Neural network layers"><figcaption>Width = neurons per layer (vertical); depth = number of layers (horizontal). Source: Wikimedia Commons</figcaption></figure>
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span><p>Width = ek layer mein kitne neurons (chaudai). Depth = kitni layers (gehraai). Zyada gehra network chhote-chhote features jodke complex cheezein kam parameters mein seekh leta hai. Par bahut deep ho toh gradient gayab, isliye ReLU, BatchNorm, ResNet skip connections use karte hain.</p></div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span><p>A company: a wide company has 1,000 workers who all report to one boss (flat). A deep company has a few levels: workers → supervisors → managers → CEO. Information gets summarised at each level, which handles complex work with fewer people.</p></div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span><p>कंपनी: चौड़ी कंपनी में 1000 कर्मचारी सीधे एक बॉस को रिपोर्ट करते हैं। गहरी कंपनी में कर्मचारी → सुपरवाइज़र → मैनेजर → CEO। हर स्तर पर जानकारी का सार बनता है, इसलिए कम लोगों में जटिल काम हो जाता है।</p></div>
+</div>
+
+<!-- ===================== Q7 ===================== -->
+<div class="q med" id="q7">
+  <div class="qhead"><span class="qno">Q7</span>
+    <span class="tag med">✔ MEDIUM</span><span class="tag stars">★☆☆☆☆</span>
+    <span class="tag marks">2 / 4 marks</span><span class="tag pyq">7CAI 2025 A6 (CV use)</span></div>
+  <div class="qtitle">Explain the applications of deep learning.</div>
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <table>
+      <tr><th>Domain</th><th>Application</th><th>Typical model</th></tr>
+      <tr><td>Computer vision</td><td>Image classification, object detection, face recognition, segmentation</td><td>CNN (AlexNet, ResNet, YOLO, U-Net)</td></tr>
+      <tr><td>Speech</td><td>Speech-to-text, voice assistants (Siri, Alexa, Google Assistant)</td><td>LSTM / BiLSTM, transformers</td></tr>
+      <tr><td>NLP</td><td>Machine translation, chatbots, sentiment analysis, summarisation</td><td>RNN, seq2seq, transformers (BERT, GPT)</td></tr>
+      <tr><td>Healthcare</td><td>Tumour detection in X-ray/MRI, diabetic retinopathy</td><td>CNN</td></tr>
+      <tr><td>Autonomous driving</td><td>Lane, pedestrian and traffic-sign detection</td><td>CNN + sensor fusion</td></tr>
+      <tr><td>Finance / security</td><td>Fraud and anomaly detection</td><td>Autoencoders, LSTM</td></tr>
+      <tr><td>Recommendation</td><td>Netflix, YouTube, Amazon suggestions</td><td>RBM, deep collaborative filtering</td></tr>
+      <tr><td>Generative AI</td><td>Image generation, text generation, deepfakes</td><td>GAN, VAE, diffusion, LLMs</td></tr>
+    </table>
+  </div>
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span><p>Phone ka face unlock, Google Translate, YouTube recommendations, self-driving car, X-ray se cancer detection: sab deep learning hai. Images ke liye CNN, sequence/speech ke liye RNN/LSTM, generation ke liye GAN/transformers.</p></div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span><p>When you search "dog" in Google Photos and it finds all your dog pictures without you ever tagging them, a CNN is doing image classification.</p></div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span><p>मोबाइल में "कुत्ता" खोजने पर गैलरी अपने आप कुत्ते वाली सारी तस्वीरें दिखा देती है — बिना किसी टैग के। यह CNN द्वारा इमेज पहचान (deep learning) है।</p></div>
+</div>
+
+<!-- ===================== QUICK ===================== -->
+<h2 id="quick">⚡ Part-A quick answers (2 marks, ~25 words each)</h2>
+<ol class="quick">
+  <li><b>Define Deep Learning and its significance in AI.</b> A subset of ML using multi-layer neural networks that automatically learn hierarchical features from raw data; it drives modern AI in vision, speech and NLP. <span class="tag pyq">2025 A1</span> <span class="tag pyq">2024 A1</span></li>
+  <li><b>Two activation functions?</b> ReLU: f(z) = max(0, z). Sigmoid: f(z) = 1/(1 + e⁻ᶻ), output in (0, 1). Others: tanh, Leaky ReLU, ELU, softmax. <span class="tag pyq">2025 A3</span> <span class="tag pyq">2024 A5</span></li>
+  <li><b>Supervised vs unsupervised training?</b> Supervised learns from labelled pairs (x, y) to predict y; unsupervised uses only x to find structure (clusters, compressed features). <span class="tag pyq">2025 A4</span> <span class="tag pyq">7CAI A9</span></li>
+  <li><b>What are RBMs?</b> Two-layer (visible-hidden) undirected energy-based generative networks with no intra-layer links, trained unsupervised via contrastive divergence. <span class="tag pyq">2025 A6</span> <span class="tag pyq">2024 A7</span></li>
+  <li><b>What problem does Leaky ReLU solve?</b> The "dying ReLU" problem: it uses a small slope (αz, α = 0.01) for negative inputs so the gradient is never zero and neurons can recover. <span class="tag pyq">7CAI A2</span></li>
+  <li><b>ML vs DL (one line)?</b> ML needs hand-crafted features and less data; DL learns features automatically from raw data but needs large data and GPUs. <span class="tag pyq">2024 A3</span></li>
+  <li><b>Unsupervised training in NNs?</b> Training without labels by minimising reconstruction error (autoencoders), modelling data probability (RBM/CD) or competitive clustering (SOM). <span class="tag pyq">2024 A6</span></li>
+  <li><b>Major use of DL in computer vision?</b> Image classification/object detection with CNNs, e.g. face recognition and medical image diagnosis. <span class="tag pyq">7CAI A6</span></li>
+  <li><b>Scope of deep learning?</b> Vision, speech, NLP, healthcare, autonomous vehicles, finance, recommendation and generative AI; it grows with data and compute. <span class="tag pyq">2024 A1</span></li>
+  <li><b>Representation learning?</b> Automatically learning useful features from raw data instead of manual feature engineering, e.g. CNN layers learning edges → shapes → objects.</li>
+  <li><b>ELU?</b> f(z) = z for z &gt; 0, α(eᶻ − 1) for z ≤ 0. It is smooth, gives a near-zero mean output, avoids dead neurons and converges faster.</li>
+  <li><b>Contrastive divergence?</b> An approximate RBM training method: ΔW = η(v₀h₀ᵀ − v₁h₁ᵀ), using one Gibbs step of reconstruction.</li>
+  <li><b>Deep Belief Network?</b> A stack of RBMs trained greedily layer by layer (unsupervised), then fine-tuned with backprop.</li>
+  <li><b>Width vs depth?</b> Width = neurons per layer; depth = number of layers. Depth gives hierarchical features with fewer parameters.</li>
+</ol>
+
+<div class="footer"><a href="pdf/unit2.pdf">⬇ Download this page as PDF</a> · <a href="quiz.html">Test yourself with the quiz →</a><br>Diagram credits: images marked "Wikimedia Commons" are hot-linked from commons.wikimedia.org under their respective free licences; the others are self-drawn SVGs. Prepared from the RTU 8AID4-01 syllabus, your class notes, the RTU 8AID4-01 papers of 2025 (8E1961) and 2024 (Part A), and the RTU 7CAI4-01 Nov-Dec 2025 paper.</div>
+</div></body></html>

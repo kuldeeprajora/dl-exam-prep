@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DL Unit Quiz</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:14px 0}
+  .pick button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:14px;text-align:left;cursor:pointer;font:inherit}
+  .pick button:hover{border-color:var(--accent);box-shadow:0 4px 14px rgba(36,87,197,.12)}
+  .pick b{display:block;color:var(--accent);font-size:16px}
+  .pick small{color:var(--muted)}
+  .pick .best{display:block;margin-top:6px;font-size:12.5px;font-weight:600;color:var(--med)}
+  .pick .all{background:linear-gradient(135deg,#fff8dc,#fff);border-color:#f0dc8a}
+  .qcard{border:1px solid var(--line);border-radius:14px;padding:18px;background:#fff;margin:14px 0}
+  .prog{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:6px}
+  .bar{height:6px;background:var(--soft);border-radius:4px;overflow:hidden;margin-bottom:14px}
+  .bar i{display:block;height:100%;background:var(--accent);transition:width .25s}
+  .qtext{font-size:18px;font-weight:600;margin:4px 0 14px}
+  .opt{display:block;width:100%;text-align:left;font:inherit;font-size:15.5px;padding:12px 14px;margin:8px 0;border:1.5px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;color:var(--ink)}
+  .opt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}
+  .opt:disabled{cursor:default}
+  .opt.right{border-color:var(--med);background:var(--med-soft);font-weight:600}
+  .opt.wrong{border-color:var(--must);background:var(--must-soft)}
+  .opt .l{display:inline-block;width:24px;font-weight:700;color:var(--muted)}
+  .expl{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--hing-soft);display:none}
+  .expl.show{display:block}
+  .nav2{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:10px}
+  .btn{border:0;border-radius:10px;padding:11px 18px;font:inherit;font-weight:600;cursor:pointer;background:var(--accent);color:#fff;text-decoration:none;display:inline-block}
+  .btn.ghost{background:var(--soft);color:var(--ink)}
+  .btn:disabled{opacity:.4;cursor:default}
+  .result{text-align:center;padding:10px}
+  .big{font-size:52px;font-weight:800;margin:4px 0}
+  .grade{font-size:18px;font-weight:600}
+  .rev{border:1px solid var(--line);border-left:5px solid var(--must);border-radius:10px;padding:10px 12px;margin:10px 0;background:#fff}
+  .rev .ok{color:var(--med);font-weight:600}
+  .rev .bad{color:var(--must)}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<nav class="topnav"><div class="navin">
+<a href="index.html" class="brand">🧠 DL Prep</a>
+<a href="plan.html">PYQ &amp; Plan</a><a href="quick.html">⚡ Quick Revision</a>
+<a href="unit1.html">Unit 1</a><a href="unit2.html">Unit 2</a><a href="unit3.html">Unit 3</a><a href="unit4.html">Unit 4</a><a href="unit5.html">Unit 5</a>
+<a href="quiz.html" class="quizlink active">📝 Quiz</a></div></nav>
+<div class="wrap">
+
+<section id="home">
+  <h1>📝 Test Yourself</h1>
+  <p class="sub">Pick a unit. Questions and options are shuffled every time. You'll see the right answer and a short explanation after each question. Target: <b>70%+</b> before the exam.</p>
+  <div class="pick" id="pick"></div>
+</section>
+
+<section id="play" class="hidden">
+  <div class="qcard">
+    <div class="prog"><span id="qtitle"></span><span id="qpos"></span></div>
+    <div class="bar"><i id="qbar" style="width:0"></i></div>
+    <div class="qtext" id="qtext"></div>
+    <div id="opts"></div>
+    <div class="expl" id="expl"></div>
+    <div class="nav2">
+      <button class="btn ghost" id="quit">✕ Quit</button>
+      <span class="meta" id="live"></span>
+      <button class="btn" id="next" disabled>Next →</button>
+    </div>
+  </div>
+</section>
+
+<section id="done" class="hidden">
+  <div class="qcard result">
+    <div class="meta" id="rtitle"></div>
+    <div class="big" id="rscore"></div>
+    <div class="grade" id="rgrade"></div>
+    <p id="rbest" class="meta"></p>
+    <div class="nav2" style="justify-content:center;flex-wrap:wrap">
+      <button class="btn" id="again">↻ Retry</button>
+      <button class="btn ghost" id="back">Choose another unit</button>
+      <a class="btn ghost" id="readlink" href="#">📖 Revise this unit</a>
+    </div>
+  </div>
+  <h2 id="revh">Review your mistakes</h2>
+  <div id="review"></div>
+</section>
+
+<div class="footer">Scores are saved only in this browser. Questions are based on the RTU 8AID4-01 syllabus and past papers.</div>
+</div>
+
+<script src="quiz-data.js"></script>
+<script>
+const Q=window.QUIZ, $=id=>document.getElementById(id);
+const store={get(){try{return JSON.parse(localStorage.getItem('dlq_best')||'{}')}catch(e){return {}}},
+  set(o){try{localStorage.setItem('dlq_best',JSON.stringify(o))}catch(e){}}};
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let S=null;
+
+function renderPick(){
+  const best=store.get();
+  let h='';
+  for(const k of Object.keys(Q)){
+    const b=best['u'+k];
+    h+=`<button data-u="${k}"><b>Unit ${k}</b><small>${Q[k].title.split('· ')[1]} · ${Q[k].qs.length} questions</small>${b!=null?`<span class="best">Best: ${b}%</span>`:''}</button>`;
+  }
+  const ba=best.all;
+  h+=`<button class="all" data-u="all"><b>🎯 All units: mock test</b><small>25 random questions from all units</small>${ba!=null?`<span class="best">Best: ${ba}%</span>`:''}</button>`;
+  $('pick').innerHTML=h;
+  $('pick').querySelectorAll('button').forEach(b=>b.onclick=()=>start(b.dataset.u));
+}
+
+function start(u){
+  let qs,title;
+  if(u==='all'){qs=shuffle(Object.keys(Q).flatMap(k=>Q[k].qs.map(q=>({...q,unit:k})))).slice(0,25);title='All units: mock test'}
+  else{qs=shuffle(Q[u].qs.map(q=>({...q,unit:u})));title=Q[u].title}
+  qs=qs.map(q=>{const idx=shuffle(q.o.map((_,i)=>i));return {...q,o:idx.map(i=>q.o[i]),a:idx.indexOf(q.a)}});
+  S={u,title,qs,i:0,score:0,wrong:[]};
+  show('play');history.replaceState(null,'','?unit='+u);renderQ();
+}
+
+function renderQ(){
+  const q=S.qs[S.i];
+  $('qtitle').textContent=S.title;
+  $('qpos').textContent=`Question ${S.i+1} / ${S.qs.length}`;
+  $('qbar').style.width=(S.i/S.qs.length*100)+'%';
+  $('qtext').textContent=q.q;
+  $('live').textContent=`Score: ${S.score}`;
+  $('expl').className='expl';$('expl').innerHTML='';
+  $('next').disabled=true;
+  $('next').textContent=S.i===S.qs.length-1?'See result →':'Next →';
+  $('opts').innerHTML='';
+  q.o.forEach((t,i)=>{
+    const b=document.createElement('button');b.className='opt';
+    b.innerHTML=`<span class="l">${'ABCD'[i]}.</span>`;b.appendChild(document.createTextNode(t));
+    b.onclick=()=>answer(i);$('opts').appendChild(b);
+  });
+}
+
+function answer(i){
+  const q=S.qs[S.i], btns=$('opts').querySelectorAll('.opt');
+  btns.forEach(b=>b.disabled=true);
+  btns[q.a].classList.add('right');
+  const ok=i===q.a;
+  if(ok)S.score++;else{btns[i].classList.add('wrong');S.wrong.push({q,picked:i})}
+  $('expl').innerHTML=(ok?'✅ <b>Correct!</b> ':'❌ <b>Not quite.</b> ')+q.e;
+  $('expl').className='expl show';
+  $('live').textContent=`Score: ${S.score}`;
+  $('next').disabled=false;$('next').focus();
+}
+
+$('next').onclick=()=>{S.i++;if(S.i<S.qs.length)renderQ();else finish()};
+$('quit').onclick=()=>{if(confirm('Quit this quiz? Progress will be lost.')){show('home');renderPick();history.replaceState(null,'','quiz.html')}};
+$('again').onclick=()=>start(S.u);
+$('back').onclick=()=>{show('home');renderPick();history.replaceState(null,'','quiz.html')};
+
+function finish(){
+  const pct=Math.round(S.score/S.qs.length*100), key=S.u==='all'?'all':'u'+S.u, best=store.get();
+  const prev=best[key];
+  if(prev==null||pct>prev){best[key]=pct;store.set(best)}
+  $('rtitle').textContent=S.title;
+  $('rscore').textContent=`${S.score} / ${S.qs.length}`;
+  $('rgrade').textContent=pct>=90?`${pct}% · 🏆 Excellent, exam-ready!`:pct>=70?`${pct}% · 👍 Good, revise the mistakes below`:pct>=50?`${pct}% · 📖 Okay, read the MUST DO topics again`:`${pct}% · 💪 Revise this unit, then retry`;
+  $('rgrade').style.color=pct>=70?'var(--med)':pct>=50?'var(--high)':'var(--must)';
+  $('rbest').textContent=prev!=null?(pct>prev?`New best! (previous ${prev}%)`:`Your best: ${prev}%`):'First attempt saved.';
+  $('readlink').href=S.u==='all'?'quick.html':`unit${S.u}.html`;
+  $('revh').style.display=S.wrong.length?'':'none';
+  $('review').innerHTML=S.wrong.map(w=>`<div class="rev"><b>${esc(w.q.q)}</b><br>
+    <span class="bad">Your answer: ${esc(w.q.o[w.picked])}</span><br>
+    <span class="ok">Correct: ${esc(w.q.o[w.q.a])}</span><br>
+    <span class="meta">${esc(w.q.e)} · <a href="unit${w.q.unit}.html">Unit ${w.q.unit} →</a></span></div>`).join('');
+  show('done');
+}
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function show(id){['home','play','done'].forEach(x=>$(x).classList.toggle('hidden',x!==id));window.scrollTo(0,0)}
+
+renderPick();
+const p=new URLSearchParams(location.search).get('unit');
+if(p&&(Q[p]||p==='all'))start(p);
+</script>
+</body></html>

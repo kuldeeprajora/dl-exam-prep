@@ -1,0 +1,121 @@
+/* Shared style for DL exam-prep documents (screen + print) */
+:root{
+  --ink:#1b1f24; --muted:#5b6470; --line:#d9dee5; --bg:#ffffff; --soft:#f5f7fa;
+  --accent:#2457c5; --accent-soft:#e8efff;
+  --must:#c62828; --must-soft:#fdecea;
+  --high:#e46c00; --high-soft:#fff3e0;
+  --med:#2e7d32;  --med-soft:#e8f5e9;
+  --hing:#6a1b9a; --hing-soft:#f6edfb;
+  --eng:#00695c;  --eng-soft:#e6f4f1;
+  --hin:#ad1457;  --hin-soft:#fde9f1;
+  --tip:#8d6e00;  --tip-soft:#fff8dc;
+}
+*{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.6 "Segoe UI",-apple-system,BlinkMacSystemFont,"Noto Sans","Noto Sans Devanagari",Arial,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:24px 16px 60px}
+h1{font-size:28px;margin:0 0 4px;color:var(--accent)}
+h2{font-size:21px;margin:34px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--accent)}
+h3{font-size:17px;margin:18px 0 6px}
+h4{font-size:15px;margin:12px 0 4px}
+p{margin:6px 0}
+ul,ol{margin:6px 0;padding-left:22px}
+li{margin:2px 0}
+code,.mono{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13.5px;background:var(--soft);padding:1px 5px;border-radius:4px}
+pre{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13px;background:var(--soft);border:1px solid var(--line);
+  border-radius:8px;padding:10px 12px;overflow-x:auto;white-space:pre-wrap;line-height:1.45}
+table{border-collapse:collapse;width:100%;margin:8px 0;font-size:14px}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--soft)}
+a{color:var(--accent)}
+.sub{color:var(--muted);margin:0 0 14px}
+.meta{font-size:13px;color:var(--muted)}
+
+/* header banner */
+.banner{background:linear-gradient(135deg,#2457c5,#5b3cc4);color:#fff;border-radius:14px;padding:18px 20px;margin-bottom:18px}
+.banner h1{color:#fff}
+.banner p{color:#e9ecff;margin:2px 0}
+
+/* legend & toc */
+.box{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0;background:#fff}
+.toc ol{columns:2;column-gap:28px}
+@media (max-width:640px){.toc ol{columns:1}}
+
+/* question card */
+.q{border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:12px;padding:14px 16px;margin:22px 0;background:#fff;
+  break-inside:auto}
+.q.must{border-left-color:var(--must)}
+.q.high{border-left-color:var(--high)}
+.q.med{border-left-color:var(--med)}
+.qhead{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}
+.qno{font-weight:700;color:var(--muted);font-size:13px}
+.qtitle{font-size:17px;font-weight:700;margin:4px 0 8px}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.tag.must{background:var(--must-soft);color:var(--must);border-color:#f3b8b3}
+.tag.high{background:var(--high-soft);color:var(--high);border-color:#ffd199}
+.tag.med{background:var(--med-soft);color:var(--med);border-color:#b7dfb9}
+.tag.stars{background:#fffbe6;color:#9a6b00;border-color:#f0dc8a;letter-spacing:1px}
+.tag.marks{background:var(--accent-soft);color:var(--accent);border-color:#c3d3ff}
+.tag.pyq{background:#1b1f24;color:#fff}
+
+/* answer sub-blocks */
+.blk{border-radius:10px;padding:10px 12px;margin:10px 0}
+.blk > .lbl{font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;display:block}
+.ans{background:#fff;border:1px dashed var(--line)}
+.ans > .lbl{color:var(--accent)}
+.hing{background:var(--hing-soft)} .hing > .lbl{color:var(--hing)}
+.eng{background:var(--eng-soft)}   .eng > .lbl{color:var(--eng)}
+.hin{background:var(--hin-soft)}   .hin > .lbl{color:var(--hin)}
+.hin p,.hin li{font-family:"Noto Sans Devanagari","Kohinoor Devanagari","Mangal",sans-serif}
+.tip{background:var(--tip-soft)}   .tip > .lbl{color:var(--tip)}
+.formula{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:8px 0;
+  font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-size:16px}
+
+/* figures */
+figure{margin:12px 0;text-align:center}
+figure img{max-width:100%;max-height:340px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px}
+figure svg{max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:8px}
+figcaption{font-size:12.5px;color:var(--muted);margin-top:4px}
+.figrow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.figrow figure{flex:1 1 220px}
+
+/* priority table */
+.ptable td:first-child{white-space:nowrap}
+
+.quick li{margin:6px 0}
+.footer{margin-top:40px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+
+@media print{
+  @page{size:A4;margin:14mm 12mm}
+  body{font-size:12.5px}
+  .wrap{max-width:none;padding:0}
+  .q{break-inside:auto;page-break-inside:auto}
+  .blk,figure,.formula,table{break-inside:avoid}
+  h2{break-after:avoid}
+  a{color:inherit;text-decoration:none}
+  figure img{max-height:260px}
+}
+
+/* ---- site navigation ---- */
+html{scroll-padding-top:60px}
+.topnav{position:sticky;top:0;z-index:50;background:#151a2d;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.navin{max-width:1100px;margin:0 auto;display:flex;gap:2px;overflow-x:auto;padding:0 8px;scrollbar-width:none}
+.navin::-webkit-scrollbar{display:none}
+.topnav a{color:#cfd6f5;text-decoration:none;padding:12px 10px;font-size:14px;white-space:nowrap;border-bottom:3px solid transparent}
+.topnav a:hover{color:#fff}
+.topnav a.active{color:#fff;border-bottom-color:#7aa2ff}
+.topnav a.brand{color:#fff;font-weight:700;margin-right:6px}
+.topnav a.quizlink{color:#ffd479;font-weight:600}
+@media print{.topnav{display:none}}
+
+/* ---- mobile: no sideways page scroll ---- */
+@media (max-width:700px){
+  .wrap{overflow-wrap:anywhere}
+  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  th,td{min-width:90px}
+  .tag{white-space:normal}
+  h1{font-size:24px}
+  .banner,.hero{padding:16px}
+  figure img{max-width:100%;height:auto}
+}

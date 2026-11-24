@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DL Exam Prep</title>
+<meta name="description" content="One-stop revision for RTU 8AID4-01 Deep Learning and Its Applications: PYQ analysis, unit-wise answers, diagrams, quick revision and quizzes.">
+<link rel="stylesheet" href="style.css">
+<style>
+  .hero{background:linear-gradient(135deg,#2457c5,#5b3cc4);color:#fff;border-radius:16px;padding:26px 22px;margin:18px 0}
+  .hero h1{color:#fff;font-size:30px;margin:0 0 6px}
+  .hero p{color:#e6e9ff;margin:4px 0}
+  .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .btn{display:inline-block;padding:10px 16px;border-radius:10px;text-decoration:none;font-weight:600;font-size:14.5px}
+  .btn.w{background:#fff;color:#2457c5}
+  .btn.y{background:#ffd479;color:#3b2a00}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:12px 0}
+  .card{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:#fff;text-decoration:none;color:var(--ink);display:block;transition:transform .12s,box-shadow .12s}
+  .card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(36,87,197,.12)}
+  .card .k{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .card h3{margin:4px 0 6px;color:var(--accent)}
+  .card p{font-size:14px;color:#3a4250;margin:0}
+  .card .row{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:13px}
+  .score{font-weight:700}
+  .score.none{color:var(--muted);font-weight:400}
+  .meter{height:6px;background:var(--soft);border-radius:4px;overflow:hidden;margin-top:6px}
+  .meter i{display:block;height:100%;background:var(--med)}
+  .stat{display:flex;gap:10px;flex-wrap:wrap}
+  .stat div{flex:1 1 140px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}
+  .stat b{display:block;font-size:24px;color:var(--accent)}
+  .stat span{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<nav class="topnav"><div class="navin">
+<a href="index.html" class="brand active">🧠 DL Prep</a>
+<a href="plan.html">PYQ &amp; Plan</a><a href="quick.html">⚡ Quick Revision</a>
+<a href="unit1.html">Unit 1</a><a href="unit2.html">Unit 2</a><a href="unit3.html">Unit 3</a><a href="unit4.html">Unit 4</a><a href="unit5.html">Unit 5</a>
+<a href="quiz.html" class="quizlink">📝 Quiz</a></div></nav>
+<div class="wrap">
+
+<div class="hero">
+  <h1>Deep Learning &amp; Its Applications</h1>
+  <p>RTU Kota · 8AID4-01 · B.Tech VIII Sem (AI &amp; DS) · one-stop exam prep</p>
+  <p>PYQ analysis → priority answers with diagrams → theory-only quick revision → unit-wise quizzes.</p>
+  <div class="cta">
+    <a class="btn w" href="plan.html">📊 Start: PYQ analysis &amp; plan</a>
+    <a class="btn w" href="quick.html">⚡ Quick revision</a>
+    <a class="btn y" href="quiz.html">📝 Take a quiz</a>
+  </div>
+</div>
+
+<div class="stat">
+  <div><b>3</b><span>past papers analysed</span></div>
+  <div><b>35</b><span>detailed answers</span></div>
+  <div><b>60+</b><span>diagrams</span></div>
+  <div><b id="qcount">75</b><span>quiz questions</span></div>
+</div>
+
+<h2>📚 Study material</h2>
+<div class="grid">
+  <a class="card" href="plan.html"><span class="k">Start here</span><h3>PYQ Analysis &amp; Study Plan</h3><p>What was asked, unit weightage, most likely questions, 3-day / 1-day plan, answer-writing tips.</p></a>
+  <a class="card" href="quick.html"><span class="k">Short on time</span><h3>⚡ Quick Revision</h3><p>All 33 topics, theory + diagrams only, no numericals. Includes the last-hour 2-mark list.</p></a>
+</div>
+
+<h2>🧩 Units: read, then test yourself</h2>
+<div class="grid" id="units"></div>
+
+<h2>💡 How to use this site</h2>
+<ol>
+  <li>Read the <a href="plan.html">PYQ analysis</a> once (10 min) to see what matters.</li>
+  <li>For each unit, read the 🔥 MUST DO questions, then take that unit's <a href="quiz.html">quiz</a>.</li>
+  <li>If you score below 70%, read the explanations of the wrong answers, then revise those topics.</li>
+  <li>Night before the exam: <a href="quick.html">Quick Revision</a> + "All units" quiz.</li>
+</ol>
+<p class="meta">Every page has a PDF download link at the bottom for offline reading.</p>
+
+<div class="footer">Made for exam revision · Syllabus: RTU 8AID4-01 · Diagrams: self-drawn + Wikimedia Commons (free licences). Quiz scores are stored only in your own browser.</div>
+</div>
+
+<script>
+const UNITS=[
+ {n:1,t:"Deep Network Basics",d:"Backprop, curse of dimensionality, SGD, MLP, MLE, perceptron"},
+ {n:2,t:"Deep Learning Architectures",d:"Unsupervised training, RBM, ReLU/LReLU/ELU, ML vs DL, representation learning"},
+ {n:3,t:"Convolutional Neural Networks",d:"CNN architecture, AlexNet vs ResNet, parameter sharing, dropout"},
+ {n:4,t:"Sequence Modelling (RNN)",d:"RNN, LSTM/GRU, BRNN, encoder-decoder, BPTT, speech pipeline"},
+ {n:5,t:"Autoencoders",d:"Undercomplete, regularised, stochastic, contractive, anomaly detection"}];
+let best={};
+try{best=JSON.parse(localStorage.getItem('dlq_best')||'{}')}catch(e){}
+document.getElementById('units').innerHTML=UNITS.map(u=>{
+  const b=best['u'+u.n];
+  const sc=b?`<span class="score">Best quiz: ${b}%</span>`:`<span class="score none">Quiz not taken</span>`;
+  return `<div class="card"><span class="k">Unit ${u.n}</span><h3><a href="unit${u.n}.html" style="text-decoration:none">${u.t}</a></h3><p>${u.d}</p>
+  <div class="meter"><i style="width:${b||0}%"></i></div>
+  <div class="row">${sc}<span><a href="unit${u.n}.html">Read</a> · <a href="quiz.html?unit=${u.n}">Quiz →</a></span></div></div>`}).join('');
+</script>
+</body></html>

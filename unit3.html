@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unit 3 – Convolutional Neural Networks</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body><nav class="topnav"><div class="navin">
+<a href="index.html" class="brand">🧠 DL Prep</a>
+<a href="plan.html" data-p="plan">PYQ &amp; Plan</a><a href="quick.html" data-p="quick">⚡ Quick Revision</a>
+<a href="unit1.html" data-p="unit1">Unit 1</a><a href="unit2.html" data-p="unit2">Unit 2</a><a href="unit3.html" data-p="unit3" class="active">Unit 3</a><a href="unit4.html" data-p="unit4">Unit 4</a><a href="unit5.html" data-p="unit5">Unit 5</a>
+<a href="quiz.html" data-p="quiz" class="quizlink">📝 Quiz</a></div></nav><div class="wrap">
+
+<div class="banner">
+  <h1>Unit 3 — Convolutional Neural Networks</h1>
+  <p>RTU 8AID4-01 · Deep Learning and Its Applications · Syllabus item 4 (7 hrs)</p>
+  <p>Architectural overview · Motivation · Layers · Filters · Parameter sharing · Regularization · Popular architectures: AlexNet, ResNet · Applications</p>
+</div>
+
+<div class="box">
+  <b>How to read the tags:</b>
+  <span class="tag must">🔥 MUST DO</span> asked in PYQ / almost sure to come ·
+  <span class="tag high">⭐ HIGH</span> strong chance ·
+  <span class="tag med">✔ MEDIUM</span> do if time allows ·
+  <span class="tag stars">★★★☆☆</span> difficulty (1 = very easy, 5 = tough) ·
+  <span class="tag pyq">PYQ 2025</span> = 8AID4-01 April/May 2025 · <span class="tag pyq">PYQ 2024</span> = 8AID4-01 2024 (Part A) · <span class="tag pyq">7CAI 2025</span> = 7CAI4-01 Nov-Dec 2025 (same subject, CSE-AI).
+  <p class="meta">Each answer has: 📝 exam answer (write this) → 💜 Hinglish samjho → 🟢 easy English example → 🌸 Hindi example → diagram → exam tip.</p>
+</div>
+
+<div class="box">
+  <b>Unit 3 weight in PYQs:</b> 8AID4-01 2025: A7, B6, <b>C1, C3</b> = <b>26 marks offered</b> (two full 10-mark questions!). 2024: A8. 7CAI 2025: A4, A6, A10, B3, B6, C3.
+  CNN architecture and AlexNet/ResNet are the two big 10-markers. <b>Do Q1–Q4 for sure.</b>
+</div>
+
+<div class="box toc">
+<b>Questions in this unit (priority order)</b>
+<ol>
+  <li><a href="#q1">CNN architecture, working + CV applications</a></li>
+  <li><a href="#q2">AlexNet architecture &amp; AlexNet vs ResNet</a></li>
+  <li><a href="#q3">Parameter sharing (+ numerical)</a></li>
+  <li><a href="#q4">Regularization in CNNs: dropout &amp; others</a></li>
+  <li><a href="#q5">Motivation for CNNs</a></li>
+  <li><a href="#q6">Layers, filters, padding, stride, pooling</a></li>
+  <li><a href="#quick">Part-A 2-mark quick answers</a></li>
+</ol>
+</div>
+
+<!-- ===================== Q1 ===================== -->
+<div class="q must" id="q1">
+  <div class="qhead"><span class="qno">Q1</span>
+    <span class="tag must">🔥 MUST DO</span><span class="tag stars">★★★★☆</span>
+    <span class="tag marks">2 / 4 / 10 marks</span><span class="tag pyq">PYQ 2025 C1</span><span class="tag pyq">PYQ 2024 A8</span><span class="tag pyq">7CAI 2025 A6, B6</span></div>
+  <div class="qtitle">Describe the architecture and working of Convolutional Neural Networks (CNNs) and their applications in computer vision tasks.</div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p><b>Definition:</b> A CNN is a deep neural network designed for <b>grid-like data such as images</b>. It uses <b>convolution</b> (small learnable filters sliding over the input) instead of full matrix multiplication, so it automatically learns spatial features: edges → textures → shapes → objects.</p>
+    <h4>Architecture (layer by layer)</h4>
+    <ol>
+      <li><b>Input layer:</b> the image as a tensor H × W × C (e.g. 32×32×3 for RGB).</li>
+      <li><b>Convolution layer:</b> K filters (e.g. 3×3) slide over the input; each computes a dot product + bias → one <b>feature map</b> per filter. Hyper-parameters: filter size f, number of filters K, stride s, padding p.</li>
+      <li><b>Activation (ReLU):</b> f(x) = max(0, x), applied element-wise; adds non-linearity.</li>
+      <li><b>Pooling layer:</b> down-samples each feature map (max-pool 2×2, stride 2 halves H and W). Reduces computation and gives small translation invariance.</li>
+      <li>[Conv → ReLU → Pool] blocks are <b>repeated</b>; deeper blocks learn higher-level features.</li>
+      <li><b>Flatten + Fully-Connected layers:</b> combine all features for the final decision.</li>
+      <li><b>Output layer: Softmax</b> gives class probabilities (sigmoid for binary).</li>
+    </ol>
+    <div class="formula">Output size = ⌊(n − f + 2p) / s⌋ + 1<br>
+    e.g. n = 32, f = 5, p = 0, s = 1 → (32 − 5)/1 + 1 = <b>28</b> &nbsp;|&nbsp; with p = 2 → (32 − 5 + 4)/1 + 1 = <b>32</b> ("same" padding)</div>
+    <h4>Working (training)</h4>
+    <p>Forward pass through conv/pool/FC layers → softmax → <b>cross-entropy loss</b> → <b>backpropagation</b> computes gradients for all filter weights → SGD/Adam updates them. So the filters are <b>learned</b>, not hand-designed.</p>
+    <h4>Applications in computer vision</h4>
+    <ul>
+      <li><b>Image classification:</b> cat vs dog, ImageNet (AlexNet, ResNet).</li>
+      <li><b>Object detection:</b> boxes around objects — YOLO, Faster R-CNN (traffic, CCTV).</li>
+      <li><b>Semantic segmentation:</b> label every pixel — U-Net (medical scans, road scenes).</li>
+      <li><b>Face recognition:</b> phone unlock, attendance systems (FaceNet).</li>
+      <li><b>Medical imaging:</b> tumour detection in MRI, X-ray pneumonia detection.</li>
+      <li><b>Self-driving cars:</b> lane, pedestrian and traffic-sign detection.</li>
+      <li>Others: OCR / handwriting (MNIST), image captioning (CNN + LSTM), style transfer.</li>
+    </ul>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 680 170" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <defs><marker id="a1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1b1f24"/></marker></defs>
+      <rect x="10" y="40" width="70" height="70" fill="#e8f5e9" stroke="#2e7d32"/><text x="45" y="80" text-anchor="middle">Image</text><text x="45" y="130" text-anchor="middle" font-size="11">32×32×3</text>
+      <g fill="#e8efff" stroke="#2457c5"><rect x="115" y="35" width="60" height="80"/><rect x="121" y="41" width="60" height="80"/><rect x="127" y="47" width="60" height="80"/></g>
+      <text x="157" y="90" text-anchor="middle">Conv</text><text x="157" y="104" text-anchor="middle" font-size="11">+ReLU</text><text x="155" y="145" text-anchor="middle" font-size="11">28×28×6</text>
+      <g fill="#fff3e0" stroke="#e46c00"><rect x="220" y="55" width="40" height="50"/><rect x="225" y="60" width="40" height="50"/></g>
+      <text x="245" y="88" text-anchor="middle">Pool</text><text x="243" y="128" text-anchor="middle" font-size="11">14×14×6</text>
+      <g fill="#e8efff" stroke="#2457c5"><rect x="300" y="52" width="40" height="56"/><rect x="306" y="58" width="40" height="56"/></g>
+      <text x="326" y="90" text-anchor="middle">Conv</text>
+      <g fill="#fff3e0" stroke="#e46c00"><rect x="380" y="65" width="28" height="34"/></g><text x="394" y="86" text-anchor="middle" font-size="11">Pool</text>
+      <rect x="440" y="20" width="18" height="120" fill="#f6edfb" stroke="#6a1b9a"/><text x="449" y="155" text-anchor="middle" font-size="11">Flatten</text>
+      <g fill="#f6edfb" stroke="#6a1b9a"><circle cx="500" cy="45" r="9"/><circle cx="500" cy="70" r="9"/><circle cx="500" cy="95" r="9"/><circle cx="500" cy="120" r="9"/></g>
+      <text x="500" y="155" text-anchor="middle" font-size="11">FC</text>
+      <rect x="545" y="50" width="75" height="60" rx="8" fill="#fdecea" stroke="#c62828"/><text x="582" y="76" text-anchor="middle">Softmax</text><text x="582" y="94" text-anchor="middle" font-size="11">cat 0.9</text>
+      <g stroke="#1b1f24" stroke-width="1.5" marker-end="url(#a1)">
+        <line x1="82" y1="75" x2="112" y2="75"/><line x1="190" y1="80" x2="217" y2="80"/><line x1="268" y1="82" x2="297" y2="82"/><line x1="348" y1="84" x2="377" y2="84"/><line x1="410" y1="82" x2="437" y2="82"/><line x1="460" y1="80" x2="488" y2="80"/><line x1="510" y1="80" x2="542" y2="80"/>
+      </g>
+      <text x="230" y="15" text-anchor="middle" fill="#2457c5" font-weight="bold">Feature extraction</text>
+      <text x="530" y="15" text-anchor="middle" fill="#6a1b9a" font-weight="bold">Classification</text>
+    </svg>
+    <figcaption>CNN pipeline: Input → [Conv + ReLU → Pool] × N → Flatten → FC → Softmax. (Self-drawn, easy to copy in the exam.)</figcaption>
+  </figure>
+  <figure><img src="https://upload.wikimedia.org/wikipedia/commons/6/63/Typical_cnn.png" alt="Typical CNN">
+    <figcaption>Typical CNN: convolutions → subsampling → convolutions → subsampling → fully connected. Source: Wikimedia Commons</figcaption></figure>
+
+  <div class="blk ans"><span class="lbl">🧮 Solved numerical 1: convolution (4×4 input, 3×3 filter, stride 1, no padding)</span>
+    <pre>Input I (4×4)          Filter K (3×3, vertical-edge)
+3 1 0 2                1  0 −1
+2 0 1 1                1  0 −1
+1 3 2 0                1  0 −1
+0 1 1 4
+
+Output size = (4 − 3 + 0)/1 + 1 = 2   →  2×2 feature map
+
+O(1,1): top-left 3×3 patch  [3 1 0; 2 0 1; 1 3 2]
+  = 3·1 + 1·0 + 0·(−1) + 2·1 + 0·0 + 1·(−1) + 1·1 + 3·0 + 2·(−1)
+  = 3 + 0 + 0 + 2 + 0 − 1 + 1 + 0 − 2 = 3
+O(1,2): patch [1 0 2; 0 1 1; 3 2 0]  = (1+0+3) − (2+1+0) = 4 − 3 = 1
+O(2,1): patch [2 0 1; 1 3 2; 0 1 1]  = (2+1+0) − (1+2+1) = 3 − 4 = −1
+O(2,2): patch [0 1 1; 3 2 0; 1 1 4]  = (0+3+1) − (1+0+4) = 4 − 5 = −1
+
+Feature map = | 3   1 |      after ReLU = | 3  1 |
+              | −1 −1 |                   | 0  0 |</pre>
+    <p class="meta">Shortcut for this filter: (sum of left column) − (sum of right column) of each patch. Positive values = bright-to-dark vertical edge.</p>
+  </div>
+  <div class="blk ans"><span class="lbl">🧮 Solved numerical 2: max pooling &amp; average pooling (2×2, stride 2)</span>
+    <pre>Input (4×4)        Max-pool        Avg-pool
+1 3 | 2 1
+4 6 | 5 0          | 6 5 |         | 3.5  2.0  |
+----+----          | 7 8 |         | 3.25 2.75 |
+3 1 | 1 2
+7 2 | 0 8
+max(1,3,4,6)=6  max(2,1,5,0)=5  max(3,1,7,2)=7  max(1,2,0,8)=8
+avg: 14/4=3.5   8/4=2.0         13/4=3.25       11/4=2.75</pre>
+  </div>
+  <div class="figrow">
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/1/19/2D_Convolution_Animation.gif" alt="2D convolution animation">
+      <figcaption>A kernel sliding over the input to produce the output. Source: Wikimedia Commons</figcaption></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Max_pooling.png" alt="Max pooling">
+      <figcaption>Max pooling 2×2 with stride 2. Source: Wikimedia Commons</figcaption></figure>
+  </div>
+
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>CNN ek "magnifying glass" (filter) ko photo ke upar chhote-chhote hisson mein sarkata hai aur har jagah dekhta hai "yahan edge hai? curve hai?". Isse <b>feature map</b> banta hai. ReLU negative values hata deta hai, pooling photo ko chhota karta hai (important cheez rakh ke). Aise kai baar karke last mein FC + softmax bolta hai "yeh 90% billi hai". Filters khud backprop se seekhe jaate hain.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>Recognising a face: the first layers find edges, the middle layers combine them into eyes, nose and lips, and the last layers say "this is Rahul's face". It works like assembling LEGO: small pieces → parts → full model.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>किसी फ़ोटो में बिल्ली पहचाननी है। पहली परतें रेखाएँ (किनारे) ढूँढती हैं, बीच की परतें कान, आँख, मूँछ बनाती हैं, और आख़िरी परत कहती है — "यह बिल्ली है"। जैसे पहेली के छोटे टुकड़े जोड़कर पूरी तस्वीर बनती है।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span>
+    <p>10-mark structure: definition → pipeline diagram → explain each layer (conv, ReLU, pool, FC, softmax) → output-size formula with example → a small convolution numerical → 5–6 CV applications. For 2 marks (2024 A8): "image classification, object detection, face recognition, medical image analysis, self-driving cars."</p>
+  </div>
+</div>
+
+<!-- ===================== Q2 ===================== -->
+<div class="q must" id="q2">
+  <div class="qhead"><span class="qno">Q2</span>
+    <span class="tag must">🔥 MUST DO</span><span class="tag stars">★★★★☆</span>
+    <span class="tag marks">10 marks</span><span class="tag pyq">PYQ 2025 C3</span><span class="tag pyq">7CAI 2025 C3</span></div>
+  <div class="qtitle">Describe the architecture of AlexNet. How did it improve over earlier models? Compare AlexNet and ResNet in terms of design principles and performance on image recognition benchmarks.</div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer — AlexNet</span>
+    <p><b>AlexNet</b> (Krizhevsky, Sutskever &amp; Hinton, 2012) won the <b>ImageNet (ILSVRC) 2012</b> challenge with a top-5 error of <b>15.3%</b>, against 26.2% for the second-best (non-deep) method. It started the deep-learning boom in computer vision. It has <b>8 learned layers: 5 convolutional + 3 fully connected</b>, ~<b>60 million parameters</b>.</p>
+    <table>
+      <tr><th>Layer</th><th>Configuration</th><th>Output size</th></tr>
+      <tr><td>Input</td><td>RGB image</td><td>227 × 227 × 3</td></tr>
+      <tr><td>Conv1</td><td>96 filters 11×11, stride 4, ReLU, LRN</td><td>55 × 55 × 96</td></tr>
+      <tr><td>MaxPool1</td><td>3×3, stride 2 (overlapping)</td><td>27 × 27 × 96</td></tr>
+      <tr><td>Conv2</td><td>256 filters 5×5, pad 2, ReLU, LRN</td><td>27 × 27 × 256</td></tr>
+      <tr><td>MaxPool2</td><td>3×3, stride 2</td><td>13 × 13 × 256</td></tr>
+      <tr><td>Conv3</td><td>384 filters 3×3, pad 1, ReLU</td><td>13 × 13 × 384</td></tr>
+      <tr><td>Conv4</td><td>384 filters 3×3, pad 1, ReLU</td><td>13 × 13 × 384</td></tr>
+      <tr><td>Conv5</td><td>256 filters 3×3, pad 1, ReLU</td><td>13 × 13 × 256</td></tr>
+      <tr><td>MaxPool3</td><td>3×3, stride 2</td><td>6 × 6 × 256 = 9216</td></tr>
+      <tr><td>FC6</td><td>4096 neurons, ReLU, Dropout 0.5</td><td>4096</td></tr>
+      <tr><td>FC7</td><td>4096 neurons, ReLU, Dropout 0.5</td><td>4096</td></tr>
+      <tr><td>FC8</td><td>1000 neurons, Softmax</td><td>1000 classes</td></tr>
+    </table>
+    <p class="meta">Check Conv1: (227 − 11)/4 + 1 = 55 ✔. Pool1: (55 − 3)/2 + 1 = 27 ✔. Pool3: (13 − 3)/2 + 1 = 6 ✔.</p>
+    <h4>How AlexNet improved over earlier models (e.g. LeNet-5)</h4>
+    <ol>
+      <li><b>ReLU activation</b> instead of tanh/sigmoid, which trains ~6× faster and reduces vanishing gradients.</li>
+      <li><b>Dropout (p = 0.5)</b> in FC layers to reduce overfitting.</li>
+      <li><b>Data augmentation:</b> random crops, horizontal flips, PCA colour changes.</li>
+      <li><b>GPU training:</b> split across 2 GTX 580 GPUs, which made a big network practical.</li>
+      <li><b>Overlapping max-pooling</b> (3×3, stride 2) and <b>Local Response Normalisation (LRN)</b>.</li>
+      <li>Much <b>deeper and wider</b> than LeNet (60M vs ~60K parameters) and trained on 1.2M ImageNet images.</li>
+    </ol>
+  </div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer — ResNet &amp; comparison</span>
+    <p><b>ResNet</b> (He et al., Microsoft, 2015) won <b>ILSVRC 2015</b> with a top-5 error of <b>3.57%</b> (ensemble), better than human-level (~5%). Key idea: <b>residual (skip) connections</b>. Instead of learning H(x) directly, a block learns the residual F(x) and adds the input back:</p>
+    <div class="formula">y = F(x, {W}) + x</div>
+    <p>The identity shortcut lets gradients flow straight back, which solves the <b>vanishing gradient</b> and the <b>degradation problem</b> (deeper plain nets got <i>worse</i> training error). This made 152-layer networks trainable.</p>
+    <table>
+      <tr><th>Point</th><th>AlexNet (2012)</th><th>ResNet (2015)</th></tr>
+      <tr><td>Depth</td><td>8 layers (5 conv + 3 FC)</td><td>18 / 34 / 50 / 101 / 152 layers</td></tr>
+      <tr><td>Core design idea</td><td>Big conv filters + ReLU + dropout, scaled up with GPUs</td><td>Residual blocks with skip connections y = F(x) + x</td></tr>
+      <tr><td>Filter sizes</td><td>11×11, 5×5, 3×3</td><td>Mostly 3×3; bottleneck 1×1 → 3×3 → 1×1 (ResNet-50+)</td></tr>
+      <tr><td>Normalisation</td><td>Local Response Normalisation</td><td>Batch Normalisation after every conv</td></tr>
+      <tr><td>Regularisation</td><td>Dropout in FC layers, data augmentation</td><td>Batch-norm + weight decay, no dropout</td></tr>
+      <tr><td>Classifier head</td><td>3 huge FC layers (most of the 60M params)</td><td>Global average pooling + 1 FC layer</td></tr>
+      <tr><td>Parameters</td><td>~60 M</td><td>~11.7 M (ResNet-18), ~25.6 M (ResNet-50), ~60 M (ResNet-152)</td></tr>
+      <tr><td>Vanishing gradient</td><td>Reduced by ReLU, but can't go very deep</td><td>Solved by identity shortcuts</td></tr>
+      <tr><td>ImageNet top-5 error</td><td>15.3% (winner 2012)</td><td>3.57% (winner 2015)</td></tr>
+      <tr><td>Use today</td><td>Historical milestone, teaching</td><td>Standard backbone for detection, segmentation, transfer learning</td></tr>
+    </table>
+  </div>
+
+  <div class="figrow">
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Comparison_image_neural_networks.svg" alt="LeNet vs AlexNet">
+      <figcaption>LeNet vs AlexNet architecture comparison. Source: Wikimedia Commons</figcaption></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/ResBlock.png" alt="Residual block">
+      <figcaption>A residual block with a skip connection. Source: Wikimedia Commons</figcaption></figure>
+  </div>
+  <figure>
+    <svg viewBox="0 0 420 250" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="13">
+      <defs><marker id="a2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1b1f24"/></marker>
+      <marker id="a2r" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#c62828"/></marker></defs>
+      <text x="150" y="20" text-anchor="middle" font-weight="bold">x</text>
+      <line x1="150" y1="26" x2="150" y2="48" stroke="#1b1f24" stroke-width="1.5" marker-end="url(#a2)"/>
+      <rect x="90" y="50" width="120" height="34" rx="6" fill="#e8efff" stroke="#2457c5"/><text x="150" y="72" text-anchor="middle">3×3 Conv + BN</text>
+      <line x1="150" y1="84" x2="150" y2="98" stroke="#1b1f24" stroke-width="1.5" marker-end="url(#a2)"/>
+      <rect x="110" y="100" width="80" height="26" rx="6" fill="#fff3e0" stroke="#e46c00"/><text x="150" y="118" text-anchor="middle">ReLU</text>
+      <line x1="150" y1="126" x2="150" y2="140" stroke="#1b1f24" stroke-width="1.5" marker-end="url(#a2)"/>
+      <rect x="90" y="142" width="120" height="34" rx="6" fill="#e8efff" stroke="#2457c5"/><text x="150" y="164" text-anchor="middle">3×3 Conv + BN</text>
+      <line x1="150" y1="176" x2="150" y2="190" stroke="#1b1f24" stroke-width="1.5" marker-end="url(#a2)"/>
+      <circle cx="150" cy="203" r="13" fill="#fdecea" stroke="#c62828"/><text x="150" y="208" text-anchor="middle" font-size="16">+</text>
+      <path d="M150,34 L290,34 L290,203 L166,203" fill="none" stroke="#c62828" stroke-width="2" marker-end="url(#a2r)"/>
+      <text x="300" y="120" fill="#c62828">identity</text><text x="300" y="136" fill="#c62828">shortcut x</text>
+      <text x="40" y="120" fill="#2457c5">F(x)</text>
+      <line x1="150" y1="216" x2="150" y2="232" stroke="#1b1f24" stroke-width="1.5" marker-end="url(#a2)"/>
+      <text x="150" y="247" text-anchor="middle" font-weight="bold">ReLU( F(x) + x )</text>
+    </svg>
+    <figcaption>Residual block (self-drawn, copy this in the exam): the input skips two layers and is added to their output.</figcaption>
+  </figure>
+
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p><b>AlexNet</b> = 2012 ka "game changer". 8 layer, ReLU, dropout, GPU, data augmentation — inhi tricks se error 26% se seedha 15% pe aa gaya. <b>ResNet</b> = bahut gehri network (152 layers) banane ki problem solve ki. Gehri network mein gradient peeche pahunchte-pahunchte mar jaata tha. ResNet ne "shortcut" (flyover) bana diya: y = F(x) + x, toh gradient seedha peeche chala jaata hai. Result: error sirf 3.57%.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>AlexNet is like the first smartphone that proved touch screens work. ResNet is like adding a highway bypass to a city: traffic (gradient) no longer gets stuck in 150 signals, it can take the direct road (skip connection) whenever it needs to.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>ResNet की स्किप कनेक्शन एक फ्लाईओवर की तरह है — शहर (गहरी नेटवर्क) के 150 सिग्नल पार किए बिना सीधा पहुँच जाओ। इससे ग्रेडिएंट बीच में "थक कर ख़त्म" नहीं होता और बहुत गहरी नेटवर्क भी सीख पाती है।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span>
+    <p>For the comparison, the <b>table is the answer</b>. Add the residual-block diagram and the formula y = F(x) + x. Always quote the benchmark numbers: AlexNet 15.3% top-5 (2012), ResNet 3.57% (2015). For "AlexNet alone" (7CAI C3), give the layer table + the 6 improvements.</p>
+  </div>
+</div>
+
+<!-- ===================== Q3 ===================== -->
+<div class="q must" id="q3">
+  <div class="qhead"><span class="qno">Q3</span>
+    <span class="tag must">🔥 MUST DO</span><span class="tag stars">★★☆☆☆</span>
+    <span class="tag marks">2 / 4 marks</span><span class="tag pyq">PYQ 2025 A7</span><span class="tag pyq">7CAI 2025 A4</span></div>
+  <div class="qtitle">What is parameter sharing in CNNs? What is its purpose?</div>
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p><b>Parameter sharing</b> means the <b>same filter (same set of weights and bias)</b> is used at every position of the input image. One 3×3 filter has only 9 weights + 1 bias, however large the image is.</p>
+    <h4>Purpose / benefits</h4>
+    <ul>
+      <li><b>Huge reduction in parameters</b> → less memory, faster training, less overfitting.</li>
+      <li><b>Translation equivariance:</b> a feature (e.g. an edge) is detected wherever it appears in the image.</li>
+      <li>Works for <b>any image size</b>, since the filter just slides further.</li>
+      <li>Based on the assumption that a feature useful in one place is useful everywhere.</li>
+    </ul>
+  </div>
+  <div class="blk ans"><span class="lbl">🧮 Numerical: FC layer vs conv layer</span>
+    <pre>Input: 32×32×3 image = 3072 values.   Output wanted: 28×28×6 = 4704 values.
+
+Fully connected:   3072 × 4704 weights + 4704 biases
+                 = 14,450,688 + 4,704 = 14,455,392  (≈ 14.5 million)
+
+Convolution (6 filters of 5×5×3, stride 1, no padding → 28×28×6):
+                   6 × (5×5×3) + 6 biases = 6 × 75 + 6 = 456 parameters
+
+Saving: 14.5 million → 456  (about 31,700× fewer!)</pre>
+  </div>
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>Ek hi "chashma" (filter) poori photo pe use hota hai, har jagah naya chashma nahi banana padta. Isliye parameters bahut kam ho jaate hain aur edge kahin bhi ho, wahi filter usko pakad leta hai.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>A security guard uses the same "suspicious person" checklist at every gate of a mall. He doesn't need a new checklist for each gate, and a suspicious person is caught at any gate.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>एक ही मोहर (stamp) से पूरी किताब के हर पन्ने पर निशान लगाना — हर पन्ने के लिए नई मोहर नहीं बनानी पड़ती। CNN में फ़िल्टर वही मोहर है।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span><p>2-mark answer: "Using the same filter weights across all spatial positions; it reduces parameters drastically and makes feature detection translation-equivariant." Add the 14.5M vs 456 numbers if it's for 4 marks.</p></div>
+</div>
+
+<!-- ===================== Q4 ===================== -->
+<div class="q must" id="q4">
+  <div class="qhead"><span class="qno">Q4</span>
+    <span class="tag must">🔥 MUST DO</span><span class="tag stars">★★★☆☆</span>
+    <span class="tag marks">2 / 4 marks</span><span class="tag pyq">PYQ 2025 B6</span><span class="tag pyq">7CAI 2025 B3, A10</span></div>
+  <div class="qtitle">What is the purpose of regularization in CNNs? Explain how dropout prevents overfitting, with an example. Discuss other techniques.</div>
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p><b>Regularization</b> is any technique that reduces <b>overfitting</b> (high training accuracy, low test accuracy), so the model <b>generalises</b> to unseen data. CNNs have millions of parameters, so they overfit easily.</p>
+    <h4>1. Dropout</h4>
+    <p>During training, each neuron is <b>randomly switched off</b> with probability p (usually 0.5 in FC layers, 0.1–0.3 in conv layers) in every iteration. At test time all neurons are used.</p>
+    <ul>
+      <li>Neurons can't rely on specific other neurons (<b>prevents co-adaptation</b>), so each learns robust features.</li>
+      <li>It's like training an <b>ensemble</b> of many thinner networks and averaging them.</li>
+      <li><b>Inverted dropout:</b> surviving activations are scaled by 1/(1 − p) during training, so nothing changes at test time.</li>
+    </ul>
+    <pre>Example (p = 0.5):  hidden activations   a    = [2, 4, 6, 8]
+                    random mask           m    = [1, 0, 1, 0]
+                    a × m                      = [2, 0, 6, 0]
+                    scale 1/(1 − 0.5) = 2  →   [4, 0, 12, 0]   (training)
+Test time: use all neurons [2, 4, 6, 8], no mask, no scaling.</pre>
+    <h4>2. Other techniques</h4>
+    <ul>
+      <li><b>L2 regularization / weight decay:</b> L = L₀ + λ Σ w². Penalises big weights → smoother model. (L1: λ Σ |w| → sparse weights.)</li>
+      <li><b>Data augmentation:</b> flips, rotations, crops, zoom, colour jitter create more training images (very effective for CNNs).</li>
+      <li><b>Batch normalization:</b> normalises layer inputs per mini-batch; stabilises training and has a mild regularising effect.</li>
+      <li><b>Early stopping:</b> stop training when validation loss starts rising.</li>
+      <li><b>Pooling / global average pooling</b> and parameter sharing reduce the number of parameters.</li>
+    </ul>
+  </div>
+  <figure>
+    <svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <g stroke="#9aa5b4">
+        <line x1="40" y1="50" x2="130" y2="40"/><line x1="40" y1="50" x2="130" y2="85"/><line x1="40" y1="50" x2="130" y2="130"/><line x1="40" y1="50" x2="130" y2="175"/>
+        <line x1="40" y1="150" x2="130" y2="40"/><line x1="40" y1="150" x2="130" y2="85"/><line x1="40" y1="150" x2="130" y2="130"/><line x1="40" y1="150" x2="130" y2="175"/>
+        <line x1="130" y1="40" x2="220" y2="100"/><line x1="130" y1="85" x2="220" y2="100"/><line x1="130" y1="130" x2="220" y2="100"/><line x1="130" y1="175" x2="220" y2="100"/>
+      </g>
+      <g fill="#e8efff" stroke="#2457c5"><circle cx="40" cy="50" r="13"/><circle cx="40" cy="150" r="13"/><circle cx="130" cy="40" r="13"/><circle cx="130" cy="85" r="13"/><circle cx="130" cy="130" r="13"/><circle cx="130" cy="175" r="13"/><circle cx="220" cy="100" r="13"/></g>
+      <text x="130" y="15" text-anchor="middle" font-weight="bold">(a) Standard network</text>
+      <g stroke="#9aa5b4">
+        <line x1="340" y1="50" x2="430" y2="40"/><line x1="340" y1="50" x2="430" y2="130"/>
+        <line x1="340" y1="150" x2="430" y2="40"/><line x1="340" y1="150" x2="430" y2="130"/>
+        <line x1="430" y1="40" x2="520" y2="100"/><line x1="430" y1="130" x2="520" y2="100"/>
+      </g>
+      <g fill="#e8efff" stroke="#2457c5"><circle cx="340" cy="50" r="13"/><circle cx="340" cy="150" r="13"/><circle cx="430" cy="40" r="13"/><circle cx="430" cy="130" r="13"/><circle cx="520" cy="100" r="13"/></g>
+      <g fill="#eeeeee" stroke="#c62828" stroke-dasharray="3,2"><circle cx="430" cy="85" r="13"/><circle cx="430" cy="175" r="13"/></g>
+      <g stroke="#c62828" stroke-width="2"><line x1="422" y1="77" x2="438" y2="93"/><line x1="438" y1="77" x2="422" y2="93"/><line x1="422" y1="167" x2="438" y2="183"/><line x1="438" y1="167" x2="422" y2="183"/></g>
+      <text x="430" y="15" text-anchor="middle" font-weight="bold">(b) After dropout (p = 0.5)</text>
+    </svg>
+    <figcaption>Dropout randomly removes neurons (✕) and their connections in each training step. (Self-drawn.)</figcaption>
+  </figure>
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>Overfitting = model ne ratta maar liya. Dropout = har practice mein team ke aadhe players ko random bench pe bitha do, taaki koi ek player pe depend na rahe, sab khud strong bane. Match (test) ke din sab khelte hain. Saath mein: L2 (bade weights pe penalty), data augmentation (photo ghuma/palat ke naya data), batch-norm, early stopping.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>A study group where the topper is randomly absent on some days. The others are forced to learn on their own, so in the exam (where nobody can help) everyone performs well.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>क्रिकेट कोच हर अभ्यास में कुछ खिलाड़ियों को बिना बताए बाहर बैठा देता है, ताकि बाकी सब हर भूमिका निभाना सीखें और टीम किसी एक स्टार पर निर्भर न रहे। मैच वाले दिन सब खेलते हैं — यही ड्रॉपआउट है।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span><p>Draw the before/after dropout diagram and give the [2,4,6,8] example. For 7CAI A10 (2 marks), "Dropout" or "Data augmentation" with one line is enough.</p></div>
+</div>
+
+<!-- ===================== Q5 ===================== -->
+<div class="q high" id="q5">
+  <div class="qhead"><span class="qno">Q5</span>
+    <span class="tag high">⭐ HIGH</span><span class="tag stars">★★☆☆☆</span>
+    <span class="tag marks">4 marks</span></div>
+  <div class="qtitle">What is the motivation behind Convolutional Neural Networks? Why not use a normal MLP for images?</div>
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p>An MLP on a 224×224×3 image has 150,528 inputs; one hidden layer of 1000 neurons already needs ~150 million weights. It also ignores the 2-D structure (pixels next to each other are related). CNNs are motivated by three ideas (Goodfellow):</p>
+    <ol>
+      <li><b>Sparse interactions (local connectivity):</b> each output neuron looks only at a small patch (receptive field, e.g. 3×3), not the whole image. Fewer weights and computations.</li>
+      <li><b>Parameter sharing:</b> the same filter is reused at all locations, so there are far fewer parameters.</li>
+      <li><b>Equivariance to translation:</b> if the object shifts in the input, its feature shifts the same way in the feature map. With pooling we also get small <b>translation invariance</b>.</li>
+    </ol>
+    <p>Other motivations: <b>preserves spatial structure</b>, learns a <b>hierarchy of features</b> automatically (no hand-crafted features), <b>scales</b> to large images, and gives state-of-the-art <b>performance</b>. It is also inspired by the visual cortex (Hubel &amp; Wiesel's receptive fields).</p>
+  </div>
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>MLP ko photo do toh woh saare pixels ek lambi line mein kar deta hai, "kaun kiske paas hai" bhool jaata hai, aur crore weights ban jaate hain. CNN chhote patch dekhta hai (local), ek hi filter reuse karta hai (sharing), aur object kahin bhi ho pehchaan leta hai (translation).</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>To read a newspaper you look at a few words at a time (local), use the same reading skill on every line (sharing), and recognise the word "India" whether it's at the top or bottom (translation).</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>अख़बार पढ़ते समय हम एक बार में कुछ ही शब्द देखते हैं (स्थानीय), हर लाइन पर वही पढ़ने का तरीका इस्तेमाल करते हैं (साझा), और "भारत" शब्द पन्ने में कहीं भी हो, पहचान लेते हैं (स्थान से स्वतंत्र)।</p>
+  </div>
+</div>
+
+<!-- ===================== Q6 ===================== -->
+<div class="q high" id="q6">
+  <div class="qhead"><span class="qno">Q6</span>
+    <span class="tag high">⭐ HIGH</span><span class="tag stars">★★★☆☆</span>
+    <span class="tag marks">2 / 4 marks</span></div>
+  <div class="qtitle">Explain the layers of a CNN and the role of filters, padding, stride and pooling.</div>
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <ul>
+      <li><b>Filter / kernel:</b> a small learnable weight matrix (3×3, 5×5) with the same depth as the input. Each filter detects one pattern, and its output is one <b>feature map</b> (activation map). K filters → K feature maps.</li>
+      <li><b>Convolution layer:</b> slides the filters over the input and computes dot products. Parameters = K × (f × f × C + 1).</li>
+      <li><b>Stride (s):</b> step size of the slide. s = 2 roughly halves the output size.</li>
+      <li><b>Padding (p):</b> adds zeros around the border. "Valid" = no padding (output shrinks). "Same" = p = (f − 1)/2 keeps the size and keeps edge information.</li>
+      <li><b>Activation layer:</b> ReLU after each convolution.</li>
+      <li><b>Pooling layer:</b> <b>max pooling</b> (takes the largest value; keeps the strongest feature) or <b>average pooling</b> (takes the mean). It has no learnable parameters and reduces size and overfitting.</li>
+      <li><b>Fully-connected layer:</b> flattens the maps and does the classification; <b>softmax</b> output.</li>
+    </ul>
+    <h4>Example filters</h4>
+    <pre>Vertical edge        Horizontal edge      Sharpen
+ 1  0 −1              1  1  1              0 −1  0
+ 1  0 −1              0  0  0             −1  5 −1
+ 1  0 −1             −1 −1 −1              0 −1  0</pre>
+    <p>Example: input 7×7, filter 3×3, s = 2, p = 0 → (7 − 3)/2 + 1 = <b>3×3</b>. Parameters for 10 filters of 3×3 on an RGB input = 10 × (3×3×3 + 1) = <b>280</b>.</p>
+  </div>
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>Filter = chhota "pattern detector". Stride = kitne kadam kood ke aage badhna. Padding = photo ke kinaare zero ki frame lagana taaki size kam na ho aur kinaare ki info na khoye. Pooling = har 2×2 dabbe mein se sabse bada number (max) rakh lo, photo chhoti ho jaati hai.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>Scanning a page with a small magnifying glass (filter). Moving it 1 cm or 2 cm at a time is the stride. Putting a blank margin around the page so you can also scan the edges is padding. Writing only the most important word from each paragraph is max pooling.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>छोटे आवर्धक काँच (फ़िल्टर) से पन्ना पढ़ना। काँच को एक बार में कितना खिसकाते हैं = स्ट्राइड। पन्ने के चारों ओर खाली जगह जोड़ना = पैडिंग। हर पैराग्राफ़ से सिर्फ़ सबसे ज़रूरी शब्द लिखना = मैक्स पूलिंग।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span><p>Always pair a definition with the output-size formula ⌊(n − f + 2p)/s⌋ + 1 and one quick calculation. Examiners love it.</p></div>
+</div>
+
+<!-- ===================== QUICK ===================== -->
+<h2 id="quick">⚡ Part-A quick answers (2 marks, ~25 words each)</h2>
+<ol class="quick">
+  <li><b>Purpose of parameter sharing in CNNs?</b> The same filter weights are used at all positions, which drastically reduces parameters and detects a feature wherever it appears (translation equivariance). <span class="tag pyq">2025</span> <span class="tag pyq">7CAI</span></li>
+  <li><b>Applications of CNNs?</b> Image classification, object detection, face recognition, medical image analysis, self-driving cars, OCR. <span class="tag pyq">2024</span></li>
+  <li><b>One major use of DL in computer vision?</b> Object detection, e.g. pedestrian and traffic-sign detection in self-driving cars using CNNs like YOLO. <span class="tag pyq">7CAI</span></li>
+  <li><b>One regularization technique in CNNs?</b> Dropout: randomly drops neurons with probability p during training to prevent co-adaptation and overfitting. (Also data augmentation, L2.) <span class="tag pyq">7CAI</span></li>
+  <li><b>What is a filter/kernel?</b> A small learnable weight matrix that slides over the input and produces a feature map that detects a specific pattern such as an edge.</li>
+  <li><b>Pooling?</b> A down-sampling operation (max or average over a window) that reduces the spatial size, computation and overfitting. It has no learnable parameters.</li>
+  <li><b>Stride and padding?</b> Stride = step of the filter movement; padding = zeros added at the borders to control the output size and keep edge information.</li>
+  <li><b>Output size formula?</b> ⌊(n − f + 2p)/s⌋ + 1. E.g. 32, 5, 0, 1 → 28.</li>
+  <li><b>Feature map?</b> The output of one filter applied over the whole input, showing where that feature appears.</li>
+  <li><b>Skip connection (ResNet)?</b> A shortcut that adds the block input to its output, y = F(x) + x, so gradients flow easily and very deep nets can train.</li>
+  <li><b>Why ReLU in AlexNet?</b> Non-saturating, so it trains ~6× faster than tanh and reduces the vanishing gradient.</li>
+  <li><b>Receptive field?</b> The region of the input image that affects one neuron's output; it grows with depth.</li>
+</ol>
+
+<div class="footer"><a href="pdf/unit3.pdf">⬇ Download this page as PDF</a> · <a href="quiz.html">Test yourself with the quiz →</a><br>Diagram credits: images marked "Wikimedia Commons" are hot-linked from commons.wikimedia.org under their respective free licences; the others are self-drawn SVGs. Prepared from the RTU 8AID4-01 syllabus, your class notes, the RTU 8AID4-01 papers (2024 Part A, April/May 2025) and the RTU 7CAI4-01 Nov-Dec 2025 paper.</div>
+</div></body></html>

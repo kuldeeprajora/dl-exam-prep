@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unit 5 – Autoencoders</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body><nav class="topnav"><div class="navin">
+<a href="index.html" class="brand">🧠 DL Prep</a>
+<a href="plan.html" data-p="plan">PYQ &amp; Plan</a><a href="quick.html" data-p="quick">⚡ Quick Revision</a>
+<a href="unit1.html" data-p="unit1">Unit 1</a><a href="unit2.html" data-p="unit2">Unit 2</a><a href="unit3.html" data-p="unit3">Unit 3</a><a href="unit4.html" data-p="unit4">Unit 4</a><a href="unit5.html" data-p="unit5" class="active">Unit 5</a>
+<a href="quiz.html" data-p="quiz" class="quizlink">📝 Quiz</a></div></nav><div class="wrap">
+
+<div class="banner">
+  <h1>Unit 5 — Autoencoders</h1>
+  <p>RTU 8AID4-01 · Deep Learning and Its Applications · Syllabus item 6 (7 hrs)</p>
+  <p>Undercomplete autoencoder · Regularized autoencoder · Stochastic encoders &amp; decoders · Contractive autoencoder · Applications (anomaly detection, dimensionality reduction)</p>
+</div>
+
+<div class="box">
+  <b>How to read the tags:</b>
+  <span class="tag must">🔥 MUST DO</span> asked in PYQ / almost sure to come ·
+  <span class="tag high">⭐ HIGH</span> strong chance ·
+  <span class="tag med">✔ MEDIUM</span> do if time allows ·
+  <span class="tag stars">★★★☆☆</span> difficulty (1 = very easy, 5 = tough) ·
+  <span class="tag pyq">PYQ 2025</span> asked in a previous paper.
+  <p class="meta">Each answer has: 📝 exam answer (write this) → 💜 Hinglish samjho → 🟢 easy English example → 🌸 Hindi example → diagram → exam tip.</p>
+</div>
+
+<div class="box">
+  <b>Unit 5 weight in past papers:</b> autoencoders came up in <b>all 3 papers</b> we found.
+  <ul>
+    <li><b>8AID4-01 2025:</b> A10 (regularized vs stochastic), B7 (design an AE for dimensionality reduction), C5 (types + anomaly detection). That's about <b>16 marks</b> on offer.</li>
+    <li><b>8AID4-01 2024 (Part A only seen):</b> A10 (applications of autoencoders).</li>
+    <li><b>7CAI4-01 Nov-Dec 2025:</b> A3 (application), A7 (purpose of regularized AE), B5 (undercomplete vs regularized), C5 (undercomplete AE and the identity function).</li>
+  </ul>
+  The unit is short (about 4 core ideas), so it is very scoring. <b>Do Q1–Q4 for sure.</b> One encoder–decoder hourglass diagram works for every question.
+</div>
+
+<div class="box toc">
+<b>Questions in this unit (priority order)</b>
+<ol>
+  <li><a href="#q1">Autoencoders: types + anomaly detection</a></li>
+  <li><a href="#q2">Undercomplete AE &amp; the identity function</a></li>
+  <li><a href="#q3">Regularized autoencoders (sparse, denoising)</a></li>
+  <li><a href="#q4">Design an AE for dimensionality reduction</a></li>
+  <li><a href="#q5">Stochastic encoders &amp; decoders (VAE link)</a></li>
+  <li><a href="#q6">Contractive autoencoder</a></li>
+  <li><a href="#quick">Part-A 2-mark quick answers</a></li>
+</ol>
+</div>
+
+<!-- ===================== Q1 ===================== -->
+<div class="q must" id="q1">
+  <div class="qhead"><span class="qno">Q1</span>
+    <span class="tag must">🔥 MUST DO</span><span class="tag stars">★★★☆☆</span>
+    <span class="tag marks">2 / 10 marks</span><span class="tag pyq">PYQ 2025 C5</span><span class="tag pyq">PYQ 2024 A10</span><span class="tag pyq">7CAI 2025 A3</span></div>
+  <div class="qtitle">Discuss Autoencoders, their types and their applications in anomaly detection with examples.</div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p><b>Definition:</b> An autoencoder (AE) is an <b>unsupervised</b> neural network trained to <b>copy its input to its output</b> through a narrow or constrained hidden layer. Because it can't simply copy, it is forced to learn the most important features of the data. The input itself acts as the label (self-supervised).</p>
+    <h4>Architecture (3 parts)</h4>
+    <ul>
+      <li><b>Encoder</b> compresses the input into a code: <span class="mono">h = f(x) = σ(W x + b)</span></li>
+      <li><b>Code / latent / bottleneck layer h</b> holds the compressed representation.</li>
+      <li><b>Decoder</b> rebuilds the input from the code: <span class="mono">r = g(h) = σ(W′ h + b′)</span></li>
+    </ul>
+    <div class="formula">Training objective: minimise L(x, g(f(x))), e.g. MSE = ‖x − r‖²  (or binary cross-entropy for 0–1 pixels)</div>
+    <p>It is trained with backpropagation + gradient descent, just like an MLP, except the target is x itself.</p>
+    <h4>Types of autoencoders</h4>
+    <table>
+      <tr><th>Type</th><th>Key idea</th><th>Use</th></tr>
+      <tr><td>Undercomplete</td><td>Code dim &lt; input dim (bottleneck)</td><td>Compression, dimensionality reduction</td></tr>
+      <tr><td>Sparse</td><td>Penalty makes most hidden units ≈ 0</td><td>Feature learning</td></tr>
+      <tr><td>Denoising (DAE)</td><td>Input noisy x̃, target clean x</td><td>Image/audio denoising</td></tr>
+      <tr><td>Contractive (CAE)</td><td>Penalise ‖∂h/∂x‖², robust to small changes</td><td>Robust features</td></tr>
+      <tr><td>Variational / Stochastic (VAE)</td><td>Encoder outputs a distribution (μ, σ), then we sample</td><td>Generating new data</td></tr>
+      <tr><td>Convolutional</td><td>Conv layers in encoder, deconv in decoder</td><td>Images</td></tr>
+    </table>
+    <h4>Application: anomaly detection</h4>
+    <p><b>Idea:</b> an AE trained <b>only on normal data</b> reconstructs normal samples well (low error) but reconstructs unusual samples badly (<b>high reconstruction error</b>).</p>
+    <ol>
+      <li>Collect normal data only (e.g. genuine transactions, healthy machine readings).</li>
+      <li>Train the AE to reconstruct it (minimise MSE).</li>
+      <li>Compute the reconstruction error on normal validation data and set a <b>threshold</b>: e.g. <b>mean + 3σ</b>, or the <b>95th/99th percentile</b>.</li>
+      <li>For a new sample: error = ‖x − r‖². If error &gt; threshold, flag it as an <b>anomaly</b>.</li>
+    </ol>
+    <pre>Machine-sensor example (numbers)
+Normal-data reconstruction errors: mean μ = 0.02, std σ = 0.01
+Threshold = μ + 3σ = 0.02 + 0.03 = 0.05
+
+New reading A: error = 0.03  → 0.03 &lt; 0.05 → NORMAL ✔
+New reading B: error = 0.18  → 0.18 &gt; 0.05 → ANOMALY ⚠ (bearing fault?)
+
+Credit-card fraud: AE trained on genuine transactions (amount, time, location…).
+A ₹95,000 purchase at 3 AM in another country → reconstruction error 0.40 ≫ 0.05 → FRAUD alert.</pre>
+    <p><b>Why it works:</b> it needs no labelled fraud examples (fraud is rare), it learns "what normal looks like", and it handles high-dimensional data.</p>
+    <h4>Other applications</h4>
+    <ul><li>Dimensionality reduction / compression</li><li>Image denoising</li><li>Feature extraction / pre-training</li><li>Generating new images (VAE)</li><li>Recommendation systems, missing-value imputation</li></ul>
+  </div>
+
+  <div class="figrow">
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/2/28/Autoencoder_structure.png" alt="Autoencoder structure">
+      <figcaption>Autoencoder structure: encoder → code → decoder. Source: Wikimedia Commons</figcaption></figure>
+    <figure>
+      <svg viewBox="0 0 360 210" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+        <line x1="40" y1="180" x2="340" y2="180" stroke="#1b1f24"/>
+        <line x1="40" y1="180" x2="40" y2="20" stroke="#1b1f24"/>
+        <g fill="#b9d8bb" stroke="#2e7d32">
+          <rect x="50" y="140" width="18" height="40"/><rect x="70" y="90" width="18" height="90"/><rect x="90" y="60" width="18" height="120"/>
+          <rect x="110" y="80" width="18" height="100"/><rect x="130" y="125" width="18" height="55"/><rect x="150" y="160" width="18" height="20"/>
+        </g>
+        <g fill="#f5b7b1" stroke="#c62828">
+          <rect x="260" y="168" width="18" height="12"/><rect x="290" y="160" width="18" height="20"/><rect x="310" y="170" width="18" height="10"/>
+        </g>
+        <line x1="205" y1="25" x2="205" y2="180" stroke="#c62828" stroke-width="2" stroke-dasharray="6 4"/>
+        <text x="210" y="38" fill="#c62828" font-weight="bold">threshold</text>
+        <text x="210" y="53" fill="#c62828">(μ + 3σ)</text>
+        <text x="80" y="35" fill="#2e7d32" font-weight="bold">Normal</text>
+        <text x="80" y="50" fill="#2e7d32">(low error)</text>
+        <text x="265" y="140" fill="#c62828" font-weight="bold">Anomalies</text>
+        <text x="190" y="200" text-anchor="middle">Reconstruction error →</text>
+        <text x="20" y="100" transform="rotate(-90 20 100)" text-anchor="middle">count</text>
+      </svg>
+      <figcaption>Reconstruction-error histogram: anything right of the threshold is an anomaly (self-drawn).</figcaption></figure>
+  </div>
+
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>Autoencoder = "photocopy machine with a small pipe". Encoder data ko chhota (compress) karta hai, decoder wapas bada karke original jaisa banata hai. Pipe patli hai, isliye sirf important cheezein hi guzarti hain. Anomaly detection: machine ko sirf <b>normal</b> data dikhao. Jab kuch ajeeb aata hai, woh usko theek se copy nahi kar paati, error bada aata hai, aur woh case <b>"suspicious"</b> ban jaata hai.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>A teacher who has only ever read your handwriting can rewrite your notes from memory easily. If someone else writes in your notebook, the teacher struggles to reproduce it. That "struggle" (high error) reveals the stranger: anomaly detected.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>दुकानदार रोज़ के ग्राहकों का बिल याद रखता है — दूध, ब्रेड, सब्ज़ी। अचानक कोई रात 3 बजे ₹95,000 का सामान ख़रीदे, तो यह उसकी "सामान्य याद" से मेल नहीं खाता। मेल न खाना (ज़्यादा reconstruction error) = धोखाधड़ी का शक। यही autoencoder से anomaly detection है।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span>
+    <p>For 10 marks: definition → hourglass diagram → h = f(x), r = g(h), loss → types table → anomaly-detection steps + numbers + histogram → other applications. For 2 marks (2024 A10 / 7CAI A3): "dimensionality reduction, image denoising, anomaly/fraud detection, feature learning, image generation (VAE)."</p>
+  </div>
+</div>
+
+<!-- ===================== Q2 ===================== -->
+<div class="q must" id="q2">
+  <div class="qhead"><span class="qno">Q2</span>
+    <span class="tag must">🔥 MUST DO</span><span class="tag stars">★★★☆☆</span>
+    <span class="tag marks">4 / 10 marks</span><span class="tag pyq">7CAI 2025 C5</span></div>
+  <div class="qtitle">What is an Undercomplete Autoencoder? How does it prevent the network from learning an identity function?</div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p><b>Definition:</b> An autoencoder whose code dimension is <b>smaller than</b> the input dimension (dim h &lt; dim x) is called <b>undercomplete</b>. The narrow middle layer is the <b>bottleneck</b>.</p>
+    <p><b>The identity-function problem:</b> if the hidden layer were as large as the input (or larger: <i>overcomplete</i>), the network could just learn g(f(x)) = x by copying each value through. The loss becomes 0, but it learns <b>nothing useful</b>.</p>
+    <h4>How undercomplete AE prevents it</h4>
+    <ol>
+      <li><b>Bottleneck:</b> e.g. 784 pixels must pass through only 32 numbers. Copying 784 values into 32 slots is impossible, so the network must <b>compress</b>.</li>
+      <li>To keep the reconstruction error low, it keeps only the <b>most salient features</b> (shape of the digit, stroke) and drops noise and redundancy.</li>
+      <li>The loss L(x, g(f(x))) drives it to capture the main <b>factors of variation</b>.</li>
+    </ol>
+    <h4>Relation to PCA</h4>
+    <p>If the decoder is <b>linear</b> and the loss is <b>MSE</b>, an undercomplete AE learns the same subspace as <b>PCA</b>. With <b>non-linear</b> encoder/decoder it becomes a more powerful, <b>non-linear generalisation of PCA</b>.</p>
+    <h4>⚠ Caution</h4>
+    <p>If the encoder and decoder have <b>too much capacity</b> (very deep, huge), even a 1-D code can memorise the training set (e.g. map each sample to an index) and copy without learning useful features. So we keep the capacity moderate or add regularisation (Q3).</p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 560 230" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <polygon points="60,20 230,85 230,145 60,210" fill="#e8efff" stroke="#2457c5" stroke-width="1.5"/>
+      <rect x="230" y="85" width="100" height="60" fill="#fff3e0" stroke="#e46c00" stroke-width="1.5"/>
+      <polygon points="330,85 500,20 500,210 330,145" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+      <text x="140" y="120" text-anchor="middle" font-weight="bold">ENCODER</text>
+      <text x="140" y="137" text-anchor="middle">h = f(x)</text>
+      <text x="280" y="112" text-anchor="middle" font-weight="bold">CODE h</text>
+      <text x="280" y="128" text-anchor="middle">(bottleneck)</text>
+      <text x="420" y="120" text-anchor="middle" font-weight="bold">DECODER</text>
+      <text x="420" y="137" text-anchor="middle">r = g(h)</text>
+      <text x="30" y="118" text-anchor="middle" font-size="16" font-weight="bold">x</text>
+      <text x="530" y="118" text-anchor="middle" font-size="16" font-weight="bold">r ≈ x</text>
+      <text x="60" y="228" text-anchor="middle">784</text><text x="280" y="165" text-anchor="middle">32</text><text x="500" y="228" text-anchor="middle">784</text>
+      <text x="280" y="18" text-anchor="middle" fill="#c62828">Loss = ‖x − r‖²</text>
+    </svg>
+    <figcaption>Hourglass autoencoder: a wide input, a narrow code, a wide output. The easiest diagram to draw in the exam (self-drawn).</figcaption>
+  </figure>
+
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>Agar beech ki layer input jitni badi ho, toh network "copy-paste" karke 100% marks le lega par kuch seekhega nahi (identity function). Undercomplete mein beech ki layer chhoti hai: 784 cheezein sirf 32 dabbon mein bharni hain. Isliye usko <b>summary</b> banana seekhna padta hai. Linear + MSE ho toh yeh PCA ban jaata hai.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>Your teacher says "summarise this 10-page chapter in 5 lines". You can't copy it word for word, so you must pick the key points. If you were allowed 10 pages, you would just copy and learn nothing. The 5-line limit is the bottleneck.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>10 पेज का अध्याय सिर्फ़ 5 लाइनों में लिखना है। हूबहू नकल संभव नहीं, इसलिए मुख्य बातें ही चुननी पड़ेंगी। अगर 10 पेज लिखने की छूट होती, तो आप बस नकल कर देते और कुछ नहीं सीखते — यही identity function की समस्या है।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span>
+    <p>Write the key line: "dim(h) &lt; dim(x) forces compression, so the AE cannot copy and learns the salient features." Then add "linear decoder + MSE = PCA" and the capacity caution. That combination scores full marks.</p>
+  </div>
+</div>
+
+<!-- ===================== Q3 ===================== -->
+<div class="q must" id="q3">
+  <div class="qhead"><span class="qno">Q3</span>
+    <span class="tag must">🔥 MUST DO</span><span class="tag stars">★★★☆☆</span>
+    <span class="tag marks">2 / 4 / 10 marks</span><span class="tag pyq">PYQ 2025 A10</span><span class="tag pyq">7CAI 2025 B5</span><span class="tag pyq">7CAI 2025 A7</span></div>
+  <div class="qtitle">What are Regularized Autoencoders? What is their purpose? Differentiate undercomplete vs regularized and regularized vs stochastic autoencoders.</div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p><b>Definition:</b> A regularized autoencoder adds a <b>penalty term Ω</b> to the reconstruction loss. The penalty forces useful properties on the code. It works even when the code is <b>as large as or larger than the input</b> (overcomplete).</p>
+    <div class="formula">L = L(x, g(f(x))) + λ · Ω(h, x)</div>
+    <p><b>Purpose</b> (7CAI A7): to stop the AE from just copying the input (the identity function) and to learn <b>sparse, robust, meaningful features</b> that generalise well, without having to shrink the code size.</p>
+    <h4>Main types</h4>
+    <ol>
+      <li><b>Sparse AE:</b> Ω = λ Σ|hᵢ| (L1) or a KL-divergence penalty KL(ρ ‖ ρ̂ⱼ) pushing the average activation ρ̂ⱼ towards a small ρ (e.g. 0.05). Only a few neurons fire for each input, like specialist "detectors".</li>
+      <li><b>Denoising AE (DAE):</b> corrupt the input x → x̃ (Gaussian noise or randomly zeroed pixels), then train to reconstruct the <b>clean</b> x: minimise L(x, g(f(x̃))). It must learn the structure of the data to remove the noise.</li>
+      <li><b>Contractive AE (CAE):</b> Ω = λ‖∂f(x)/∂x‖²<sub>F</sub>, which makes the code insensitive to small input changes (Q6).</li>
+    </ol>
+    <h4>Undercomplete vs Regularized (7CAI B5)</h4>
+    <table>
+      <tr><th>Point</th><th>Undercomplete AE</th><th>Regularized AE</th></tr>
+      <tr><td>How copying is prevented</td><td>Small bottleneck (dim h &lt; dim x)</td><td>Penalty term in the loss</td></tr>
+      <tr><td>Code size</td><td>Must be smaller than input</td><td>Can be equal or larger (overcomplete)</td></tr>
+      <tr><td>Loss</td><td>L(x, g(f(x)))</td><td>L(x, g(f(x))) + λΩ</td></tr>
+      <tr><td>Examples</td><td>Basic bottleneck AE</td><td>Sparse, Denoising, Contractive</td></tr>
+      <tr><td>Risk</td><td>Too-high capacity can still memorise</td><td>Needs λ tuned</td></tr>
+      <tr><td>Main use</td><td>Compression, dimensionality reduction</td><td>Robust / sparse feature learning, denoising</td></tr>
+    </table>
+    <h4>Regularized vs Stochastic (2025 A10)</h4>
+    <table>
+      <tr><th>Point</th><th>Regularized AE</th><th>Stochastic AE</th></tr>
+      <tr><td>Mapping</td><td>Deterministic: h = f(x)</td><td>Probabilistic: h ~ p<sub>encoder</sub>(h|x)</td></tr>
+      <tr><td>How it learns useful features</td><td>Penalty term Ω (sparsity, noise, Jacobian)</td><td>Noise/sampling inside the model + probabilistic loss</td></tr>
+      <tr><td>Output</td><td>A single reconstruction</td><td>A distribution, so it can generate new samples</td></tr>
+      <tr><td>Loss</td><td>Reconstruction + λΩ</td><td>−log p<sub>decoder</sub>(x|h) (+ KL term in VAE)</td></tr>
+      <tr><td>Example</td><td>Sparse / Denoising / Contractive</td><td>Variational AE (VAE)</td></tr>
+    </table>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 620 150" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <defs><marker id="a5" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1b1f24"/></marker></defs>
+      <rect x="10" y="45" width="80" height="60" rx="8" fill="#e8f5e9" stroke="#2e7d32"/>
+      <text x="50" y="72" text-anchor="middle" font-weight="bold">Clean x</text><text x="50" y="90" text-anchor="middle">😀</text>
+      <rect x="130" y="45" width="90" height="60" rx="8" fill="#fff3e0" stroke="#e46c00"/>
+      <text x="175" y="68" text-anchor="middle">+ noise</text><text x="175" y="86" text-anchor="middle" font-weight="bold">Noisy x̃</text>
+      <polygon points="260,40 340,60 340,90 260,110" fill="#e8efff" stroke="#2457c5"/>
+      <text x="300" y="80" text-anchor="middle">Encoder</text>
+      <rect x="340" y="60" width="40" height="30" fill="#fff" stroke="#5b6470"/><text x="360" y="80" text-anchor="middle">h</text>
+      <polygon points="380,60 460,40 460,110 380,90" fill="#e8efff" stroke="#2457c5"/>
+      <text x="420" y="80" text-anchor="middle">Decoder</text>
+      <rect x="500" y="45" width="100" height="60" rx="8" fill="#e8f5e9" stroke="#2e7d32"/>
+      <text x="550" y="70" text-anchor="middle" font-weight="bold">Output r</text><text x="550" y="88" text-anchor="middle">≈ clean x 😀</text>
+      <line x1="90" y1="75" x2="128" y2="75" stroke="#1b1f24" marker-end="url(#a5)"/>
+      <line x1="220" y1="75" x2="258" y2="75" stroke="#1b1f24" marker-end="url(#a5)"/>
+      <line x1="460" y1="75" x2="498" y2="75" stroke="#1b1f24" marker-end="url(#a5)"/>
+      <path d="M50,105 Q50,140 300,140 T550,107" fill="none" stroke="#c62828" stroke-dasharray="5 4"/>
+      <text x="300" y="134" text-anchor="middle" fill="#c62828">Loss compares r with CLEAN x: L(x, g(f(x̃)))</text>
+    </svg>
+    <figcaption>Denoising autoencoder flow (self-drawn)</figcaption>
+  </figure>
+
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>Undercomplete mein "pipe patli" karke copy rokte hain. Regularized mein pipe badi ho sakti hai, par loss mein ek <b>"saza" (penalty)</b> jod dete hain. Sparse = "kam neurons jalao", Denoising = "gandi photo do, saaf wapas banao", Contractive = "chhote badlaav pe code mat hilao". Stochastic = output fix nahi, ek <b>probability distribution</b> hai, isliye naya data bhi bana sakta hai.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>Denoising: a scratched old photo goes in and a clean photo comes out. To remove the scratches, the network must understand what faces normally look like. Sparse: in a big office, only the 2–3 relevant experts answer each question, not everyone.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>पुरानी खरोंच वाली फ़ोटो डालो और साफ़ फ़ोटो निकालो — यह denoising AE है। खरोंच हटाने के लिए उसे समझना पड़ता है कि चेहरा असल में कैसा दिखता है। Sparse AE: बड़े दफ़्तर में हर सवाल का जवाब सिर्फ़ 2–3 विशेषज्ञ देते हैं, सब नहीं।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span>
+    <p>Both tables are ready-made 4-mark answers. For the 2-mark A10: "Regularized AE is deterministic and adds a penalty (sparsity/noise/Jacobian) to the loss; stochastic AE uses probabilistic encoder/decoder p(h|x), p(x|h) and can generate new data (e.g. VAE)."</p>
+  </div>
+</div>
+
+<!-- ===================== Q4 ===================== -->
+<div class="q must" id="q4">
+  <div class="qhead"><span class="qno">Q4</span>
+    <span class="tag must">🔥 MUST DO</span><span class="tag stars">★★★☆☆</span>
+    <span class="tag marks">4 / 10 marks</span><span class="tag pyq">PYQ 2025 B7</span></div>
+  <div class="qtitle">Design a simple autoencoder for dimensionality reduction and explain its components.</div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p><b>Task:</b> reduce MNIST handwritten-digit images (28×28 = <b>784</b> pixels) to a <b>32-dimensional</b> code, a 24.5× compression.</p>
+    <table>
+      <tr><th>Part</th><th>Layer</th><th>Neurons</th><th>Activation</th><th>Parameters (W + b)</th></tr>
+      <tr><td>Input</td><td>Flattened image</td><td>784</td><td>— (pixels scaled 0–1)</td><td>0</td></tr>
+      <tr><td rowspan="2">Encoder</td><td>Dense 1</td><td>128</td><td>ReLU</td><td>784×128 + 128 = 100,480</td></tr>
+      <tr><td>Dense 2 = <b>Code</b></td><td>32</td><td>ReLU</td><td>128×32 + 32 = 4,128</td></tr>
+      <tr><td rowspan="2">Decoder</td><td>Dense 3</td><td>128</td><td>ReLU</td><td>32×128 + 128 = 4,224</td></tr>
+      <tr><td>Output</td><td>784</td><td>Sigmoid (0–1 pixels)</td><td>128×784 + 784 = 101,136</td></tr>
+      <tr><th colspan="4">Total trainable parameters</th><th>209,968</th></tr>
+    </table>
+    <ul>
+      <li><b>Loss:</b> MSE ‖x − r‖² or binary cross-entropy (pixels in 0–1).</li>
+      <li><b>Optimiser:</b> Adam, learning rate 0.001, batch size 256, about 20–50 epochs.</li>
+      <li><b>Training data:</b> X is both the input and the target (no labels needed).</li>
+    </ul>
+    <h4>Components explained</h4>
+    <ol>
+      <li><b>Encoder</b> (784→128→32) progressively compresses the image and extracts features.</li>
+      <li><b>Bottleneck / code</b> (32) is the reduced representation. <b>This is the output we use for dimensionality reduction.</b></li>
+      <li><b>Decoder</b> (32→128→784) mirrors the encoder and reconstructs the image, which forces the code to keep the important information.</li>
+      <li><b>Loss function</b> measures reconstruction quality; <b>backpropagation + Adam</b> train all the weights.</li>
+    </ol>
+    <p><b>After training:</b> throw away the decoder. Use <span class="mono">encoder(x)</span> to get 32 features for visualisation, clustering or a faster classifier. Advantage over PCA: it captures <b>non-linear</b> structure.</p>
+    <pre># Keras sketch (optional)
+inp = Input(784)
+h   = Dense(128, 'relu')(inp)
+code= Dense(32,  'relu')(h)
+h2  = Dense(128, 'relu')(code)
+out = Dense(784, 'sigmoid')(h2)
+ae  = Model(inp, out); ae.compile('adam', 'mse'); ae.fit(X, X, epochs=30)
+encoder = Model(inp, code)   # dimensionality reducer</pre>
+  </div>
+
+  <figure><img src="https://upload.wikimedia.org/wikipedia/commons/3/37/Autoencoder_schema.png" alt="Autoencoder schema">
+    <figcaption>Autoencoder schema showing input, encoder, code, decoder and output. Source: Wikimedia Commons</figcaption></figure>
+
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>784 pixels ko 32 numbers mein dabaana hai. Encoder 784→128→32 (chhota karta jaata hai), decoder 32→128→784 (wapas bada karta hai). Training mein input hi target hai. Training ke baad decoder hata do; encoder hi tumhara "dimension reducer" hai. Parameters ≈ 2.1 lakh.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>Zipping a file: a 784 KB photo is zipped to 32 KB (encoder) and unzipped back (decoder). If the unzipped photo looks like the original, the zip kept everything important.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>बड़ी फ़ाइल को ZIP करना (encoder) और फिर UNZIP करना (decoder)। अगर खोलने पर फ़ाइल लगभग वैसी ही मिले, तो ZIP ने ज़रूरी जानकारी बचा ली। छोटी ZIP फ़ाइल ही "कम आयाम वाला कोड" है।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span>
+    <p>"Design" means a <b>layer table</b> + loss + optimiser + diagram + a "why" line for each part. The parameter count is a bonus that impresses examiners. Mention that the encoder is symmetric to the decoder.</p>
+  </div>
+</div>
+
+<!-- ===================== Q5 ===================== -->
+<div class="q high" id="q5">
+  <div class="qhead"><span class="qno">Q5</span>
+    <span class="tag high">⭐ HIGH</span><span class="tag stars">★★★★☆</span>
+    <span class="tag marks">4 / 10 marks</span></div>
+  <div class="qtitle">Explain Stochastic Encoders and Decoders. How are they related to the Variational Autoencoder?</div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p>In a normal AE, the encoder and decoder are <b>deterministic</b> functions. In a <b>stochastic AE</b>, they are generalised to <b>probability distributions</b>:</p>
+    <div class="formula">Stochastic encoder: p<sub>encoder</sub>(h | x) = p<sub>model</sub>(h | x)<br>Stochastic decoder: p<sub>decoder</sub>(x | h) = p<sub>model</sub>(x | h)</div>
+    <ul>
+      <li>The decoder outputs the <b>parameters of a distribution</b> over x. For real-valued x it outputs a Gaussian mean (so the loss becomes MSE); for binary x it outputs Bernoulli probabilities via sigmoid (so the loss becomes cross-entropy).</li>
+      <li>Training minimises the <b>negative log-likelihood</b>: <span class="mono">L = −log p<sub>decoder</sub>(x | h)</span>. This links to MLE (Unit 1).</li>
+      <li>Noise is injected in the encoder, so the same x can give slightly different h. This makes the model robust and able to <b>generate</b> data.</li>
+    </ul>
+    <h4>Variational Autoencoder (VAE), the most famous stochastic AE</h4>
+    <ol>
+      <li>The encoder outputs a mean <b>μ</b> and standard deviation <b>σ</b> for each latent dimension, instead of a single point.</li>
+      <li><b>Reparameterisation trick:</b> <span class="mono">z = μ + σ · ε,  ε ~ N(0, 1)</span>. This lets gradients flow through the random sampling.</li>
+      <li>The decoder reconstructs x from z.</li>
+      <li><b>Loss</b> = reconstruction loss + <b>KL( q(z|x) ‖ N(0, I) )</b>. The KL term keeps the latent space smooth and close to a standard normal.</li>
+      <li><b>Generation:</b> sample z ~ N(0, I) and pass it through the decoder to get a brand-new image.</li>
+    </ol>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 600 160" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <defs><marker id="a6" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1b1f24"/></marker></defs>
+      <text x="25" y="85" text-anchor="middle" font-size="16" font-weight="bold">x</text>
+      <polygon points="45,30 150,55 150,105 45,130" fill="#e8efff" stroke="#2457c5"/><text x="97" y="85" text-anchor="middle">Encoder</text>
+      <rect x="185" y="40" width="50" height="28" rx="6" fill="#fff3e0" stroke="#e46c00"/><text x="210" y="59" text-anchor="middle">μ</text>
+      <rect x="185" y="92" width="50" height="28" rx="6" fill="#fff3e0" stroke="#e46c00"/><text x="210" y="111" text-anchor="middle">σ</text>
+      <line x1="150" y1="70" x2="183" y2="55" stroke="#1b1f24" marker-end="url(#a6)"/>
+      <line x1="150" y1="90" x2="183" y2="105" stroke="#1b1f24" marker-end="url(#a6)"/>
+      <circle cx="300" cy="80" r="30" fill="#f6edfb" stroke="#6a1b9a"/><text x="300" y="77" text-anchor="middle" font-size="11">z = μ + σ·ε</text><text x="300" y="92" text-anchor="middle" font-size="10">ε ~ N(0,1)</text>
+      <line x1="235" y1="55" x2="272" y2="72" stroke="#1b1f24" marker-end="url(#a6)"/>
+      <line x1="235" y1="105" x2="272" y2="88" stroke="#1b1f24" marker-end="url(#a6)"/>
+      <polygon points="345,55 450,30 450,130 345,105" fill="#e8f5e9" stroke="#2e7d32"/><text x="397" y="85" text-anchor="middle">Decoder</text>
+      <line x1="330" y1="80" x2="343" y2="80" stroke="#1b1f24" marker-end="url(#a6)"/>
+      <text x="490" y="85" font-size="16" font-weight="bold">x̂</text>
+      <text x="300" y="150" text-anchor="middle" fill="#c62828">Loss = reconstruction(x, x̂) + KL( N(μ,σ²) ‖ N(0,1) )</text>
+    </svg>
+    <figcaption>VAE as a stochastic encoder–decoder (self-drawn)</figcaption>
+  </figure>
+
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>Normal AE ek fixed point pe code rakhta hai. Stochastic AE kehta hai "code ek <b>range</b> hai, ek baadal (μ, σ)". Usme se random sample lo (z = μ + σε) aur decoder se image banao. Isliye har baar thoda alag aur naya output aata hai, yaani VAE naye chehre/digits generate kar sakta hai. Loss = copy ki galti + KL (cloud ko normal shape mein rakho).</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>A normal AE remembers "this face = point (2, 3)". A VAE remembers "this face ≈ somewhere around (2, 3) ± 0.5". Picking slightly different points in that area gives new but realistic faces, like the same person with a different smile.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>सामान्य AE: "यह चेहरा = बिंदु (2, 3)"। VAE: "यह चेहरा (2, 3) के आसपास ±0.5 के दायरे में है"। उस दायरे से अलग-अलग बिंदु चुनो तो नए पर असली जैसे चेहरे बनते हैं — एक ही व्यक्ति, अलग मुस्कान।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span>
+    <p>Must-write formulas: p<sub>encoder</sub>(h|x), p<sub>decoder</sub>(x|h), L = −log p<sub>decoder</sub>(x|h), z = μ + σ·ε, and the KL term. Five formulas plus the diagram make a strong 10-mark answer.</p>
+  </div>
+</div>
+
+<!-- ===================== Q6 ===================== -->
+<div class="q high" id="q6">
+  <div class="qhead"><span class="qno">Q6</span>
+    <span class="tag high">⭐ HIGH</span><span class="tag stars">★★★★☆</span>
+    <span class="tag marks">2 / 4 marks</span></div>
+  <div class="qtitle">Explain the Contractive Autoencoder (CAE). How does it differ from a Denoising Autoencoder?</div>
+
+  <div class="blk ans"><span class="lbl">📝 Exam answer</span>
+    <p>A <b>Contractive Autoencoder</b> is a regularized AE that adds a penalty on the <b>Jacobian</b> of the encoder, i.e. how much the code h changes when the input x changes a little.</p>
+    <div class="formula">L = L(x, g(f(x))) + λ · ‖ ∂f(x)/∂x ‖²<sub>F</sub><br>‖J‖²<sub>F</sub> = Σᵢ Σⱼ ( ∂hⱼ / ∂xᵢ )²   (squared Frobenius norm = sum of squares of all partial derivatives)</div>
+    <ul>
+      <li><b>Intuition:</b> the penalty makes the encoder <b>"contract"</b> a neighbourhood of inputs to a small neighbourhood of codes. Small, unimportant changes (noise, slight shifts) barely change h.</li>
+      <li><b>Balance:</b> the reconstruction term wants h to change with x (to tell inputs apart), while the penalty wants h to stay still. Result: h is sensitive <b>only along the directions where real data varies</b> (the data manifold) and insensitive to other directions.</li>
+      <li><b>λ</b> controls the trade-off: too large and everything maps to the same code; too small and it becomes a plain AE.</li>
+    </ul>
+    <table>
+      <tr><th>Point</th><th>Contractive AE</th><th>Denoising AE</th></tr>
+      <tr><td>How robustness is achieved</td><td>Analytically: penalty on ‖∂h/∂x‖²</td><td>Empirically: add noise to the input, reconstruct clean x</td></tr>
+      <tr><td>Robust part</td><td>The encoder / code h</td><td>The whole reconstruction g(f(x))</td></tr>
+      <tr><td>Noise needed?</td><td>No</td><td>Yes (corruption process)</td></tr>
+      <tr><td>Cost</td><td>Jacobian computation (more expensive)</td><td>Cheap</td></tr>
+    </table>
+  </div>
+
+  <div class="blk hing"><span class="lbl">💜 Hinglish samjho</span>
+    <p>Contractive AE ko bolte hain: "input mein chhota sa badlaav ho (thoda noise, thoda shift), toh code mat hilao." Iske liye ∂h/∂x (h kitna badla) ko chhota rakhne ki penalty lagti hai. Denoising AE same kaam noise daal ke practically karta hai; contractive AE formula se karta hai.</p>
+  </div>
+  <div class="blk eng"><span class="lbl">🟢 Easy example (English)</span>
+    <p>You recognise your friend whether they wear glasses, a cap, or stand in dim light. Your "code" for the friend stays the same under small changes. That stability is what the contractive penalty teaches.</p>
+  </div>
+  <div class="blk hin"><span class="lbl">🌸 आसान उदाहरण (हिंदी)</span>
+    <p>आपका दोस्त चश्मा पहने, टोपी लगाए या कम रोशनी में खड़ा हो — आप फिर भी उसे पहचान लेते हैं। छोटे बदलावों से आपकी "पहचान" नहीं बदलती। यही स्थिरता contractive AE सिखाता है।</p>
+  </div>
+  <div class="blk tip"><span class="lbl">💡 Exam tip</span>
+    <p>The one formula to remember is λ‖∂f(x)/∂x‖²<sub>F</sub>, with the phrase "Frobenius norm of the Jacobian of the encoder". Add the CAE vs DAE table for 4 marks.</p>
+  </div>
+</div>
+
+<!-- ===================== QUICK ===================== -->
+<h2 id="quick">⚡ Part-A quick answers (2 marks, ~25 words each)</h2>
+<ol class="quick">
+  <li><b>What is an autoencoder?</b> An unsupervised neural network that learns to reconstruct its input via encoder h = f(x) and decoder r = g(h), minimising L(x, g(f(x))). The code gives compressed features.</li>
+  <li><b>Applications of autoencoders?</b> Dimensionality reduction, image denoising, anomaly/fraud detection, feature learning and pre-training, data generation (VAE), recommendation systems. <span class="tag pyq">2024 A10</span> <span class="tag pyq">7CAI A3</span></li>
+  <li><b>Regularized vs stochastic autoencoder?</b> Regularized: deterministic, adds a penalty (sparse/denoising/contractive) to the loss. Stochastic: probabilistic p(h|x), p(x|h), loss −log p(x|h), and can generate data (VAE). <span class="tag pyq">2025 A10</span></li>
+  <li><b>Purpose of a regularized autoencoder?</b> To prevent copying the input (identity) even with a large code, and to learn sparse, robust, generalisable features through a penalty term. <span class="tag pyq">7CAI A7</span></li>
+  <li><b>Undercomplete autoencoder?</b> An AE whose code dimension is smaller than the input dimension. The bottleneck forces it to learn the most salient features.</li>
+  <li><b>Overcomplete autoencoder?</b> Code dimension ≥ input dimension. Without regularisation it can learn the identity function, so it needs sparse/denoising/contractive penalties.</li>
+  <li><b>Denoising autoencoder?</b> Trained to reconstruct the clean x from a corrupted x̃: minimise L(x, g(f(x̃))). It learns robust features and removes noise.</li>
+  <li><b>Sparse autoencoder?</b> Adds an L1 or KL penalty on the hidden activations so only a few neurons are active for each input.</li>
+  <li><b>Contractive autoencoder?</b> Adds λ‖∂f(x)/∂x‖²<sub>F</sub> (Jacobian penalty) so the code is insensitive to small input changes.</li>
+  <li><b>Reconstruction error?</b> The difference between the input and the AE output, e.g. ‖x − r‖². A high error on a new sample indicates an anomaly.</li>
+  <li><b>Autoencoder vs PCA?</b> PCA is linear. An AE with a linear decoder + MSE equals PCA, but with non-linear layers it learns more powerful non-linear features.</li>
+  <li><b>Reparameterisation trick?</b> In a VAE, z = μ + σ·ε with ε ~ N(0,1). It moves the randomness outside the network so backpropagation can flow through μ and σ.</li>
+</ol>
+
+<div class="footer"><a href="pdf/unit5.pdf">⬇ Download this page as PDF</a> · <a href="quiz.html">Test yourself with the quiz →</a><br>Diagram credits: images marked "Wikimedia Commons" are hot-linked from commons.wikimedia.org under their respective free licences; the others are self-drawn SVGs. Prepared from the RTU 8AID4-01 syllabus, your class notes, the RTU 8AID4-01 papers (April/May 2025 full; 2024 Part A) and the RTU 7CAI4-01 Nov-Dec 2025 paper.</div>
+</div></body></html>

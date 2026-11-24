@@ -1,0 +1,909 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DL Quick Revision</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .t{border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:12px;padding:12px 14px;margin:16px 0;background:#fff}
+  .t.must{border-left-color:var(--must)} .t.high{border-left-color:var(--high)} .t.med{border-left-color:var(--med)}
+  .t h3{margin:2px 0 6px;font-size:16.5px}
+  .def{background:var(--accent-soft);border-radius:8px;padding:6px 10px;margin:6px 0}
+  .hl{background:var(--hing-soft);border-radius:8px;padding:6px 10px;margin:8px 0;color:#3d1257}
+  .hl b{color:var(--hing)}
+  .t figure img{max-height:220px}
+  .t figure svg{max-height:260px}
+  .unit{margin-top:38px;background:linear-gradient(135deg,#2457c5,#5b3cc4);color:#fff;border-radius:12px;padding:10px 16px;font-size:20px;font-weight:700;border:0}
+  .unit span{font-weight:400;font-size:13px;color:#e3e7ff;display:block}
+  @media print{ .unit{break-before:page} .t{break-inside:avoid} .t.big{break-inside:auto} }
+</style>
+</head>
+<body><nav class="topnav"><div class="navin">
+<a href="index.html" class="brand">🧠 DL Prep</a>
+<a href="plan.html" data-p="plan">PYQ &amp; Plan</a><a href="quick.html" data-p="quick" class="active">⚡ Quick Revision</a>
+<a href="unit1.html" data-p="unit1">Unit 1</a><a href="unit2.html" data-p="unit2">Unit 2</a><a href="unit3.html" data-p="unit3">Unit 3</a><a href="unit4.html" data-p="unit4">Unit 4</a><a href="unit5.html" data-p="unit5">Unit 5</a>
+<a href="quiz.html" data-p="quiz" class="quizlink">📝 Quiz</a></div></nav><div class="wrap">
+
+<div class="banner">
+  <h1>⚡ Quick Revision: Theory + Diagrams Only</h1>
+  <p>RTU 8AID4-01 Deep Learning &amp; Its Applications · no numericals · all units in one file</p>
+  <p>Each topic has a 1-line definition, the key points to write, a diagram to copy and a Hinglish line to remember it by.</p>
+</div>
+
+<div class="box" style="border-color:#f3b8b3;background:#fffafa">
+  <b>🎯 Numericals skip karne ki strategy (no tension!)</b>
+  <ul>
+    <li>In all 3 past papers there was <b>only ONE pure numerical</b> (2025 Part B Q4, 4 marks).</li>
+    <li><b>Part A</b> (all 10): 100% theory. <b>Part C</b> (3 of 5): 100% theory/design in every paper.</li>
+    <li><b>Part B</b>: attempt 5 of 7. If a numerical appears, simply skip it and choose the theory ones.</li>
+    <li>So <b>you can still aim for full marks without numericals</b>. Just learn the topics below + draw the diagrams.</li>
+  </ul>
+  <p class="meta">Tags: <span class="tag must">🔥 MUST</span> asked in past papers · <span class="tag high">⭐ HIGH</span> likely · <span class="tag med">✔ MED</span> if time · <span class="tag pyq">×3</span> = asked in 3 papers</p>
+</div>
+
+<div class="box toc"><b>Order of revision (most important first inside each unit)</b>
+<ol>
+ <li>Unit 1: Backprop · Curse of dimensionality · SGD · MLP · Deep feed-forward · Perceptron · MLE · Building ML algo</li>
+ <li>Unit 2: Unsupervised training · RBM · Activation functions · ML vs DL · Representation learning · Width &amp; depth · Applications</li>
+ <li>Unit 3: CNN architecture · AlexNet vs ResNet · Parameter sharing · Regularisation/Dropout · Motivation · Layers &amp; filters</li>
+ <li>Unit 4: RNN · LSTM/GRU · BRNN · Encoder–decoder · Speech pipeline · BPTT · Applications</li>
+ <li>Unit 5: Autoencoder basics &amp; anomaly detection · Undercomplete · Regularised · Stochastic · Contractive</li>
+ <li>Last-hour 2-mark list</li>
+</ol></div>
+
+<!-- ======================= UNIT 1 ======================= -->
+<h2 class="unit">Unit 1 — Deep Network Basics<span>Most scoring for Part A/B · backprop asked in all 3 papers</span></h2>
+
+<div class="t must"><h3>1. Backpropagation <span class="tag must">🔥 MUST</span> <span class="tag pyq">×3</span></h3>
+  <div class="def"><b>Def:</b> An algorithm that computes the gradient of the loss w.r.t. every weight using the <b>chain rule</b>, from output to input, and then updates the weights by gradient descent.</div>
+  <ul>
+    <li><b>Steps:</b> ① initialise random weights ② forward pass (net = Σwx + b, o = f(net)) ③ compute loss E = ½Σ(t − o)² ④ backward pass: find δ for each neuron ⑤ update w ← w + η·δ·x ⑥ repeat for epochs.</li>
+    <li><b>Formulas:</b> output δₖ = (tₖ − oₖ)·f′(netₖ); hidden δⱼ = f′(netⱼ)·Σ wⱼₖδₖ; Δw = η·δ·input. For sigmoid, f′ = o(1 − o).</li>
+    <li><b>Variants:</b> batch GD, SGD, mini-batch, momentum, Adam, BPTT (for RNNs).</li>
+    <li><b>Problems:</b> vanishing/exploding gradients, local minima, needs labelled data, sensitive to the learning rate.</li>
+  </ul>
+  <figure>
+    <svg viewBox="0 0 640 272" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="13">
+      <defs>
+        <marker id="u1f1_ab" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#2457c5"/></marker>
+        <marker id="u1f1_ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#c62828"/></marker>
+      </defs>
+      <g fill="#e8efff" stroke="#2457c5" stroke-width="1.5">
+        <circle cx="70" cy="70" r="20"/><circle cx="70" cy="150" r="20"/>
+        <circle cx="250" cy="50" r="20"/><circle cx="250" cy="110" r="20"/><circle cx="250" cy="170" r="20"/>
+        <circle cx="430" cy="110" r="20"/>
+      </g>
+      <g stroke="#9aa5b4" stroke-width="1">
+        <line x1="90" y1="70" x2="230" y2="50"/><line x1="90" y1="70" x2="230" y2="110"/><line x1="90" y1="70" x2="230" y2="170"/>
+        <line x1="90" y1="150" x2="230" y2="50"/><line x1="90" y1="150" x2="230" y2="110"/><line x1="90" y1="150" x2="230" y2="170"/>
+        <line x1="270" y1="50" x2="410" y2="110"/><line x1="270" y1="110" x2="410" y2="110"/><line x1="270" y1="170" x2="410" y2="110"/>
+      </g>
+      <rect x="500" y="88" width="110" height="44" rx="8" fill="#fdecea" stroke="#c62828"/>
+      <text x="555" y="107" text-anchor="middle">Loss E</text><text x="555" y="124" text-anchor="middle" font-size="11">½(t − o)²</text>
+      <line x1="450" y1="110" x2="498" y2="110" stroke="#2457c5" stroke-width="2" marker-end="url(#u1f1_ab)"/>
+      <text x="70" y="205" text-anchor="middle">Input x</text><text x="250" y="205" text-anchor="middle">Hidden h</text><text x="430" y="205" text-anchor="middle">Output o</text>
+      <line x1="60" y1="18" x2="440" y2="18" stroke="#2457c5" stroke-width="2.5" marker-end="url(#u1f1_ab)"/>
+      <text x="250" y="13" text-anchor="middle" fill="#2457c5" font-weight="bold">① Forward pass: compute outputs</text>
+      <path d="M555,134 Q555,240 300,242 L60,242" fill="none" stroke="#c62828" stroke-width="2.5" marker-end="url(#u1f1_ar)"/>
+      <text x="300" y="262" text-anchor="middle" fill="#c62828" font-weight="bold">② Backward pass: δ and ∂E/∂w flow back (chain rule)</text>
+    </svg>
+    <figcaption>Forward pass computes the output; the error flows backward and every weight gets its gradient. (Self-drawn, easy to copy in the exam.)</figcaption>
+  </figure>
+  <div class="hl"><b>Yaad rakho:</b> galti output pe dikhi → peeche jaake har weight ko uska "hissa" batao → har weight thoda sudhro. Jaise coach haar ke baad har player ko feedback deta hai.</div>
+</div>
+
+<div class="t must"><h3>2. Curse of Dimensionality <span class="tag must">🔥 MUST</span> <span class="tag pyq">×2</span></h3>
+  <div class="def"><b>Def:</b> As the number of features (dimensions) grows, the space grows <b>exponentially</b>, so the data becomes sparse and models need far more data to generalise (term by Bellman).</div>
+  <ul>
+    <li><b>Example:</b> 10 bins per feature → 1D = 10 cells, 2D = 100, 3D = 1000, d dims = 10ᵈ.</li>
+    <li><b>Problems:</b> data sparsity, distances lose meaning (k-NN fails), overfitting, high computation, Hughes phenomenon.</li>
+    <li><b>DL solutions:</b> autoencoders (bottleneck), representation learning, CNN parameter sharing + pooling, embeddings, dropout/L1/L2, data augmentation, PCA.</li>
+  </ul>
+  <figure>
+    <svg viewBox="0 0 640 170" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="13">
+      <g stroke="#2457c5" fill="#e8efff">
+        <rect x="20" y="70" width="150" height="15"/>
+      </g>
+      <g stroke="#2457c5">
+        <line x1="35" y1="70" x2="35" y2="85"/><line x1="50" y1="70" x2="50" y2="85"/><line x1="65" y1="70" x2="65" y2="85"/><line x1="80" y1="70" x2="80" y2="85"/><line x1="95" y1="70" x2="95" y2="85"/><line x1="110" y1="70" x2="110" y2="85"/><line x1="125" y1="70" x2="125" y2="85"/><line x1="140" y1="70" x2="140" y2="85"/><line x1="155" y1="70" x2="155" y2="85"/>
+      </g>
+      <circle cx="42" cy="78" r="3" fill="#c62828"/><circle cx="88" cy="78" r="3" fill="#c62828"/><circle cx="133" cy="78" r="3" fill="#c62828"/>
+      <text x="95" y="115" text-anchor="middle">1-D: 10 cells</text><text x="95" y="132" text-anchor="middle" font-size="11">3 points fill 30%</text>
+      <g stroke="#2457c5" fill="#e8efff"><rect x="240" y="20" width="110" height="110"/></g>
+      <g stroke="#b9c7ea">
+        <line x1="251" y1="20" x2="251" y2="130"/><line x1="262" y1="20" x2="262" y2="130"/><line x1="273" y1="20" x2="273" y2="130"/><line x1="284" y1="20" x2="284" y2="130"/><line x1="295" y1="20" x2="295" y2="130"/><line x1="306" y1="20" x2="306" y2="130"/><line x1="317" y1="20" x2="317" y2="130"/><line x1="328" y1="20" x2="328" y2="130"/><line x1="339" y1="20" x2="339" y2="130"/>
+        <line x1="240" y1="31" x2="350" y2="31"/><line x1="240" y1="42" x2="350" y2="42"/><line x1="240" y1="53" x2="350" y2="53"/><line x1="240" y1="64" x2="350" y2="64"/><line x1="240" y1="75" x2="350" y2="75"/><line x1="240" y1="86" x2="350" y2="86"/><line x1="240" y1="97" x2="350" y2="97"/><line x1="240" y1="108" x2="350" y2="108"/><line x1="240" y1="119" x2="350" y2="119"/>
+      </g>
+      <circle cx="256" cy="36" r="3" fill="#c62828"/><circle cx="300" cy="80" r="3" fill="#c62828"/><circle cx="333" cy="113" r="3" fill="#c62828"/>
+      <text x="295" y="150" text-anchor="middle">2-D: 100 cells → 3%</text>
+      <g stroke="#2457c5" fill="#e8efff">
+        <polygon points="430,50 520,50 520,130 430,130"/><polygon points="430,50 460,25 550,25 520,50" fill="#d7e3ff"/><polygon points="520,50 550,25 550,105 520,130" fill="#c6d6ff"/>
+      </g>
+      <circle cx="470" cy="90" r="3" fill="#c62828"/><circle cx="500" cy="70" r="3" fill="#c62828"/><circle cx="535" cy="60" r="3" fill="#c62828"/>
+      <text x="490" y="150" text-anchor="middle">3-D: 1000 cells → 0.3%</text>
+      <text x="566" y="85" font-size="20" fill="#c62828">→ 10ᵈ</text>
+    </svg>
+    <figcaption>The same 3 data points cover less and less of the space as dimensions grow. The data becomes "sparse". (Self-drawn.)</figcaption>
+  </figure>
+  <div class="hl"><b>Yaad rakho:</b> features badhe → space bada → data "khaali-khaali". Solution = compress karo (autoencoder/PCA) + regularise.</div>
+</div>
+
+<div class="t must"><h3>3. Stochastic Gradient Descent (SGD) &amp; variants <span class="tag must">🔥 MUST</span></h3>
+  <div class="def"><b>Def:</b> Gradient descent that updates the weights using the gradient of <b>one random sample</b> at a time: w ← w − η·∇Lᵢ(w).</div>
+  <table>
+    <tr><th></th><th>Batch GD</th><th>SGD</th><th>Mini-batch</th></tr>
+    <tr><td>Data per update</td><td>All</td><td>1 sample</td><td>32–256</td></tr>
+    <tr><td>Path</td><td>Smooth, slow</td><td>Noisy, fast</td><td>Balanced (used in practice)</td></tr>
+    <tr><td>Memory</td><td>High</td><td>Low</td><td>Medium, GPU friendly</td></tr>
+  </table>
+  <ul><li><b>Variants:</b> Momentum (adds velocity, less zig-zag), Nesterov, AdaGrad (per-parameter LR), RMSProp, <b>Adam</b> (momentum + RMSProp, the default).</li></ul>
+  <div class="figrow"><figure><img src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Gradient_descent.svg" alt="Gradient descent on contour plot">
+      <figcaption>Gradient descent steps toward the minimum on a contour plot. Source: Wikimedia Commons</figcaption></figure><figure>
+      <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+        <g fill="none" stroke="#b9c7ea"><ellipse cx="150" cy="100" rx="130" ry="80"/><ellipse cx="150" cy="100" rx="95" ry="58"/><ellipse cx="150" cy="100" rx="60" ry="36"/><ellipse cx="150" cy="100" rx="25" ry="15"/></g>
+        <circle cx="150" cy="100" r="4" fill="#1b1f24"/>
+        <polyline points="35,60 70,72 100,82 125,92 145,99" fill="none" stroke="#2457c5" stroke-width="2.5"/>
+        <polyline points="40,150 70,110 85,150 105,95 118,135 132,92 140,118 148,101" fill="none" stroke="#c62828" stroke-width="2"/>
+        <text x="20" y="20" fill="#2457c5">— Batch GD (smooth)</text>
+        <text x="20" y="38" fill="#c62828">— SGD (noisy zig-zag)</text>
+      </svg>
+      <figcaption>Batch GD vs SGD path (self-drawn)</figcaption></figure></div>
+  <div class="hl"><b>Yaad rakho:</b> aankh pe patti, pahaad se neeche utarna. Har step pe ek dost se raasta poocha = SGD (tez par dagmagata).</div>
+</div>
+
+<div class="t must"><h3>4. Multilayer Perceptron (MLP) / 3-layer NN for binary classification <span class="tag must">🔥 MUST</span></h3>
+  <div class="def"><b>Def:</b> A fully-connected feed-forward network with an input layer, ≥1 hidden layer with non-linear activation, and an output layer, trained with backpropagation.</div>
+  <ul>
+    <li><b>Design:</b> Input = n features → Hidden = ReLU neurons → Output = <b>1 neuron with sigmoid</b> (probability).</li>
+    <li><b>Loss:</b> binary cross-entropy. <b>Optimiser:</b> SGD/Adam. <b>Decision:</b> ŷ ≥ 0.5 → class 1.</li>
+    <li><b>Working:</b> forward pass → loss → backprop → update → repeat over epochs → evaluate with accuracy/precision/recall.</li>
+    <li>Can learn non-linear boundaries (e.g. XOR), which a single perceptron cannot.</li>
+  </ul>
+  <div class="figrow"><figure>
+    <svg viewBox="0 0 420 230" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <g stroke="#9aa5b4">
+        <line x1="80" y1="80" x2="200" y2="50"/><line x1="80" y1="80" x2="200" y2="115"/><line x1="80" y1="80" x2="200" y2="180"/>
+        <line x1="80" y1="150" x2="200" y2="50"/><line x1="80" y1="150" x2="200" y2="115"/><line x1="80" y1="150" x2="200" y2="180"/>
+        <line x1="200" y1="50" x2="320" y2="115"/><line x1="200" y1="115" x2="320" y2="115"/><line x1="200" y1="180" x2="320" y2="115"/>
+      </g>
+      <g stroke-width="1.5">
+        <circle cx="80" cy="80" r="20" fill="#e8f5e9" stroke="#2e7d32"/><circle cx="80" cy="150" r="20" fill="#e8f5e9" stroke="#2e7d32"/>
+        <circle cx="200" cy="50" r="20" fill="#e8efff" stroke="#2457c5"/><circle cx="200" cy="115" r="20" fill="#e8efff" stroke="#2457c5"/><circle cx="200" cy="180" r="20" fill="#e8efff" stroke="#2457c5"/>
+        <circle cx="320" cy="115" r="22" fill="#fdecea" stroke="#c62828"/>
+      </g>
+      <text x="80" y="84" text-anchor="middle">x₁</text><text x="80" y="154" text-anchor="middle">x₂</text>
+      <text x="200" y="54" text-anchor="middle">h₁</text><text x="200" y="119" text-anchor="middle">h₂</text><text x="200" y="184" text-anchor="middle">h₃</text>
+      <text x="320" y="119" text-anchor="middle">ŷ</text>
+      <text x="80" y="222" text-anchor="middle" font-weight="bold">Input</text><text x="200" y="222" text-anchor="middle" font-weight="bold">Hidden (ReLU)</text><text x="320" y="222" text-anchor="middle" font-weight="bold">Output (σ)</text>
+      <text x="350" y="100">≥ 0.5 → 1</text><text x="350" y="140">&lt; 0.5 → 0</text>
+      <text x="140" y="30" fill="#5b6470">W₁, b₁</text><text x="255" y="70" fill="#5b6470">W₂, b₂</text>
+    </svg>
+    <figcaption>2-3-1 network for binary classification (self-drawn, draw this in the exam)</figcaption>
+  </figure><figure><img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Colored_neural_network.svg" alt="MLP">
+    <figcaption>General MLP: input, hidden and output layers. Source: Wikimedia Commons</figcaption></figure></div>
+  <div class="hl"><b>Yaad rakho:</b> Input = data andar, Hidden = sochne waala dimaag (ReLU), Output = sigmoid se 0–1 probability. Pass/Fail predict karna.</div>
+</div>
+
+<div class="t high"><h3>5. Deep Feed-forward Network <span class="tag high">⭐ HIGH</span></h3>
+  <div class="def"><b>Def:</b> A network where information flows <b>only forward</b> (input → hidden → output) with no feedback loops; it approximates y = f*(x) as a chain f(x) = f³(f²(f¹(x))).</div>
+  <ul>
+    <li>Depth = number of layers in the chain; hidden layers are not directly seen in the training data.</li>
+    <li>A non-linear activation is required; otherwise all layers collapse into one linear layer.</li>
+    <li><b>Universal approximation theorem:</b> one hidden layer with enough neurons can approximate any continuous function.</li>
+    <li>XOR cannot be solved by one line, but one hidden layer solves it.</li>
+  </ul>
+  <div class="hl"><b>Yaad rakho:</b> factory ki assembly line, maal sirf aage jaata hai, kabhi peeche nahi.</div>
+</div>
+
+<div class="t high"><h3>6. Perceptron <span class="tag high">⭐ HIGH</span></h3>
+  <div class="def"><b>Def:</b> The simplest neuron (Rosenblatt, 1958): y = step(Σwᵢxᵢ + b). Learning rule: w ← w + η(t − y)x.</div>
+  <ul><li>Converges if the data is linearly separable (AND, OR). <b>Fails for XOR</b> (Minsky &amp; Papert), which is why MLPs were needed.</li></ul>
+  <figure><img src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Perceptron_moj.png" alt="Perceptron">
+    <figcaption>Perceptron: inputs × weights → sum → activation → output. Source: Wikimedia Commons</figcaption></figure>
+  <div class="hl"><b>Yaad rakho:</b> inputs × importance → jodo → threshold paar = 1, warna 0.</div>
+</div>
+
+<div class="t med"><h3>7. Maximum Likelihood Estimation (MLE) <span class="tag med">✔ MED</span> (never asked, so it's "due")</h3>
+  <div class="def"><b>Def:</b> Choose the parameters θ that make the observed data most probable: θ<sub>ML</sub> = argmax Σ log p(xᵢ; θ).</div>
+  <ul><li>We use log because a product of many small probabilities underflows; a sum is easier.</li>
+  <li>Coin example: 7 heads in 10 tosses → p̂ = 0.7.</li>
+  <li><b>In DL:</b> minimising cross-entropy = maximising likelihood (NLL). MSE = MLE under Gaussian noise.</li></ul>
+  <div class="hl"><b>Yaad rakho:</b> "kaunsa parameter hota toh yeh data aane ka chance sabse zyada?"</div>
+</div>
+
+<div class="t med"><h3>8. Building an ML algorithm + Learning algorithm <span class="tag med">✔ MED</span></h3>
+  <ul>
+    <li><b>4 components:</b> Dataset + Model + Cost function + Optimisation procedure.</li>
+    <li><b>Pipeline:</b> Problem definition → Data collection/preprocessing → Model selection → Training → Evaluation → Deployment.</li>
+    <li><b>Learning (Mitchell):</b> a program learns from experience E for task T with performance P if P on T improves with E. E.g. spam filter.</li>
+  </ul>
+  <div class="hl"><b>Yaad rakho:</b> recipe: data = saamaan, model = bartan, loss = swaad check, optimiser = aanch.</div>
+</div>
+
+<!-- ======================= UNIT 2 ======================= -->
+<h2 class="unit">Unit 2 — Deep Learning Architectures<span>Highest weightage: up to 32 marks in a paper · 2 Part C questions possible</span></h2>
+
+<div class="t must big"><h3>9. Unsupervised training of neural networks <span class="tag must">🔥 MUST</span> <span class="tag pyq">×3</span></h3>
+  <div class="def"><b>Def:</b> Training a network on <b>unlabelled data (x only)</b> so that it learns hidden structure or a useful representation, using an objective like reconstruction error or energy minimisation instead of labels.</div>
+  <ul>
+    <li><b>Approaches:</b> ① Autoencoders (minimise ‖x − x̂‖²) ② RBMs / Deep Belief Nets (contrastive divergence) ③ Self-Organising Maps / competitive learning (clustering) ④ Self-supervised learning (predict a masked part).</li>
+    <li><b>Greedy layer-wise pre-training:</b> train layer 1 (RBM/AE) on x → freeze → train layer 2 on layer-1 output → stack → <b>fine-tune</b> with a few labels.</li>
+    <li><b>Example:</b> MNIST digits without labels → autoencoder 784→64→784 → the 64-number codes of similar digits cluster together → k-means groups the digits.</li>
+    <li><b>Supervised vs unsupervised:</b> labelled (x, y) vs only x; predict y vs find structure; loss vs label vs reconstruction/energy loss; e.g. classification vs clustering.</li>
+  </ul>
+  <figure>
+    <svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <defs><marker id="u2f1_u1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#2457c5"/></marker></defs>
+      <rect x="10" y="60" width="90" height="70" rx="8" fill="#e8f5e9" stroke="#2e7d32"/><text x="55" y="92" text-anchor="middle">Unlabelled</text><text x="55" y="108" text-anchor="middle">input x</text>
+      <rect x="140" y="40" width="110" height="110" rx="8" fill="#e8efff" stroke="#2457c5"/><text x="195" y="90" text-anchor="middle" font-weight="bold">Layer 1</text><text x="195" y="106" text-anchor="middle">RBM / AE → h₁</text>
+      <rect x="290" y="55" width="100" height="80" rx="8" fill="#e8efff" stroke="#2457c5"/><text x="340" y="92" text-anchor="middle" font-weight="bold">Layer 2</text><text x="340" y="108" text-anchor="middle">trained on h₁</text>
+      <rect x="430" y="70" width="80" height="50" rx="8" fill="#e8efff" stroke="#2457c5"/><text x="470" y="99" text-anchor="middle">Layer 3…</text>
+      <rect x="545" y="60" width="85" height="70" rx="8" fill="#fdecea" stroke="#c62828"/><text x="587" y="88" text-anchor="middle">Fine-tune</text><text x="587" y="104" text-anchor="middle">(few labels)</text>
+      <g stroke="#2457c5" stroke-width="2"><line x1="100" y1="95" x2="138" y2="95" marker-end="url(#u2f1_u1)"/><line x1="250" y1="95" x2="288" y2="95" marker-end="url(#u2f1_u1)"/><line x1="390" y1="95" x2="428" y2="95" marker-end="url(#u2f1_u1)"/><line x1="510" y1="95" x2="543" y2="95" marker-end="url(#u2f1_u1)"/></g>
+      <text x="320" y="180" text-anchor="middle" fill="#5b6470">Greedy layer-wise unsupervised pre-training: train one layer at a time, freeze it, stack, then fine-tune</text>
+    </svg>
+    <figcaption>Greedy layer-wise pre-training (self-drawn, easy to copy)</figcaption>
+  </figure>
+  <div class="hl"><b>Yaad rakho:</b> bina teacher ke seekhna: khud se data ko compress karke wapas banao, jo pattern bache wahi seekh gaya.</div>
+</div>
+
+<div class="t must"><h3>10. Restricted Boltzmann Machine (RBM) <span class="tag must">🔥 MUST</span> <span class="tag pyq">×3</span></h3>
+  <div class="def"><b>Def:</b> A generative, energy-based, unsupervised neural network with two layers, visible v and hidden h, connected as a <b>bipartite graph</b>: there are no visible–visible or hidden–hidden connections ("restricted").</div>
+  <ul>
+    <li><b>Energy:</b> E(v, h) = −aᵀv − bᵀh − vᵀWh, and P(v, h) ∝ e<sup>−E</sup>. Low energy = likely configuration.</li>
+    <li>P(hⱼ = 1 | v) = σ(bⱼ + Σᵢ vᵢwᵢⱼ), P(vᵢ = 1 | h) = σ(aᵢ + Σⱼ wᵢⱼhⱼ). Symmetric weights W.</li>
+    <li><b>Training: Contrastive Divergence (CD-1)</b>: v → sample h → reconstruct v′ → h′; ΔW = η(vhᵀ − v′h′ᵀ).</li>
+    <li><b>Uses:</b> feature learning, dimensionality reduction, collaborative filtering (Netflix), pre-training; stacked RBMs form a <b>Deep Belief Network</b>.</li>
+  </ul>
+  <div class="figrow"><figure>
+      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+        <g stroke="#9aa5b4">
+          <line x1="60" y1="160" x2="90" y2="60"/><line x1="60" y1="160" x2="180" y2="60"/><line x1="60" y1="160" x2="270" y2="60"/>
+          <line x1="140" y1="160" x2="90" y2="60"/><line x1="140" y1="160" x2="180" y2="60"/><line x1="140" y1="160" x2="270" y2="60"/>
+          <line x1="220" y1="160" x2="90" y2="60"/><line x1="220" y1="160" x2="180" y2="60"/><line x1="220" y1="160" x2="270" y2="60"/>
+          <line x1="300" y1="160" x2="90" y2="60"/><line x1="300" y1="160" x2="180" y2="60"/><line x1="300" y1="160" x2="270" y2="60"/>
+        </g>
+        <g stroke-width="1.5">
+          <circle cx="90" cy="60" r="18" fill="#fdecea" stroke="#c62828"/><circle cx="180" cy="60" r="18" fill="#fdecea" stroke="#c62828"/><circle cx="270" cy="60" r="18" fill="#fdecea" stroke="#c62828"/>
+          <circle cx="60" cy="160" r="18" fill="#e8efff" stroke="#2457c5"/><circle cx="140" cy="160" r="18" fill="#e8efff" stroke="#2457c5"/><circle cx="220" cy="160" r="18" fill="#e8efff" stroke="#2457c5"/><circle cx="300" cy="160" r="18" fill="#e8efff" stroke="#2457c5"/>
+        </g>
+        <text x="90" y="64" text-anchor="middle">h₁</text><text x="180" y="64" text-anchor="middle">h₂</text><text x="270" y="64" text-anchor="middle">h₃</text>
+        <text x="60" y="164" text-anchor="middle">v₁</text><text x="140" y="164" text-anchor="middle">v₂</text><text x="220" y="164" text-anchor="middle">v₃</text><text x="300" y="164" text-anchor="middle">v₄</text>
+        <text x="180" y="22" text-anchor="middle" font-weight="bold" fill="#c62828">Hidden layer h (bias b)</text>
+        <text x="180" y="205" text-anchor="middle" font-weight="bold" fill="#2457c5">Visible layer v (bias a)</text>
+        <text x="335" y="115" text-anchor="end" fill="#5b6470">W (symmetric)</text>
+        <text x="10" y="115" fill="#5b6470" font-size="11">no v–v / h–h links</text>
+      </svg>
+      <figcaption>RBM = bipartite graph, no links inside a layer (self-drawn, copy this)</figcaption>
+    </figure><figure><img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/Restricted_Boltzmann_machine.svg" alt="Restricted Boltzmann machine">
+      <figcaption>RBM with 3 hidden and 4 visible units. Source: Wikimedia Commons</figcaption></figure></div>
+  <div class="hl"><b>Yaad rakho:</b> do layers, beech mein connections, apni layer mein koi dosti nahi. Data ko "energy" se samajhta hai.</div>
+</div>
+
+<div class="t must"><h3>11. Activation functions: ReLU, LReLU, ELU (+ sigmoid, tanh) <span class="tag must">🔥 MUST</span> <span class="tag pyq">×3</span></h3>
+  <div class="def"><b>Def:</b> A non-linear function applied to a neuron's net input so the network can learn non-linear patterns.</div>
+  <table>
+    <tr><th>Function</th><th>Formula</th><th>Range</th><th>Pro / Con</th></tr>
+    <tr><td>Sigmoid</td><td>1/(1 + e<sup>−z</sup>)</td><td>(0, 1)</td><td>Gives probability / vanishing gradient, not zero-centred</td></tr>
+    <tr><td>Tanh</td><td>(eᶻ − e⁻ᶻ)/(eᶻ + e⁻ᶻ)</td><td>(−1, 1)</td><td>Zero-centred / still vanishes</td></tr>
+    <tr><td>ReLU</td><td>max(0, z)</td><td>[0, ∞)</td><td>Fast, no vanishing for z &gt; 0 / <b>dying ReLU</b> (dead for z &lt; 0)</td></tr>
+    <tr><td>Leaky ReLU</td><td>z if z &gt; 0 else αz (α = 0.01)</td><td>(−∞, ∞)</td><td><b>Solves dying ReLU</b> with a small negative slope</td></tr>
+    <tr><td>ELU</td><td>z if z &gt; 0 else α(eᶻ − 1)</td><td>(−α, ∞)</td><td>Smooth, mean near 0, robust / slower (exp)</td></tr>
+    <tr><td>Softmax</td><td>eᶻⁱ / Σeᶻʲ</td><td>(0, 1), sum 1</td><td>Multi-class output layer</td></tr>
+  </table>
+  <ul><li><b>Effect on performance:</b> sigmoid/tanh in deep nets → vanishing gradient → slow training; ReLU trained AlexNet ~6× faster; LReLU/ELU avoid dead neurons. Rule: <b>ReLU in hidden layers, sigmoid/softmax at the output</b>.</li></ul>
+  <div class="figrow"><figure><img src="https://upload.wikimedia.org/wikipedia/commons/8/88/Logistic-curve.svg" alt="Sigmoid"><figcaption>Sigmoid. Source: Wikimedia Commons</figcaption></figure><figure><img src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Activation_rectified_linear.svg" alt="ReLU"><figcaption>ReLU. Source: Wikimedia Commons</figcaption></figure><figure><img src="https://upload.wikimedia.org/wikipedia/commons/a/ae/Activation_prelu.svg" alt="Leaky ReLU / PReLU"><figcaption>Leaky ReLU / PReLU. Source: Wikimedia Commons</figcaption></figure><figure><img src="https://upload.wikimedia.org/wikipedia/commons/b/bc/Activation_elu.svg" alt="ELU"><figcaption>ELU. Source: Wikimedia Commons</figcaption></figure></div>
+  <figure>
+    <svg viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <g stroke="#9aa5b4"><line x1="20" y1="130" x2="180" y2="130"/><line x1="100" y1="20" x2="100" y2="180"/>
+        <line x1="220" y1="130" x2="380" y2="130"/><line x1="300" y1="20" x2="300" y2="180"/>
+        <line x1="420" y1="130" x2="580" y2="130"/><line x1="500" y1="20" x2="500" y2="180"/></g>
+      <polyline points="20,130 100,130 170,60" fill="none" stroke="#2457c5" stroke-width="3"/>
+      <polyline points="220,138 300,130 370,60" fill="none" stroke="#e46c00" stroke-width="3"/>
+      <path d="M420,158 C450,157 480,150 500,130 L570,60" fill="none" stroke="#2e7d32" stroke-width="3"/>
+      <text x="100" y="195" text-anchor="middle" font-weight="bold">ReLU: max(0,z)</text>
+      <text x="300" y="195" text-anchor="middle" font-weight="bold">Leaky ReLU: small slope αz</text>
+      <text x="500" y="195" text-anchor="middle" font-weight="bold">ELU: α(eᶻ − 1), smooth</text>
+      <text x="40" y="122" fill="#c62828" font-size="11">flat = dead</text>
+      <text x="425" y="175" fill="#5b6470" font-size="11">→ −α</text>
+    </svg>
+    <figcaption>Quick sketch for the exam: how ReLU, LReLU and ELU differ for negative z (self-drawn)</figcaption>
+  </figure>
+  <div class="hl"><b>Yaad rakho:</b> ReLU = negative ko zero (kabhi neuron "mar" jaata hai). Leaky = negative ko thoda sa jeene do. ELU = smooth curve.</div>
+</div>
+
+<div class="t must"><h3>12. Machine Learning vs Deep Learning (+ define DL, scope) <span class="tag must">🔥 MUST</span> <span class="tag pyq">×3</span></h3>
+  <div class="def"><b>Def DL:</b> A subset of machine learning that uses neural networks with <b>many layers</b> to automatically learn hierarchical features from raw data (images, text, speech). It is significant because it powers modern AI: vision, speech, NLP, self-driving.</div>
+  <table>
+    <tr><th>Point</th><th>Machine Learning</th><th>Deep Learning</th></tr>
+    <tr><td>Features</td><td>Hand-crafted by experts</td><td>Learned automatically</td></tr>
+    <tr><td>Data needed</td><td>Works with small data</td><td>Needs large data</td></tr>
+    <tr><td>Hardware</td><td>CPU is enough</td><td>GPU/TPU</td></tr>
+    <tr><td>Training time</td><td>Short</td><td>Long</td></tr>
+    <tr><td>Interpretability</td><td>Higher</td><td>Black box</td></tr>
+    <tr><td>Performance with more data</td><td>Plateaus</td><td>Keeps improving</td></tr>
+    <tr><td>Examples</td><td>SVM, decision tree, k-NN</td><td>CNN, RNN, LSTM, autoencoder</td></tr>
+  </table>
+  <figure><img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/AI_hierarchy.svg" alt="AI hierarchy"><figcaption>AI ⊃ Machine Learning ⊃ Deep Learning. Source: Wikimedia Commons</figcaption></figure>
+  <div class="hl"><b>Yaad rakho:</b> ML mein features hum dete hain, DL khud dhoondh leta hai, bas data aur GPU zyada chahiye.</div>
+</div>
+
+<div class="t high"><h3>13. Representation Learning <span class="tag high">⭐ HIGH</span></h3>
+  <div class="def"><b>Def:</b> Learning useful features (representations) <b>directly from raw data</b> instead of hand-engineering them, so DL automates feature engineering.</div>
+  <ul>
+    <li><b>Hierarchy:</b> image: pixels → edges → shapes/textures → parts (eye, nose) → object (face). Speech: waveform → frequencies → phonemes → words.</li>
+    <li>Types: supervised (CNN features), unsupervised (autoencoders, RBMs), self-supervised, transfer learning (ImageNet features reused).</li>
+    <li>Benefits: better generalisation, less manual work, reusable features, handles high-dimensional data.</li>
+  </ul>
+  <figure>
+    <svg viewBox="0 0 640 170" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <defs><marker id="u2f10_r1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#2457c5"/></marker></defs>
+      <rect x="10" y="40" width="100" height="80" rx="8" fill="#f5f7fa" stroke="#5b6470"/>
+      <g fill="#9aa5b4"><rect x="20" y="50" width="12" height="12"/><rect x="36" y="50" width="12" height="12" fill="#5b6470"/><rect x="52" y="50" width="12" height="12"/><rect x="68" y="66" width="12" height="12" fill="#5b6470"/><rect x="20" y="82" width="12" height="12" fill="#5b6470"/><rect x="84" y="98" width="12" height="12"/><rect x="52" y="98" width="12" height="12" fill="#5b6470"/></g>
+      <text x="60" y="140" text-anchor="middle">Raw pixels</text>
+      <rect x="140" y="40" width="100" height="80" rx="8" fill="#e8efff" stroke="#2457c5"/>
+      <g stroke="#2457c5" stroke-width="2"><line x1="155" y1="60" x2="185" y2="60"/><line x1="200" y1="50" x2="200" y2="80"/><line x1="160" y1="105" x2="190" y2="85"/><line x1="210" y1="90" x2="230" y2="110"/></g>
+      <text x="190" y="140" text-anchor="middle">L1: edges</text>
+      <rect x="270" y="40" width="100" height="80" rx="8" fill="#e8efff" stroke="#2457c5"/>
+      <g fill="none" stroke="#2457c5" stroke-width="2"><circle cx="300" cy="70" r="14"/><path d="M325,95 L345,60 L360,95 z"/><rect x="285" y="95" width="20" height="16"/></g>
+      <text x="320" y="140" text-anchor="middle">L2: shapes, textures</text>
+      <rect x="400" y="40" width="100" height="80" rx="8" fill="#e8efff" stroke="#2457c5"/>
+      <g fill="none" stroke="#2457c5" stroke-width="2"><ellipse cx="425" cy="65" rx="12" ry="7"/><ellipse cx="470" cy="65" rx="12" ry="7"/><path d="M447,72 L442,92 L452,92"/><path d="M430,104 Q448,114 466,104"/></g>
+      <text x="450" y="140" text-anchor="middle">L3: parts (eye, nose)</text>
+      <rect x="530" y="40" width="100" height="80" rx="8" fill="#fdecea" stroke="#c62828"/>
+      <circle cx="580" cy="80" r="30" fill="none" stroke="#c62828" stroke-width="2"/><circle cx="570" cy="72" r="3" fill="#c62828"/><circle cx="590" cy="72" r="3" fill="#c62828"/><path d="M568,92 Q580,100 592,92" fill="none" stroke="#c62828" stroke-width="2"/>
+      <text x="580" y="140" text-anchor="middle">L4: face / object</text>
+      <g stroke="#2457c5" stroke-width="2"><line x1="110" y1="80" x2="138" y2="80" marker-end="url(#u2f10_r1)"/><line x1="240" y1="80" x2="268" y2="80" marker-end="url(#u2f10_r1)"/><line x1="370" y1="80" x2="398" y2="80" marker-end="url(#u2f10_r1)"/><line x1="500" y1="80" x2="528" y2="80" marker-end="url(#u2f10_r1)"/></g>
+      <text x="320" y="20" text-anchor="middle" font-weight="bold" fill="#2457c5">Simple → complex features, all learned automatically</text>
+    </svg>
+    <figcaption>Hierarchical representation learning in a deep network (self-drawn, copy this)</figcaption>
+  </figure>
+  <div class="hl"><b>Yaad rakho:</b> pehli layer lines dekhti hai, agli shapes, phir aankh-naak, last mein poora chehra.</div>
+</div>
+
+<div class="t high"><h3>14. Width and Depth of Neural Networks <span class="tag high">⭐ HIGH</span></h3>
+  <ul>
+    <li><b>Width</b> = neurons per layer; <b>Depth</b> = number of layers.</li>
+    <li>Wide and shallow: can approximate (universal approximation) but needs very many neurons and memorises easily.</li>
+    <li>Deep and narrow: learns hierarchical features with far fewer parameters, so it generalises better; but it's harder to train (vanishing gradient, needs ReLU/BN/ResNet skips).</li>
+    <li>In practice, depth gives more benefit than width (e.g. VGG, ResNet-152).</li>
+  </ul>
+  <figure><img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Artificial_neural_network.svg" alt="Neural network layers"><figcaption>Width = neurons per layer (vertical); depth = number of layers (horizontal). Source: Wikimedia Commons</figcaption></figure>
+  <div class="hl"><b>Yaad rakho:</b> width = ek floor pe kitne log, depth = kitni manzilein. Zyada manzilein = zyada level ki samajh.</div>
+</div>
+
+<div class="t med"><h3>15. Deep Learning Applications <span class="tag med">✔ MED</span></h3>
+  <ul><li><b>Vision:</b> face unlock, medical X-ray/MRI diagnosis, self-driving cars, OCR. <b>NLP:</b> translation, chatbots, sentiment. <b>Speech:</b> Alexa, Siri, voice typing. <b>Others:</b> recommendations (Netflix), fraud detection, drug discovery, game playing (AlphaGo).</li></ul>
+</div>
+
+<!-- ======================= UNIT 3 ======================= -->
+<h2 class="unit">Unit 3 — Convolutional Neural Networks<span>Part C favourite: CNN architecture and AlexNet asked as 10-markers</span></h2>
+
+<div class="t must big"><h3>16. CNN architecture, working &amp; applications <span class="tag must">🔥 MUST</span> <span class="tag pyq">×3</span></h3>
+  <div class="def"><b>Def:</b> A deep network for grid data (images) that uses <b>convolution layers</b> with learnable filters to automatically extract spatial features, followed by pooling and fully connected layers for prediction.</div>
+  <ul>
+    <li><b>Input layer:</b> image, e.g. 32×32×3 (RGB).</li>
+    <li><b>Convolution layer:</b> filters (3×3, 5×5) slide over the image and compute dot products → <b>feature maps</b> (edges, textures). Hyper-parameters: number of filters, size, stride, padding. Output size = (n − f + 2p)/s + 1.</li>
+    <li><b>ReLU:</b> adds non-linearity.</li>
+    <li><b>Pooling layer:</b> max/average pooling (2×2) reduces size and gives translation invariance.</li>
+    <li><b>Flatten + fully connected layer:</b> combines features. <b>Softmax output</b> gives class probabilities.</li>
+    <li><b>Training:</b> backprop + SGD/Adam with cross-entropy loss.</li>
+    <li><b>CV applications:</b> image classification, object detection (YOLO), segmentation (medical), face recognition, self-driving cars, OCR, satellite imagery.</li>
+  </ul>
+  <figure>
+    <svg viewBox="0 0 680 170" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <defs><marker id="u3f1_a1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1b1f24"/></marker></defs>
+      <rect x="10" y="40" width="70" height="70" fill="#e8f5e9" stroke="#2e7d32"/><text x="45" y="80" text-anchor="middle">Image</text><text x="45" y="130" text-anchor="middle" font-size="11">32×32×3</text>
+      <g fill="#e8efff" stroke="#2457c5"><rect x="115" y="35" width="60" height="80"/><rect x="121" y="41" width="60" height="80"/><rect x="127" y="47" width="60" height="80"/></g>
+      <text x="157" y="90" text-anchor="middle">Conv</text><text x="157" y="104" text-anchor="middle" font-size="11">+ReLU</text><text x="155" y="145" text-anchor="middle" font-size="11">28×28×6</text>
+      <g fill="#fff3e0" stroke="#e46c00"><rect x="220" y="55" width="40" height="50"/><rect x="225" y="60" width="40" height="50"/></g>
+      <text x="245" y="88" text-anchor="middle">Pool</text><text x="243" y="128" text-anchor="middle" font-size="11">14×14×6</text>
+      <g fill="#e8efff" stroke="#2457c5"><rect x="300" y="52" width="40" height="56"/><rect x="306" y="58" width="40" height="56"/></g>
+      <text x="326" y="90" text-anchor="middle">Conv</text>
+      <g fill="#fff3e0" stroke="#e46c00"><rect x="380" y="65" width="28" height="34"/></g><text x="394" y="86" text-anchor="middle" font-size="11">Pool</text>
+      <rect x="440" y="20" width="18" height="120" fill="#f6edfb" stroke="#6a1b9a"/><text x="449" y="155" text-anchor="middle" font-size="11">Flatten</text>
+      <g fill="#f6edfb" stroke="#6a1b9a"><circle cx="500" cy="45" r="9"/><circle cx="500" cy="70" r="9"/><circle cx="500" cy="95" r="9"/><circle cx="500" cy="120" r="9"/></g>
+      <text x="500" y="155" text-anchor="middle" font-size="11">FC</text>
+      <rect x="545" y="50" width="75" height="60" rx="8" fill="#fdecea" stroke="#c62828"/><text x="582" y="76" text-anchor="middle">Softmax</text><text x="582" y="94" text-anchor="middle" font-size="11">cat 0.9</text>
+      <g stroke="#1b1f24" stroke-width="1.5" marker-end="url(#u3f1_a1)">
+        <line x1="82" y1="75" x2="112" y2="75"/><line x1="190" y1="80" x2="217" y2="80"/><line x1="268" y1="82" x2="297" y2="82"/><line x1="348" y1="84" x2="377" y2="84"/><line x1="410" y1="82" x2="437" y2="82"/><line x1="460" y1="80" x2="488" y2="80"/><line x1="510" y1="80" x2="542" y2="80"/>
+      </g>
+      <text x="230" y="15" text-anchor="middle" fill="#2457c5" font-weight="bold">Feature extraction</text>
+      <text x="530" y="15" text-anchor="middle" fill="#6a1b9a" font-weight="bold">Classification</text>
+    </svg>
+    <figcaption>CNN pipeline: Input → [Conv + ReLU → Pool] × N → Flatten → FC → Softmax. (Self-drawn, easy to copy in the exam.)</figcaption>
+  </figure>
+  <div class="figrow"><figure><img src="https://upload.wikimedia.org/wikipedia/commons/6/63/Typical_cnn.png" alt="Typical CNN">
+    <figcaption>Typical CNN: convolutions → subsampling → convolutions → subsampling → fully connected. Source: Wikimedia Commons</figcaption></figure><figure><img src="https://upload.wikimedia.org/wikipedia/commons/1/19/2D_Convolution_Animation.gif" alt="2D convolution animation">
+      <figcaption>A kernel sliding over the input to produce the output. Source: Wikimedia Commons</figcaption></figure><figure><img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Max_pooling.png" alt="Max pooling">
+      <figcaption>Max pooling 2×2 with stride 2. Source: Wikimedia Commons</figcaption></figure></div>
+  <div class="hl"><b>Yaad rakho:</b> Conv = magnifying glass jo photo pe ghoomta hai aur pattern dhoondhta hai; Pool = photo chhoti karo par important cheez rakho; FC = final faisla.</div>
+</div>
+
+<div class="t must big"><h3>17. AlexNet vs ResNet <span class="tag must">🔥 MUST</span> <span class="tag pyq">×2 (Part C)</span></h3>
+  <div class="def"><b>AlexNet (2012)</b>, by Krizhevsky, Sutskever and Hinton, won ImageNet with a top-5 error of ~15.3% (vs 26% for the runner-up) and started the DL revolution. <b>ResNet (2015)</b>, by He et al., introduced <b>skip connections</b>, trained 152 layers, and reached a top-5 error of ~3.57%, better than humans.</div>
+  <ul>
+    <li><b>AlexNet architecture:</b> input 227×227×3 → 5 conv layers (96@11×11 stride 4 → 256@5×5 → 384@3×3 → 384@3×3 → 256@3×3) with max-pooling → 3 FC layers (4096, 4096, 1000 softmax). ~60M parameters.</li>
+    <li><b>AlexNet's innovations:</b> ReLU (fast training), dropout 0.5 in FC layers, data augmentation, overlapping max-pool, LRN, training on 2 GPUs.</li>
+    <li><b>ResNet idea:</b> very deep plain nets got <i>worse</i> (degradation / vanishing gradient). A residual block learns F(x) and outputs <b>y = F(x) + x</b>, so the gradient flows directly through the shortcut.</li>
+  </ul>
+  <table>
+    <tr><th>Point</th><th>AlexNet</th><th>ResNet</th></tr>
+    <tr><td>Year</td><td>2012</td><td>2015</td></tr>
+    <tr><td>Depth</td><td>8 layers</td><td>18/34/50/101/152</td></tr>
+    <tr><td>Key idea</td><td>ReLU, dropout, GPU</td><td>Skip/residual connections</td></tr>
+    <tr><td>Filters</td><td>Large (11×11, 5×5)</td><td>Small 3×3 (+1×1 bottleneck)</td></tr>
+    <tr><td>Normalisation</td><td>LRN</td><td>Batch normalisation</td></tr>
+    <tr><td>FC layers</td><td>3 big FC (most params)</td><td>Global average pool + 1 FC</td></tr>
+    <tr><td>Parameters</td><td>~60M</td><td>~25M (ResNet-50)</td></tr>
+    <tr><td>Top-5 error</td><td>~15.3%</td><td>~3.57%</td></tr>
+    <tr><td>Vanishing gradient</td><td>Not solved (shallow)</td><td>Solved by shortcuts</td></tr>
+  </table>
+  <figure><img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Comparison_image_neural_networks.svg" alt="LeNet vs AlexNet">
+      <figcaption>LeNet vs AlexNet architecture comparison. Source: Wikimedia Commons</figcaption></figure>
+  <div class="figrow"><figure>
+    <svg viewBox="0 0 420 250" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="13">
+      <defs><marker id="u3f7_a2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1b1f24"/></marker>
+      <marker id="u3f7_a2r" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#c62828"/></marker></defs>
+      <text x="150" y="20" text-anchor="middle" font-weight="bold">x</text>
+      <line x1="150" y1="26" x2="150" y2="48" stroke="#1b1f24" stroke-width="1.5" marker-end="url(#u3f7_a2)"/>
+      <rect x="90" y="50" width="120" height="34" rx="6" fill="#e8efff" stroke="#2457c5"/><text x="150" y="72" text-anchor="middle">3×3 Conv + BN</text>
+      <line x1="150" y1="84" x2="150" y2="98" stroke="#1b1f24" stroke-width="1.5" marker-end="url(#u3f7_a2)"/>
+      <rect x="110" y="100" width="80" height="26" rx="6" fill="#fff3e0" stroke="#e46c00"/><text x="150" y="118" text-anchor="middle">ReLU</text>
+      <line x1="150" y1="126" x2="150" y2="140" stroke="#1b1f24" stroke-width="1.5" marker-end="url(#u3f7_a2)"/>
+      <rect x="90" y="142" width="120" height="34" rx="6" fill="#e8efff" stroke="#2457c5"/><text x="150" y="164" text-anchor="middle">3×3 Conv + BN</text>
+      <line x1="150" y1="176" x2="150" y2="190" stroke="#1b1f24" stroke-width="1.5" marker-end="url(#u3f7_a2)"/>
+      <circle cx="150" cy="203" r="13" fill="#fdecea" stroke="#c62828"/><text x="150" y="208" text-anchor="middle" font-size="16">+</text>
+      <path d="M150,34 L290,34 L290,203 L166,203" fill="none" stroke="#c62828" stroke-width="2" marker-end="url(#u3f7_a2r)"/>
+      <text x="300" y="120" fill="#c62828">identity</text><text x="300" y="136" fill="#c62828">shortcut x</text>
+      <text x="40" y="120" fill="#2457c5">F(x)</text>
+      <line x1="150" y1="216" x2="150" y2="232" stroke="#1b1f24" stroke-width="1.5" marker-end="url(#u3f7_a2)"/>
+      <text x="150" y="247" text-anchor="middle" font-weight="bold">ReLU( F(x) + x )</text>
+    </svg>
+    <figcaption>Residual block (self-drawn, copy this in the exam): the input skips two layers and is added to their output.</figcaption>
+  </figure><figure><img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/ResBlock.png" alt="Residual block">
+      <figcaption>A residual block with a skip connection. Source: Wikimedia Commons</figcaption></figure></div>
+  <div class="hl"><b>Yaad rakho:</b> AlexNet = pehla superstar (ReLU + dropout + GPU). ResNet = lift ka shortcut, gradient seedha neeche pahunchta hai, isliye 152 floors bhi chal jaate hain.</div>
+</div>
+
+<div class="t must"><h3>18. Parameter Sharing <span class="tag must">🔥 MUST</span> <span class="tag pyq">×2</span></h3>
+  <div class="def"><b>Def:</b> In a CNN, the <b>same filter weights are used at every position</b> of the input instead of separate weights for each location.</div>
+  <ul><li><b>Purpose:</b> ① huge reduction in parameters (a 5×5×3 filter = 75 weights, whatever the image size) ② the same feature (e.g. an edge) is detected anywhere → <b>translation equivariance</b> ③ less overfitting, less memory, faster training.</li></ul>
+  <div class="hl"><b>Yaad rakho:</b> ek hi chashma poori photo pe, har jagah naya chashma nahi chahiye.</div>
+</div>
+
+<div class="t must"><h3>19. Regularisation in CNNs / Dropout <span class="tag must">🔥 MUST</span> <span class="tag pyq">×2</span></h3>
+  <div class="def"><b>Def:</b> Techniques that reduce <b>overfitting</b> (good on training data, bad on test data) so the model generalises.</div>
+  <ul>
+    <li><b>Dropout:</b> during training, randomly switch off neurons with probability p (e.g. 0.5); no single neuron can be relied on, so neurons learn robust features. It acts like an ensemble of many thinner networks. At test time all neurons are used (scaled).</li>
+    <li><b>L2 / weight decay:</b> add λΣw² to the loss → small weights. <b>L1:</b> λΣ|w| → sparse weights.</li>
+    <li><b>Data augmentation:</b> flips, rotations, crops, colour changes → more data.</li>
+    <li><b>Batch normalisation</b>, <b>early stopping</b> (stop when validation loss rises).</li>
+  </ul>
+  <figure>
+    <svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <g stroke="#9aa5b4">
+        <line x1="40" y1="50" x2="130" y2="40"/><line x1="40" y1="50" x2="130" y2="85"/><line x1="40" y1="50" x2="130" y2="130"/><line x1="40" y1="50" x2="130" y2="175"/>
+        <line x1="40" y1="150" x2="130" y2="40"/><line x1="40" y1="150" x2="130" y2="85"/><line x1="40" y1="150" x2="130" y2="130"/><line x1="40" y1="150" x2="130" y2="175"/>
+        <line x1="130" y1="40" x2="220" y2="100"/><line x1="130" y1="85" x2="220" y2="100"/><line x1="130" y1="130" x2="220" y2="100"/><line x1="130" y1="175" x2="220" y2="100"/>
+      </g>
+      <g fill="#e8efff" stroke="#2457c5"><circle cx="40" cy="50" r="13"/><circle cx="40" cy="150" r="13"/><circle cx="130" cy="40" r="13"/><circle cx="130" cy="85" r="13"/><circle cx="130" cy="130" r="13"/><circle cx="130" cy="175" r="13"/><circle cx="220" cy="100" r="13"/></g>
+      <text x="130" y="15" text-anchor="middle" font-weight="bold">(a) Standard network</text>
+      <g stroke="#9aa5b4">
+        <line x1="340" y1="50" x2="430" y2="40"/><line x1="340" y1="50" x2="430" y2="130"/>
+        <line x1="340" y1="150" x2="430" y2="40"/><line x1="340" y1="150" x2="430" y2="130"/>
+        <line x1="430" y1="40" x2="520" y2="100"/><line x1="430" y1="130" x2="520" y2="100"/>
+      </g>
+      <g fill="#e8efff" stroke="#2457c5"><circle cx="340" cy="50" r="13"/><circle cx="340" cy="150" r="13"/><circle cx="430" cy="40" r="13"/><circle cx="430" cy="130" r="13"/><circle cx="520" cy="100" r="13"/></g>
+      <g fill="#eeeeee" stroke="#c62828" stroke-dasharray="3,2"><circle cx="430" cy="85" r="13"/><circle cx="430" cy="175" r="13"/></g>
+      <g stroke="#c62828" stroke-width="2"><line x1="422" y1="77" x2="438" y2="93"/><line x1="438" y1="77" x2="422" y2="93"/><line x1="422" y1="167" x2="438" y2="183"/><line x1="438" y1="167" x2="422" y2="183"/></g>
+      <text x="430" y="15" text-anchor="middle" font-weight="bold">(b) After dropout (p = 0.5)</text>
+    </svg>
+    <figcaption>Dropout randomly removes neurons (✕) and their connections in each training step. (Self-drawn.)</figcaption>
+  </figure>
+  <div class="hl"><b>Yaad rakho:</b> dropout = team ke kuch players ko randomly bench pe bithao, sab players mehnat seekhte hain, koi ek star pe depend nahi.</div>
+</div>
+
+<div class="t high"><h3>20. Motivation for CNNs <span class="tag high">⭐ HIGH</span></h3>
+  <ul>
+    <li><b>Sparse interactions</b> (local connectivity): each neuron sees only a small patch.</li>
+    <li><b>Parameter sharing:</b> the same filter everywhere.</li>
+    <li><b>Equivariance to translation:</b> an object shifts → its feature map shifts; pooling adds invariance.</li>
+    <li>FC nets on images have too many parameters (a 224×224×3 image means 150k inputs per neuron) and ignore spatial structure.</li>
+  </ul>
+</div>
+
+<div class="t high"><h3>21. Layers &amp; Filters (stride, padding, pooling) <span class="tag high">⭐ HIGH</span></h3>
+  <ul>
+    <li><b>Filter/kernel:</b> a small learnable weight matrix (3×3) that detects one pattern (vertical edge, colour blob…). The number of filters = the depth of the output.</li>
+    <li><b>Stride:</b> step size of the slide (2 halves the size). <b>Padding:</b> zeros around the border ("same" keeps the size, "valid" means no padding).</li>
+    <li><b>Pooling:</b> max (keeps the strongest) / average; no learnable parameters.</li>
+    <li><b>Layer sequence:</b> Input → [Conv → ReLU → Pool] × N → Flatten → FC → Softmax.</li>
+  </ul>
+</div>
+
+<!-- ======================= UNIT 4 ======================= -->
+<h2 class="unit">Unit 4 — Sequence Modelling: RNN, LSTM<span>LSTM / speech pipeline asked as Part C in both 2025 papers</span></h2>
+
+<div class="t must"><h3>22. Recurrent Neural Network (RNN) <span class="tag must">🔥 MUST</span></h3>
+  <div class="def"><b>Def:</b> A neural network for <b>sequential data</b> whose hidden state carries memory from previous time steps: hₜ = tanh(W<sub>hh</sub>hₜ₋₁ + W<sub>xh</sub>xₜ + b), yₜ = W<sub>hy</sub>hₜ. The same weights are shared across all time steps.</div>
+  <ul>
+    <li><b>Types:</b> one-to-many (image captioning), many-to-one (sentiment), many-to-many (translation, NER).</li>
+    <li><b>Implementing for sequence prediction:</b> ① collect the series (e.g. daily temperature) ② normalise + make sliding windows (7 days → next day) ③ model: RNN/LSTM layer → Dense output ④ loss MSE, optimiser Adam, train with BPTT ⑤ validate (RMSE) → predict.</li>
+    <li><b>Problem:</b> vanishing gradient → forgets long-term information, so LSTM/GRU are used.</li>
+  </ul>
+  <figure><img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/Recurrent_neural_network_unfold.svg" alt="RNN folded and unfolded">
+    <figcaption>RNN: compressed (left) and unfolded in time (right). The same weights U, V, W are used at every step. Source: Wikimedia Commons</figcaption></figure>
+  <div class="hl"><b>Yaad rakho:</b> kahaani padhte waqt pichhli line yaad rehti hai. RNN har step pe apne "notes" (hidden state) aage bhejta hai.</div>
+</div>
+
+<div class="t must big"><h3>23. LSTM + RNN vs LSTM vs GRU <span class="tag must">🔥 MUST</span> <span class="tag pyq">Part C</span></h3>
+  <div class="def"><b>Def:</b> Long Short-Term Memory (Hochreiter &amp; Schmidhuber, 1997) is an RNN with a <b>cell state</b> (long-term memory) and <b>3 gates</b> that control the information flow, which solves the vanishing gradient problem.</div>
+  <ul>
+    <li><b>Forget gate</b> fₜ = σ(W<sub>f</sub>[hₜ₋₁, xₜ] + b<sub>f</sub>): what to erase from memory.</li>
+    <li><b>Input gate</b> iₜ = σ(…), candidate C̃ₜ = tanh(…): what new information to write.</li>
+    <li><b>Cell update:</b> Cₜ = fₜ ⊙ Cₜ₋₁ + iₜ ⊙ C̃ₜ (additive, so the gradient flows easily).</li>
+    <li><b>Output gate</b> oₜ = σ(…), hₜ = oₜ ⊙ tanh(Cₜ): what to output.</li>
+  </ul>
+  <table>
+    <tr><th>Point</th><th>RNN</th><th>LSTM</th><th>GRU</th></tr>
+    <tr><td>Gates</td><td>None</td><td>3 (forget, input, output)</td><td>2 (update, reset)</td></tr>
+    <tr><td>Memory</td><td>Hidden state only</td><td>Cell state + hidden</td><td>Hidden state only</td></tr>
+    <tr><td>Long-term dependency</td><td>Poor (vanishing)</td><td>Excellent</td><td>Very good</td></tr>
+    <tr><td>Parameters / speed</td><td>Fewest / fastest</td><td>Most / slowest</td><td>~25% fewer than LSTM / faster</td></tr>
+    <tr><td>Use</td><td>Short sequences</td><td>Long text, speech, translation</td><td>Smaller data, faster training</td></tr>
+  </table>
+  <div class="figrow"><figure><img src="https://upload.wikimedia.org/wikipedia/commons/9/93/LSTM_Cell.svg" alt="LSTM cell">
+      <figcaption>LSTM cell with forget, input and output gates. Source: Wikimedia Commons</figcaption></figure><figure><img src="https://upload.wikimedia.org/wikipedia/commons/5/5f/Gated_Recurrent_Unit.svg" alt="GRU cell">
+      <figcaption>GRU cell (update and reset gates). Source: Wikimedia Commons</figcaption></figure></div>
+  <div class="hl"><b>Yaad rakho:</b> LSTM = diary with 3 darwaaze: forget (kya mitaana), input (kya likhna), output (kya batana). GRU = chhota version, 2 darwaaze.</div>
+</div>
+
+<div class="t must"><h3>24. Bidirectional RNN (BRNN) <span class="tag must">🔥 MUST</span> <span class="tag pyq">×2</span></h3>
+  <div class="def"><b>Def:</b> Two RNNs on the same input, one reading <b>forward</b> (past → future) and one <b>backward</b> (future → past). Their hidden states are concatenated, so each output uses both past and future context.</div>
+  <ul><li><b>Uses:</b> named entity recognition, speech recognition, translation, handwriting. <b>Limitation:</b> needs the whole sequence first, so it's not for real-time prediction; it costs twice the computation.</li></ul>
+  <figure>
+    <svg viewBox="0 0 560 250" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="13">
+      <defs>
+        <marker id="u4f5_bf" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#2457c5"/></marker>
+        <marker id="u4f5_bb" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#c62828"/></marker>
+        <marker id="u4f5_bg" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#5b6470"/></marker>
+      </defs>
+      <!-- inputs -->
+      <g fill="#e8f5e9" stroke="#2e7d32">
+        <rect x="70" y="205" width="60" height="30" rx="6"/><rect x="250" y="205" width="60" height="30" rx="6"/><rect x="430" y="205" width="60" height="30" rx="6"/>
+      </g>
+      <text x="100" y="225" text-anchor="middle">x₁</text><text x="280" y="225" text-anchor="middle">x₂</text><text x="460" y="225" text-anchor="middle">x₃</text>
+      <!-- backward layer -->
+      <g fill="#fdecea" stroke="#c62828">
+        <rect x="70" y="135" width="60" height="34" rx="6"/><rect x="250" y="135" width="60" height="34" rx="6"/><rect x="430" y="135" width="60" height="34" rx="6"/>
+      </g>
+      <text x="100" y="157" text-anchor="middle">←h₁</text><text x="280" y="157" text-anchor="middle">←h₂</text><text x="460" y="157" text-anchor="middle">←h₃</text>
+      <!-- forward layer -->
+      <g fill="#e8efff" stroke="#2457c5">
+        <rect x="70" y="80" width="60" height="34" rx="6"/><rect x="250" y="80" width="60" height="34" rx="6"/><rect x="430" y="80" width="60" height="34" rx="6"/>
+      </g>
+      <text x="100" y="102" text-anchor="middle">→h₁</text><text x="280" y="102" text-anchor="middle">→h₂</text><text x="460" y="102" text-anchor="middle">→h₃</text>
+      <!-- outputs -->
+      <g fill="#fff8dc" stroke="#8d6e00">
+        <rect x="70" y="12" width="60" height="30" rx="6"/><rect x="250" y="12" width="60" height="30" rx="6"/><rect x="430" y="12" width="60" height="30" rx="6"/>
+      </g>
+      <text x="100" y="32" text-anchor="middle">y₁</text><text x="280" y="32" text-anchor="middle">y₂</text><text x="460" y="32" text-anchor="middle">y₃</text>
+      <!-- forward arrows -->
+      <line x1="130" y1="97" x2="248" y2="97" stroke="#2457c5" stroke-width="2" marker-end="url(#u4f5_bf)"/>
+      <line x1="310" y1="97" x2="428" y2="97" stroke="#2457c5" stroke-width="2" marker-end="url(#u4f5_bf)"/>
+      <!-- backward arrows -->
+      <line x1="430" y1="152" x2="312" y2="152" stroke="#c62828" stroke-width="2" marker-end="url(#u4f5_bb)"/>
+      <line x1="250" y1="152" x2="132" y2="152" stroke="#c62828" stroke-width="2" marker-end="url(#u4f5_bb)"/>
+      <!-- input to both layers -->
+      <g stroke="#5b6470" stroke-width="1.3">
+        <line x1="92" y1="205" x2="92" y2="171" marker-end="url(#u4f5_bg)"/><line x1="272" y1="205" x2="272" y2="171" marker-end="url(#u4f5_bg)"/><line x1="452" y1="205" x2="452" y2="171" marker-end="url(#u4f5_bg)"/>
+        <path d="M110,205 C150,190 150,130 120,116" fill="none" marker-end="url(#u4f5_bg)"/>
+        <path d="M290,205 C330,190 330,130 300,116" fill="none" marker-end="url(#u4f5_bg)"/>
+        <path d="M470,205 C510,190 510,130 480,116" fill="none" marker-end="url(#u4f5_bg)"/>
+        <line x1="100" y1="80" x2="100" y2="44" marker-end="url(#u4f5_bg)"/><line x1="280" y1="80" x2="280" y2="44" marker-end="url(#u4f5_bg)"/><line x1="460" y1="80" x2="460" y2="44" marker-end="url(#u4f5_bg)"/>
+        <path d="M80,135 C40,120 40,60 90,44" fill="none" marker-end="url(#u4f5_bg)"/>
+        <path d="M260,135 C220,120 220,60 270,44" fill="none" marker-end="url(#u4f5_bg)"/>
+        <path d="M440,135 C400,120 400,60 450,44" fill="none" marker-end="url(#u4f5_bg)"/>
+      </g>
+      <text x="530" y="101" fill="#2457c5" font-size="11" text-anchor="middle">Forward</text>
+      <text x="530" y="156" fill="#c62828" font-size="11" text-anchor="middle">Backward</text>
+    </svg>
+    <figcaption>BRNN: the forward layer (blue) reads left→right, the backward layer (red) reads right→left, and each output yₜ combines both. (Self-drawn, easy to copy in the exam.)</figcaption>
+  </figure>
+  <div class="hl"><b>Yaad rakho:</b> "Apple" fruit hai ya company? Aage ke words bhi padho, tabhi pata chalega. BRNN dono taraf se padhta hai.</div>
+</div>
+
+<div class="t must"><h3>25. Encoder–Decoder (Seq2Seq) <span class="tag must">🔥 MUST</span></h3>
+  <div class="def"><b>Def:</b> An architecture where an <b>encoder RNN/LSTM</b> reads the input sequence into a fixed <b>context vector</b>, and a <b>decoder RNN/LSTM</b> generates the output sequence from it, so input and output lengths can differ.</div>
+  <ul>
+    <li><b>Working:</b> encoder reads "I love India" → final hidden state = context c → decoder starts with &lt;START&gt; and generates "मुझे भारत पसंद है &lt;END&gt;" word by word.</li>
+    <li><b>Teacher forcing:</b> during training, the true previous word is fed to the decoder.</li>
+    <li><b>Problem:</b> one fixed vector is a bottleneck for long sentences. Solution: <b>attention</b> (decoder looks at all encoder states).</li>
+    <li><b>Uses:</b> translation, summarisation, chatbots, speech-to-text.</li>
+  </ul>
+  <figure>
+    <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <defs>
+        <marker id="u4f6_ea" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#5b6470"/></marker>
+      </defs>
+      <rect x="20" y="55" width="270" height="90" rx="10" fill="none" stroke="#2457c5" stroke-dasharray="5 4"/>
+      <text x="155" y="48" text-anchor="middle" fill="#2457c5" font-weight="bold">ENCODER</text>
+      <rect x="340" y="55" width="285" height="90" rx="10" fill="none" stroke="#c62828" stroke-dasharray="5 4"/>
+      <text x="482" y="48" text-anchor="middle" fill="#c62828" font-weight="bold">DECODER</text>
+      <g fill="#e8efff" stroke="#2457c5">
+        <rect x="35" y="80" width="60" height="40" rx="6"/><rect x="125" y="80" width="60" height="40" rx="6"/><rect x="215" y="80" width="60" height="40" rx="6"/>
+      </g>
+      <text x="65" y="104" text-anchor="middle">LSTM</text><text x="155" y="104" text-anchor="middle">LSTM</text><text x="245" y="104" text-anchor="middle">LSTM</text>
+      <g fill="#fdecea" stroke="#c62828">
+        <rect x="360" y="80" width="60" height="40" rx="6"/><rect x="450" y="80" width="60" height="40" rx="6"/><rect x="540" y="80" width="60" height="40" rx="6"/>
+      </g>
+      <text x="390" y="104" text-anchor="middle">LSTM</text><text x="480" y="104" text-anchor="middle">LSTM</text><text x="570" y="104" text-anchor="middle">LSTM</text>
+      <g stroke="#5b6470" stroke-width="1.5">
+        <line x1="95" y1="100" x2="123" y2="100" marker-end="url(#u4f6_ea)"/><line x1="185" y1="100" x2="213" y2="100" marker-end="url(#u4f6_ea)"/>
+        <line x1="420" y1="100" x2="448" y2="100" marker-end="url(#u4f6_ea)"/><line x1="510" y1="100" x2="538" y2="100" marker-end="url(#u4f6_ea)"/>
+        <line x1="65" y1="175" x2="65" y2="122" marker-end="url(#u4f6_ea)"/><line x1="155" y1="175" x2="155" y2="122" marker-end="url(#u4f6_ea)"/><line x1="245" y1="175" x2="245" y2="122" marker-end="url(#u4f6_ea)"/>
+        <line x1="390" y1="175" x2="390" y2="122" marker-end="url(#u4f6_ea)"/><line x1="480" y1="175" x2="480" y2="122" marker-end="url(#u4f6_ea)"/><line x1="570" y1="175" x2="570" y2="122" marker-end="url(#u4f6_ea)"/>
+        <line x1="390" y1="80" x2="390" y2="32" marker-end="url(#u4f6_ea)"/><line x1="480" y1="80" x2="480" y2="32" marker-end="url(#u4f6_ea)"/><line x1="570" y1="80" x2="570" y2="32" marker-end="url(#u4f6_ea)"/>
+      </g>
+      <line x1="275" y1="100" x2="358" y2="100" stroke="#8d6e00" stroke-width="3" marker-end="url(#u4f6_ea)"/>
+      <rect x="292" y="112" width="50" height="22" rx="5" fill="#fff8dc" stroke="#8d6e00"/>
+      <text x="317" y="127" text-anchor="middle" fill="#8d6e00" font-weight="bold">C</text>
+      <text x="317" y="150" text-anchor="middle" fill="#8d6e00" font-size="11">context vector</text>
+      <text x="65" y="192" text-anchor="middle">I</text><text x="155" y="192" text-anchor="middle">love</text><text x="245" y="192" text-anchor="middle">India</text>
+      <text x="390" y="192" text-anchor="middle">&lt;START&gt;</text><text x="480" y="192" text-anchor="middle">मुझे</text><text x="570" y="192" text-anchor="middle">भारत</text>
+      <text x="390" y="25" text-anchor="middle">मुझे</text><text x="480" y="25" text-anchor="middle">भारत</text><text x="570" y="25" text-anchor="middle">पसंद है &lt;END&gt;</text>
+      <text x="155" y="212" text-anchor="middle" fill="#5b6470" font-size="11">input sequence (English)</text>
+      <text x="480" y="212" text-anchor="middle" fill="#5b6470" font-size="11">previous output fed back (teacher forcing in training)</text>
+    </svg>
+    <figcaption>Encoder–decoder translating "I love India" → "मुझे भारत पसंद है". The encoder squeezes the sentence into the context vector C, which the decoder unrolls into the output. (Self-drawn.)</figcaption>
+  </figure>
+  <div class="hl"><b>Yaad rakho:</b> encoder = poora sentence sunke summary banata hai; decoder = summary se doosri bhasha mein bolta hai.</div>
+</div>
+
+<div class="t must big"><h3>26. Deep learning pipeline for Speech Recognition (to LSTM evaluation) <span class="tag must">🔥 MUST</span> <span class="tag pyq">Part C</span></h3>
+  <ol>
+    <li><b>Data collection:</b> audio (.wav) + transcripts (e.g. LibriSpeech).</li>
+    <li><b>Pre-processing:</b> resample to 16 kHz, remove noise/silence, normalise, split into <b>25 ms frames with a 10 ms hop</b>, apply a Hamming window.</li>
+    <li><b>Feature extraction:</b> <b>MFCC</b> (13–40 coefficients) or a log-Mel spectrogram for each frame.</li>
+    <li><b>Labels:</b> characters/phonemes + a "blank" token.</li>
+    <li><b>Model:</b> (CNN +) stacked <b>Bidirectional LSTM</b> layers → softmax over characters.</li>
+    <li><b>Training:</b> <b>CTC loss</b> (no frame-level alignment needed), Adam, dropout, early stopping.</li>
+    <li><b>Decoding:</b> greedy/beam search + language model.</li>
+    <li><b>Evaluation:</b> <b>Word Error Rate</b> WER = (S + D + I)/N (substitutions, deletions, insertions); lower is better. Also CER.</li>
+    <li><b>Deployment:</b> TFLite/ONNX on device, unidirectional LSTM for real-time.</li>
+  </ol>
+  <figure>
+    <svg viewBox="0 0 640 210" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="11.5">
+      <defs><marker id="u4f7_pa" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#5b6470"/></marker></defs>
+      <g stroke-width="1.3">
+        <rect x="10" y="20" width="110" height="60" rx="8" fill="#e8f5e9" stroke="#2e7d32"/>
+        <rect x="140" y="20" width="110" height="60" rx="8" fill="#e8efff" stroke="#2457c5"/>
+        <rect x="270" y="20" width="110" height="60" rx="8" fill="#e8efff" stroke="#2457c5"/>
+        <rect x="400" y="20" width="110" height="60" rx="8" fill="#f6edfb" stroke="#6a1b9a"/>
+        <rect x="530" y="20" width="100" height="60" rx="8" fill="#f6edfb" stroke="#6a1b9a"/>
+        <rect x="530" y="125" width="100" height="60" rx="8" fill="#fdecea" stroke="#c62828"/>
+        <rect x="400" y="125" width="110" height="60" rx="8" fill="#fdecea" stroke="#c62828"/>
+        <rect x="270" y="125" width="110" height="60" rx="8" fill="#fff8dc" stroke="#8d6e00"/>
+        <rect x="140" y="125" width="110" height="60" rx="8" fill="#e6f4f1" stroke="#00695c"/>
+      </g>
+      <text x="65" y="45" text-anchor="middle" font-weight="bold">1. Audio data</text><text x="65" y="62" text-anchor="middle">wav + transcript</text>
+      <text x="195" y="45" text-anchor="middle" font-weight="bold">2. Pre-process</text><text x="195" y="60" text-anchor="middle">16 kHz, denoise,</text><text x="195" y="74" text-anchor="middle">25 ms frames, window</text>
+      <text x="325" y="45" text-anchor="middle" font-weight="bold">3. Features</text><text x="325" y="62" text-anchor="middle">MFCC / log-Mel</text>
+      <text x="455" y="45" text-anchor="middle" font-weight="bold">4. Labels</text><text x="455" y="62" text-anchor="middle">chars + blank</text>
+      <text x="580" y="45" text-anchor="middle" font-weight="bold">5. Model</text><text x="580" y="60" text-anchor="middle">CNN +</text><text x="580" y="74" text-anchor="middle">stacked BiLSTM</text>
+      <text x="580" y="150" text-anchor="middle" font-weight="bold">6. Train</text><text x="580" y="166" text-anchor="middle">CTC loss, Adam,</text><text x="580" y="179" text-anchor="middle">dropout, clip</text>
+      <text x="455" y="150" text-anchor="middle" font-weight="bold">7. Decode</text><text x="455" y="167" text-anchor="middle">beam search + LM</text>
+      <text x="325" y="150" text-anchor="middle" font-weight="bold">8. Evaluate</text><text x="325" y="167" text-anchor="middle">WER, CER</text>
+      <text x="195" y="150" text-anchor="middle" font-weight="bold">9. Deploy</text><text x="195" y="167" text-anchor="middle">TFLite / ONNX</text>
+      <g stroke="#5b6470" stroke-width="1.6">
+        <line x1="120" y1="50" x2="138" y2="50" marker-end="url(#u4f7_pa)"/><line x1="250" y1="50" x2="268" y2="50" marker-end="url(#u4f7_pa)"/>
+        <line x1="380" y1="50" x2="398" y2="50" marker-end="url(#u4f7_pa)"/><line x1="510" y1="50" x2="528" y2="50" marker-end="url(#u4f7_pa)"/>
+        <line x1="580" y1="80" x2="580" y2="123" marker-end="url(#u4f7_pa)"/>
+        <line x1="530" y1="155" x2="512" y2="155" marker-end="url(#u4f7_pa)"/><line x1="400" y1="155" x2="382" y2="155" marker-end="url(#u4f7_pa)"/><line x1="270" y1="155" x2="252" y2="155" marker-end="url(#u4f7_pa)"/>
+      </g>
+      <text x="65" y="160" text-anchor="middle" font-size="13" fill="#00695c" font-weight="bold">"hello"</text>
+      <line x1="140" y1="155" x2="105" y2="155" stroke="#5b6470" stroke-width="1.6" marker-end="url(#u4f7_pa)"/>
+    </svg>
+    <figcaption>Speech recognition pipeline: preprocessing → MFCC → BiLSTM + CTC → decoding → WER evaluation. (Self-drawn; draw this as a flowchart in the exam.)</figcaption>
+  </figure>
+  <div class="hl"><b>Yaad rakho:</b> awaaz → saaf karo → chhote tukde → MFCC fingerprint → BiLSTM → CTC → sentence → WER se check.</div>
+</div>
+
+<div class="t high"><h3>27. BPTT &amp; Vanishing/Exploding gradients <span class="tag high">⭐ HIGH</span></h3>
+  <ul>
+    <li><b>BPTT</b> (backpropagation through time): unroll the RNN over T steps → it becomes a deep feed-forward net with shared weights → backprop through all steps → add up the gradients for the shared weights.</li>
+    <li>The gradient is multiplied by W<sub>hh</sub> at every step: &lt; 1 → <b>vanishes</b> (0.5²⁰ ≈ 10⁻⁶), &gt; 1 → <b>explodes</b>.</li>
+    <li><b>Fixes:</b> truncated BPTT (only k steps), gradient clipping (for exploding), LSTM/GRU (for vanishing), ReLU, good initialisation.</li>
+  </ul>
+  <div class="hl"><b>Yaad rakho:</b> lambi chain mein message "chinese whispers" ki tarah kho jaata hai = vanishing.</div>
+</div>
+
+<div class="t high"><h3>28. Applications &amp; case studies (CV, speech, NLP) <span class="tag high">⭐ HIGH</span></h3>
+  <ul>
+    <li><b>Computer vision:</b> image captioning (CNN encoder + LSTM decoder), video activity recognition.</li>
+    <li><b>Speech:</b> voice assistants, voice typing (above pipeline).</li>
+    <li><b>NLP:</b> sentiment analysis, translation, text generation, chatbots.</li>
+    <li><b>Classification case study:</b> movie review → embedding → LSTM → sigmoid (positive/negative).</li>
+    <li><b>Regression case study:</b> stock/temperature forecasting → LSTM → linear output, MSE loss.</li>
+    <li><b>Recursive nets:</b> apply the same weights over a <i>tree</i> structure (parse trees in NLP).</li>
+  </ul>
+</div>
+
+<!-- ======================= UNIT 5 ======================= -->
+<h2 class="unit">Unit 5 — Autoencoders<span>Asked in ALL 3 papers · Part C in both 2025 papers</span></h2>
+
+<div class="t must big"><h3>29. Autoencoders: basics, types &amp; anomaly detection <span class="tag must">🔥 MUST</span> <span class="tag pyq">×3</span></h3>
+  <div class="def"><b>Def:</b> An unsupervised neural network that learns to <b>reconstruct its input</b>. An encoder compresses x into a code h = f(x), and a decoder rebuilds r = g(h). It is trained to minimise the reconstruction loss L(x, g(f(x))).</div>
+  <ul>
+    <li><b>Components:</b> encoder, bottleneck/code (latent space), decoder, reconstruction loss (MSE/BCE).</li>
+    <li><b>Types:</b> undercomplete, sparse, denoising, contractive (regularised), variational/stochastic, convolutional.</li>
+    <li><b>Anomaly detection:</b> ① train only on <b>normal</b> data ② the AE reconstructs normal data well (low error) ③ an anomaly is reconstructed badly (high error) ④ set a threshold (e.g. mean + 3σ) ⑤ error &gt; threshold → anomaly. Examples: credit-card fraud, machine-sensor faults, network intrusion, defective products.</li>
+    <li><b>Other applications:</b> dimensionality reduction, denoising images, feature learning, image compression, pre-training.</li>
+  </ul>
+  <div class="figrow"><figure>
+    <svg viewBox="0 0 560 230" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <polygon points="60,20 230,85 230,145 60,210" fill="#e8efff" stroke="#2457c5" stroke-width="1.5"/>
+      <rect x="230" y="85" width="100" height="60" fill="#fff3e0" stroke="#e46c00" stroke-width="1.5"/>
+      <polygon points="330,85 500,20 500,210 330,145" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+      <text x="140" y="120" text-anchor="middle" font-weight="bold">ENCODER</text>
+      <text x="140" y="137" text-anchor="middle">h = f(x)</text>
+      <text x="280" y="112" text-anchor="middle" font-weight="bold">CODE h</text>
+      <text x="280" y="128" text-anchor="middle">(bottleneck)</text>
+      <text x="420" y="120" text-anchor="middle" font-weight="bold">DECODER</text>
+      <text x="420" y="137" text-anchor="middle">r = g(h)</text>
+      <text x="30" y="118" text-anchor="middle" font-size="16" font-weight="bold">x</text>
+      <text x="530" y="118" text-anchor="middle" font-size="16" font-weight="bold">r ≈ x</text>
+      <text x="60" y="228" text-anchor="middle">784</text><text x="280" y="165" text-anchor="middle">32</text><text x="500" y="228" text-anchor="middle">784</text>
+      <text x="280" y="18" text-anchor="middle" fill="#c62828">Loss = ‖x − r‖²</text>
+    </svg>
+    <figcaption>Hourglass autoencoder: a wide input, a narrow code, a wide output. The easiest diagram to draw in the exam (self-drawn).</figcaption>
+  </figure><figure>
+      <svg viewBox="0 0 360 210" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+        <line x1="40" y1="180" x2="340" y2="180" stroke="#1b1f24"/>
+        <line x1="40" y1="180" x2="40" y2="20" stroke="#1b1f24"/>
+        <g fill="#b9d8bb" stroke="#2e7d32">
+          <rect x="50" y="140" width="18" height="40"/><rect x="70" y="90" width="18" height="90"/><rect x="90" y="60" width="18" height="120"/>
+          <rect x="110" y="80" width="18" height="100"/><rect x="130" y="125" width="18" height="55"/><rect x="150" y="160" width="18" height="20"/>
+        </g>
+        <g fill="#f5b7b1" stroke="#c62828">
+          <rect x="260" y="168" width="18" height="12"/><rect x="290" y="160" width="18" height="20"/><rect x="310" y="170" width="18" height="10"/>
+        </g>
+        <line x1="205" y1="25" x2="205" y2="180" stroke="#c62828" stroke-width="2" stroke-dasharray="6 4"/>
+        <text x="210" y="38" fill="#c62828" font-weight="bold">threshold</text>
+        <text x="210" y="53" fill="#c62828">(μ + 3σ)</text>
+        <text x="80" y="35" fill="#2e7d32" font-weight="bold">Normal</text>
+        <text x="80" y="50" fill="#2e7d32">(low error)</text>
+        <text x="265" y="140" fill="#c62828" font-weight="bold">Anomalies</text>
+        <text x="190" y="200" text-anchor="middle">Reconstruction error →</text>
+        <text x="20" y="100" transform="rotate(-90 20 100)" text-anchor="middle">count</text>
+      </svg>
+      <figcaption>Reconstruction-error histogram: anything right of the threshold is an anomaly (self-drawn).</figcaption></figure></div>
+  <figure><img src="https://upload.wikimedia.org/wikipedia/commons/2/28/Autoencoder_structure.png" alt="Autoencoder structure">
+      <figcaption>Autoencoder structure: encoder → code → decoder. Source: Wikimedia Commons</figcaption></figure>
+  <div class="hl"><b>Yaad rakho:</b> AE ne sirf normal transactions dekhe hain; fraud aaya toh theek se copy nahi kar paaya → error zyada → alarm.</div>
+</div>
+
+<div class="t must"><h3>30. Undercomplete Autoencoder <span class="tag must">🔥 MUST</span> <span class="tag pyq">Part C</span></h3>
+  <div class="def"><b>Def:</b> An autoencoder whose code dimension is <b>smaller</b> than the input dimension (e.g. 784 → 32 → 784), so it is forced to learn the most important features.</div>
+  <ul>
+    <li><b>How it avoids learning the identity function:</b> the narrow bottleneck cannot simply copy x, so it must compress, keeping only the salient patterns.</li>
+    <li>With a linear decoder + MSE it learns the same subspace as <b>PCA</b>; with non-linear layers it is a more powerful non-linear PCA.</li>
+    <li><b>Caution:</b> if the encoder/decoder are too powerful, it can still memorise, so keep the capacity limited.</li>
+    <li><b>Design for dimensionality reduction:</b> 784 → 128 (ReLU) → <b>32 code</b> → 128 (ReLU) → 784 (sigmoid), MSE loss, Adam. After training, use only the encoder to get the 32-D features.</li>
+  </ul>
+  <div class="hl"><b>Yaad rakho:</b> 784 cheezein 32 ke dabbe mein bharni hain, toh sirf zaroori cheezein hi jaayengi. Copy-paste possible hi nahi.</div>
+</div>
+
+<div class="t must"><h3>31. Regularised Autoencoders (sparse, denoising, contractive) <span class="tag must">🔥 MUST</span> <span class="tag pyq">×2</span></h3>
+  <div class="def"><b>Def:</b> Autoencoders that add a <b>regularisation term or constraint</b> to the loss instead of (or besides) a small bottleneck, so even an overcomplete AE learns useful features rather than copying.</div>
+  <ul>
+    <li><b>Sparse AE:</b> L = L(x, r) + λΣ|hᵢ| (or a KL penalty), so only a few neurons are active.</li>
+    <li><b>Denoising AE:</b> corrupt x → x̃ (noise), train to reconstruct the <b>clean x</b>. It learns robust features.</li>
+    <li><b>Contractive AE:</b> penalise the encoder's sensitivity (see topic 33).</li>
+  </ul>
+  <table>
+    <tr><th>Point</th><th>Undercomplete</th><th>Regularised</th><th>Stochastic</th></tr>
+    <tr><td>How copying is prevented</td><td>Small bottleneck</td><td>Penalty / noise in the loss</td><td>Probabilistic encoder/decoder</td></tr>
+    <tr><td>Code size</td><td>&lt; input</td><td>Can be ≥ input</td><td>Any (distribution)</td></tr>
+    <tr><td>Mapping</td><td>Deterministic</td><td>Deterministic</td><td>Random: p(h|x), p(x|h)</td></tr>
+    <tr><td>Example</td><td>784→32→784</td><td>Sparse, denoising, contractive</td><td>VAE</td></tr>
+    <tr><td>Main use</td><td>Compression</td><td>Robust features</td><td>Generating new data</td></tr>
+  </table>
+  <figure>
+    <svg viewBox="0 0 620 150" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <defs><marker id="u5f4_a5" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1b1f24"/></marker></defs>
+      <rect x="10" y="45" width="80" height="60" rx="8" fill="#e8f5e9" stroke="#2e7d32"/>
+      <text x="50" y="72" text-anchor="middle" font-weight="bold">Clean x</text><text x="50" y="90" text-anchor="middle">😀</text>
+      <rect x="130" y="45" width="90" height="60" rx="8" fill="#fff3e0" stroke="#e46c00"/>
+      <text x="175" y="68" text-anchor="middle">+ noise</text><text x="175" y="86" text-anchor="middle" font-weight="bold">Noisy x̃</text>
+      <polygon points="260,40 340,60 340,90 260,110" fill="#e8efff" stroke="#2457c5"/>
+      <text x="300" y="80" text-anchor="middle">Encoder</text>
+      <rect x="340" y="60" width="40" height="30" fill="#fff" stroke="#5b6470"/><text x="360" y="80" text-anchor="middle">h</text>
+      <polygon points="380,60 460,40 460,110 380,90" fill="#e8efff" stroke="#2457c5"/>
+      <text x="420" y="80" text-anchor="middle">Decoder</text>
+      <rect x="500" y="45" width="100" height="60" rx="8" fill="#e8f5e9" stroke="#2e7d32"/>
+      <text x="550" y="70" text-anchor="middle" font-weight="bold">Output r</text><text x="550" y="88" text-anchor="middle">≈ clean x 😀</text>
+      <line x1="90" y1="75" x2="128" y2="75" stroke="#1b1f24" marker-end="url(#u5f4_a5)"/>
+      <line x1="220" y1="75" x2="258" y2="75" stroke="#1b1f24" marker-end="url(#u5f4_a5)"/>
+      <line x1="460" y1="75" x2="498" y2="75" stroke="#1b1f24" marker-end="url(#u5f4_a5)"/>
+      <path d="M50,105 Q50,140 300,140 T550,107" fill="none" stroke="#c62828" stroke-dasharray="5 4"/>
+      <text x="300" y="134" text-anchor="middle" fill="#c62828">Loss compares r with CLEAN x: L(x, g(f(x̃)))</text>
+    </svg>
+    <figcaption>Denoising autoencoder flow (self-drawn)</figcaption>
+  </figure>
+  <div class="hl"><b>Yaad rakho:</b> undercomplete = chhota dabba; regularised = bada dabba par rules (penalty) ke saath; stochastic = har baar thoda random output.</div>
+</div>
+
+<div class="t high"><h3>32. Stochastic Encoders &amp; Decoders <span class="tag high">⭐ HIGH</span></h3>
+  <div class="def"><b>Def:</b> The encoder and decoder output <b>probability distributions</b> instead of fixed values: encoder p<sub>enc</sub>(h|x), decoder p<sub>dec</sub>(x|h). Training minimises −log p<sub>dec</sub>(x|h).</div>
+  <ul>
+    <li><b>VAE:</b> the encoder outputs a mean μ and a standard deviation σ; sample z = μ + σ·ε (ε ~ N(0, 1), the reparameterisation trick); the decoder reconstructs.</li>
+    <li>Loss = reconstruction loss + KL(N(μ, σ²) ‖ N(0, 1)).</li>
+    <li>Can <b>generate new samples</b> (new faces, digits) and handles uncertainty.</li>
+  </ul>
+  <figure>
+    <svg viewBox="0 0 600 160" xmlns="http://www.w3.org/2000/svg" font-family="Arial" font-size="12">
+      <defs><marker id="u5f6_a6" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1b1f24"/></marker></defs>
+      <text x="25" y="85" text-anchor="middle" font-size="16" font-weight="bold">x</text>
+      <polygon points="45,30 150,55 150,105 45,130" fill="#e8efff" stroke="#2457c5"/><text x="97" y="85" text-anchor="middle">Encoder</text>
+      <rect x="185" y="40" width="50" height="28" rx="6" fill="#fff3e0" stroke="#e46c00"/><text x="210" y="59" text-anchor="middle">μ</text>
+      <rect x="185" y="92" width="50" height="28" rx="6" fill="#fff3e0" stroke="#e46c00"/><text x="210" y="111" text-anchor="middle">σ</text>
+      <line x1="150" y1="70" x2="183" y2="55" stroke="#1b1f24" marker-end="url(#u5f6_a6)"/>
+      <line x1="150" y1="90" x2="183" y2="105" stroke="#1b1f24" marker-end="url(#u5f6_a6)"/>
+      <circle cx="300" cy="80" r="30" fill="#f6edfb" stroke="#6a1b9a"/><text x="300" y="77" text-anchor="middle" font-size="11">z = μ + σ·ε</text><text x="300" y="92" text-anchor="middle" font-size="10">ε ~ N(0,1)</text>
+      <line x1="235" y1="55" x2="272" y2="72" stroke="#1b1f24" marker-end="url(#u5f6_a6)"/>
+      <line x1="235" y1="105" x2="272" y2="88" stroke="#1b1f24" marker-end="url(#u5f6_a6)"/>
+      <polygon points="345,55 450,30 450,130 345,105" fill="#e8f5e9" stroke="#2e7d32"/><text x="397" y="85" text-anchor="middle">Decoder</text>
+      <line x1="330" y1="80" x2="343" y2="80" stroke="#1b1f24" marker-end="url(#u5f6_a6)"/>
+      <text x="490" y="85" font-size="16" font-weight="bold">x̂</text>
+      <text x="300" y="150" text-anchor="middle" fill="#c62828">Loss = reconstruction(x, x̂) + KL( N(μ,σ²) ‖ N(0,1) )</text>
+    </svg>
+    <figcaption>VAE as a stochastic encoder–decoder (self-drawn)</figcaption>
+  </figure>
+  <div class="hl"><b>Yaad rakho:</b> fixed answer nahi, ek "range" deta hai, usme se random pick karke naya data bana sakta hai.</div>
+</div>
+
+<div class="t high"><h3>33. Contractive Autoencoder (CAE) <span class="tag high">⭐ HIGH</span></h3>
+  <div class="def"><b>Def:</b> A regularised AE that adds a penalty on the <b>Frobenius norm of the encoder's Jacobian</b>: L = L(x, g(f(x))) + λ‖∂f(x)/∂x‖²<sub>F</sub>.</div>
+  <ul>
+    <li>Makes the code <b>insensitive to small input changes</b>, so the features are robust (it "contracts" the neighbourhood around each training point).</li>
+    <li><b>vs Denoising AE:</b> DAE gets robustness by adding noise to the input; CAE gets it analytically through the Jacobian penalty on the encoder.</li>
+  </ul>
+  <div class="hl"><b>Yaad rakho:</b> photo thodi si hili ya noise aaya, phir bhi code wahi rehna chahiye. Yahi "contractive" hai.</div>
+</div>
+
+<!-- ======================= LAST HOUR ======================= -->
+<h2 class="unit">⏰ Last-hour 2-mark list (Part A)<span>Read this just before the exam</span></h2>
+<ol class="quick">
+  <li><b>Deep Learning:</b> ML using many-layered neural networks that learn hierarchical features automatically from raw data. It powers vision, speech and NLP.</li>
+  <li><b>Curse of dimensionality:</b> the space grows exponentially with features, so data becomes sparse and needs exponentially more samples, which causes overfitting.</li>
+  <li><b>Backpropagation:</b> computes loss gradients for all weights using the chain rule from output to input, then updates them by gradient descent.</li>
+  <li><b>SGD:</b> updates weights using one random sample at a time: w ← w − η∇Lᵢ. Fast but noisy.</li>
+  <li><b>MLP:</b> a feed-forward network with input, ≥1 non-linear hidden layer and an output layer, trained with backprop.</li>
+  <li><b>Deep feed-forward network:</b> information flows only forward, with no loops; it is a chain of layers approximating f*(x).</li>
+  <li><b>Two activation functions:</b> ReLU = max(0, z); Sigmoid = 1/(1 + e⁻ᶻ).</li>
+  <li><b>LReLU vs ReLU:</b> LReLU gives a small slope (0.01z) for negative inputs, which solves the dying ReLU problem.</li>
+  <li><b>Supervised vs unsupervised training:</b> supervised uses labelled (x, y) to predict y; unsupervised uses only x to find structure (clustering, autoencoders).</li>
+  <li><b>RBM:</b> a two-layer (visible–hidden) energy-based generative network with no intra-layer connections, trained by contrastive divergence.</li>
+  <li><b>ML vs DL:</b> ML needs hand-crafted features and less data; DL learns features itself but needs big data and GPUs.</li>
+  <li><b>Parameter sharing:</b> the same filter weights at all image positions → far fewer parameters + translation equivariance.</li>
+  <li><b>CNN applications:</b> image classification, object detection, face recognition, medical imaging, self-driving cars.</li>
+  <li><b>CNN regularisation technique:</b> dropout (randomly drop neurons during training); also L2, data augmentation.</li>
+  <li><b>DL in computer vision:</b> e.g. face recognition / tumour detection in MRI using CNNs.</li>
+  <li><b>BRNN:</b> two RNNs reading the sequence forward and backward; their states are concatenated to use past + future context.</li>
+  <li><b>Encoder–decoder:</b> the encoder compresses the input sequence into a context vector; the decoder generates the output sequence from it (translation).</li>
+  <li><b>LSTM:</b> an RNN with a cell state and forget/input/output gates that keeps long-term memory and avoids vanishing gradients.</li>
+  <li><b>BPTT:</b> backprop on the RNN unrolled through time, adding up the gradients of the shared weights.</li>
+  <li><b>Autoencoder application:</b> anomaly/fraud detection, denoising, dimensionality reduction.</li>
+  <li><b>Regularised AE purpose:</b> adds a penalty (sparsity/noise/Jacobian) so the AE learns useful features instead of copying the input.</li>
+  <li><b>Regularised vs stochastic AE:</b> regularised = deterministic mapping + penalty term; stochastic = probabilistic encoder/decoder p(h|x), p(x|h) (e.g. VAE).</li>
+  <li><b>Undercomplete AE:</b> code dimension &lt; input dimension, so it must learn a compressed representation.</li>
+  <li><b>Contractive AE:</b> penalises ‖∂h/∂x‖², so the code is robust to small input changes.</li>
+</ol>
+
+<div class="box"><b>✍️ Final writing reminders:</b> definition first (in a box) · diagram in every 4- and 10-mark answer · comparisons always as a table · headings and bullets · finish 10-markers with applications + a one-line conclusion.</div>
+
+<div class="footer"><a href="pdf/quick.pdf">⬇ Download this page as PDF</a> · <a href="quiz.html">Test yourself with the quiz →</a><br>Theory-only condensed version of the 5 unit files in this folder (detailed answers, Hindi/English examples and numericals are there). Diagrams: self-drawn SVGs + Wikimedia Commons (hot-linked). Based on RTU 8AID4-01 syllabus and the 2024, 2025 (8AID4-01) and 2025 (7CAI4-01) papers.</div>
+</div></body></html>

@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DL Exam Game Plan</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .bar{height:16px;border-radius:4px;background:var(--accent);display:inline-block;vertical-align:middle}
+  .bar.c2{background:#5b3cc4}
+  .yes{color:var(--must);font-weight:700;text-align:center}
+  .no{color:#b0b7c2;text-align:center}
+  .units a{display:block;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin:8px 0;text-decoration:none;color:var(--ink)}
+  .units a b{color:var(--accent)}
+</style>
+</head>
+<body><nav class="topnav"><div class="navin">
+<a href="index.html" class="brand">🧠 DL Prep</a>
+<a href="plan.html" data-p="plan" class="active">PYQ &amp; Plan</a><a href="quick.html" data-p="quick">⚡ Quick Revision</a>
+<a href="unit1.html" data-p="unit1">Unit 1</a><a href="unit2.html" data-p="unit2">Unit 2</a><a href="unit3.html" data-p="unit3">Unit 3</a><a href="unit4.html" data-p="unit4">Unit 4</a><a href="unit5.html" data-p="unit5">Unit 5</a>
+<a href="quiz.html" data-p="quiz" class="quizlink">📝 Quiz</a></div></nav><div class="wrap">
+
+<div class="banner">
+  <h1>Deep Learning &amp; Its Applications: Exam Game Plan</h1>
+  <p>RTU Kota · 8AID4-01 · B.Tech VIII Sem (AI &amp; DS) · 70 marks ETE, 3 hours</p>
+  <p>Start here → PYQ analysis → priority list → study plan → then open the unit files.</p>
+</div>
+
+<h2>📁 Your files</h2>
+<div class="units">
+  <a href="unit1.html"><b>Unit 1: Deep Network Basics</b> · Backprop, SGD, curse of dimensionality, MLP, MLE</a>
+  <a href="unit2.html"><b>Unit 2: Deep Learning Architectures</b> · Unsupervised training, RBM, activations, ML vs DL, representation learning</a>
+  <a href="unit3.html"><b>Unit 3: CNNs</b> · Architecture, AlexNet vs ResNet, parameter sharing, dropout/regularisation</a>
+  <a href="unit4.html"><b>Unit 4: Sequence Modelling</b> · RNN, LSTM/GRU, BRNN, encoder-decoder, BPTT, speech pipeline</a>
+  <a href="unit5.html"><b>Unit 5: Autoencoders</b> · Types, undercomplete, regularised, stochastic, contractive, anomaly detection</a>
+</div>
+<p class="meta">Each unit file has priority-ordered questions with a difficulty star rating, a full exam answer, a Hinglish explanation, easy English and Hindi examples, diagrams and exam tips, plus 2-mark quick answers at the end. PDF copies are in the same folder.</p>
+
+<h2>📝 Exam pattern</h2>
+<table>
+  <tr><th>Part</th><th>What</th><th>Attempt</th><th>Marks</th><th>Strategy</th></tr>
+  <tr><td>A</td><td>Short answers, ≤ 25 words</td><td>All 10</td><td>10 × 2 = 20</td><td>Definition + 1 line + mini example. Never leave blank.</td></tr>
+  <tr><td>B</td><td>Analytical / problem solving</td><td>5 of 7</td><td>5 × 4 = 20</td><td>Diagram + 5–6 points or a numerical. Pick the numerical (backprop) if prepared, since it's sure marks.</td></tr>
+  <tr><td>C</td><td>Descriptive / design</td><td>3 of 5</td><td>3 × 10 = 30</td><td>Heading → definition → big diagram → working → table/compare → applications → conclusion.</td></tr>
+</table>
+
+<h2>🔍 Papers analysed</h2>
+<ol>
+  <li><b>8AID4-01, April/May 2025</b> (8E1961). Full paper, from your folder.</li>
+  <li><b>8AID4-01, April/May 2024</b>. Part A only; Parts B and C are behind a paywall on askfilo.com.</li>
+  <li><b>7CAI4-01 "Deep Learning and Its Applications", Nov–Dec 2025</b> (RTU VII sem CSE-AI). Full paper with the same subject name and syllabus, from exam-support.in.</li>
+</ol>
+<p class="meta">Only these RTU papers could be found online for this subject. It's a newer subject, so there are few past papers. Three papers is still enough to see clear patterns.</p>
+
+<h2>📊 Unit-wise weightage (questions asked)</h2>
+<table>
+  <tr><th>Unit</th><th>2025 8AID</th><th>2024 (A only)</th><th>7CAI 2025</th><th>Total</th><th style="width:38%">Share</th></tr>
+  <tr><td>1 Basics</td><td>6</td><td>2</td><td>3</td><td><b>11</b></td><td><span class="bar" style="width:55%"></span></td></tr>
+  <tr><td>2 Architectures</td><td>6</td><td>5</td><td>6</td><td><b>17</b></td><td><span class="bar" style="width:85%"></span></td></tr>
+  <tr><td>3 CNN</td><td>4</td><td>1</td><td>4</td><td><b>9</b></td><td><span class="bar" style="width:45%"></span></td></tr>
+  <tr><td>4 RNN / Sequence</td><td>3</td><td>1</td><td>5</td><td><b>9</b></td><td><span class="bar" style="width:45%"></span></td></tr>
+  <tr><td>5 Autoencoders</td><td>3</td><td>1</td><td>4</td><td><b>8</b></td><td><span class="bar" style="width:40%"></span></td></tr>
+</table>
+<h3>Marks offered per unit (full papers)</h3>
+<table>
+  <tr><th>Unit</th><th>2025 8AID marks</th><th>7CAI 2025 marks</th><th>Part C (10-mark) questions seen</th></tr>
+  <tr><td>1 Basics</td><td>18</td><td>8</td><td>None so far. Comes as Part A/B (numericals!)</td></tr>
+  <tr><td>2 Architectures</td><td>22</td><td><b>32</b></td><td>Unsupervised training; ML vs DL; Representation learning</td></tr>
+  <tr><td>3 CNN</td><td><b>26</b></td><td>18</td><td>CNN architecture; AlexNet vs ResNet; AlexNet</td></tr>
+  <tr><td>4 RNN</td><td>16</td><td>22</td><td>Speech pipeline with LSTM; RNN vs LSTM vs GRU</td></tr>
+  <tr><td>5 Autoencoders</td><td>16</td><td>18</td><td>AE types + anomaly detection; Undercomplete AE</td></tr>
+</table>
+<div class="box"><b>Insight:</b> Every unit has carried a Part C question in at least one paper, except Unit 1. Units 2, 3 and 5 had Part C in <i>both</i> full papers. Since you choose 3 of 5 Part C questions, preparing <b>Units 2, 3, 5 deeply + Unit 4's LSTM</b> is enough to cover Part C. Unit 1 is for sure-shot Part A/B marks (backprop numerical).</div>
+
+<h2>🔥 Topic frequency, highest first</h2>
+<table class="ptable">
+  <tr><th>Topic</th><th>2024</th><th>2025</th><th>7CAI</th><th>Priority</th><th>Diff.</th><th>Where</th></tr>
+  <tr><td>Backpropagation (def / derivation / numerical)</td><td class="yes">A2</td><td class="yes">A5, B4</td><td class="yes">B1</td><td><span class="tag must">🔥 MUST</span></td><td>★★★★</td><td>U1 Q1</td></tr>
+  <tr><td>Unsupervised training of NNs</td><td class="yes">A6</td><td class="yes">A4, C2</td><td class="yes">A9, B7</td><td><span class="tag must">🔥 MUST</span></td><td>★★★</td><td>U2 Q1</td></tr>
+  <tr><td>Restricted Boltzmann Machines</td><td class="yes">A7</td><td class="yes">A6</td><td class="yes">B2</td><td><span class="tag must">🔥 MUST</span></td><td>★★★★</td><td>U2 Q2</td></tr>
+  <tr><td>Activation functions (ReLU, LReLU, ELU)</td><td class="yes">A5</td><td class="yes">A3, B3</td><td class="yes">A2</td><td><span class="tag must">🔥 MUST</span></td><td>★★★</td><td>U2 Q3</td></tr>
+  <tr><td>Autoencoders: types &amp; applications</td><td class="yes">A10</td><td class="yes">A10, B7, C5</td><td class="yes">A3, A7, B5, C5</td><td><span class="tag must">🔥 MUST</span></td><td>★★★</td><td>U5 all</td></tr>
+  <tr><td>ML vs DL / scope &amp; significance of DL</td><td class="yes">A1, A3</td><td class="yes">A1</td><td class="yes">C1</td><td><span class="tag must">🔥 MUST</span></td><td>★★</td><td>U2 Q4</td></tr>
+  <tr><td>CNN architecture, working &amp; applications</td><td class="yes">A8</td><td class="yes">C1</td><td class="yes">A6, B6</td><td><span class="tag must">🔥 MUST</span></td><td>★★★★</td><td>U3 Q1</td></tr>
+  <tr><td>Bidirectional RNN</td><td class="yes">A9</td><td class="yes">A8</td><td class="no">–</td><td><span class="tag must">🔥 MUST</span></td><td>★★</td><td>U4 Q3</td></tr>
+  <tr><td>Curse of dimensionality</td><td class="yes">A4</td><td class="yes">A2, B1</td><td class="no">–</td><td><span class="tag must">🔥 MUST</span></td><td>★★</td><td>U1 Q2</td></tr>
+  <tr><td>AlexNet (alone / vs ResNet)</td><td class="no">?</td><td class="yes">C3</td><td class="yes">C3</td><td><span class="tag must">🔥 MUST</span></td><td>★★★★</td><td>U3 Q2</td></tr>
+  <tr><td>Parameter sharing in CNN</td><td class="no">?</td><td class="yes">A7</td><td class="yes">A4</td><td><span class="tag must">🔥 MUST</span></td><td>★★</td><td>U3 Q3</td></tr>
+  <tr><td>Regularisation / Dropout (CNN)</td><td class="no">?</td><td class="yes">B6</td><td class="yes">A10, B3</td><td><span class="tag must">🔥 MUST</span></td><td>★★★</td><td>U3 Q4</td></tr>
+  <tr><td>LSTM / RNN vs LSTM vs GRU / speech pipeline</td><td class="no">?</td><td class="yes">C4</td><td class="yes">C4</td><td><span class="tag must">🔥 MUST</span></td><td>★★★★</td><td>U4 Q2, Q5</td></tr>
+  <tr><td>Encoder–decoder seq2seq</td><td class="no">?</td><td class="no">–</td><td class="yes">A5, B4</td><td><span class="tag high">⭐ HIGH</span></td><td>★★★</td><td>U4 Q4</td></tr>
+  <tr><td>RNN for sequence prediction</td><td class="no">?</td><td class="yes">B5</td><td class="no">–</td><td><span class="tag high">⭐ HIGH</span></td><td>★★★</td><td>U4 Q1</td></tr>
+  <tr><td>MLP / 3-layer NN design / deep feed-forward</td><td class="no">?</td><td class="yes">B2</td><td class="yes">A1, A8</td><td><span class="tag high">⭐ HIGH</span></td><td>★★★</td><td>U1 Q4, Q6</td></tr>
+  <tr><td>Representation learning</td><td class="no">?</td><td class="no">–</td><td class="yes">C2</td><td><span class="tag high">⭐ HIGH</span></td><td>★★★</td><td>U2 Q5</td></tr>
+  <tr><td>SGD</td><td class="no">?</td><td class="yes">A9</td><td class="no">–</td><td><span class="tag high">⭐ HIGH</span></td><td>★★★</td><td>U1 Q3</td></tr>
+  <tr><td>Not asked yet: MLE, BPTT, contractive AE, stochastic encoders, width/depth</td><td class="no">–</td><td class="no">–</td><td class="no">–</td><td><span class="tag med">✔ "due" topics</span></td><td>★★★★</td><td>see units</td></tr>
+</table>
+<p class="meta">"?" = 2024 Parts B and C were not available. Syllabus topics that have <i>never</i> been asked (MLE, BPTT, contractive AE, stochastic encoders) are "due". Read their 2-mark answers at least.</p>
+
+<h2>🎯 Most likely questions for your exam</h2>
+<h3>Part C (10 marks): prepare at least 5, attempt 3</h3>
+<ol>
+  <li><b>CNN architecture and working + applications</b> (U3 Q1) <span class="tag stars">★★★★</span></li>
+  <li><b>AlexNet architecture / AlexNet vs ResNet</b> (U3 Q2) <span class="tag stars">★★★★</span>, asked in both 2025 papers</li>
+  <li><b>Autoencoders: types + anomaly detection / undercomplete AE</b> (U5 Q1–Q2) <span class="tag stars">★★★</span>, asked in both</li>
+  <li><b>Unsupervised training of NNs / RBM</b> (U2 Q1–Q2) <span class="tag stars">★★★</span></li>
+  <li><b>LSTM, RNN vs LSTM vs GRU, speech recognition pipeline</b> (U4 Q2, Q5) <span class="tag stars">★★★★</span></li>
+  <li><b>ML vs DL + representation learning</b> (U2 Q4–Q5) <span class="tag stars">★★</span>: easiest 10-marker, high chance</li>
+  <li>Backpropagation derivation (U1 Q1): could be promoted to Part C</li>
+</ol>
+<h3>Part B (4 marks): likely</h3>
+<ul>
+  <li>Backprop numerical / derivation · Curse of dimensionality · 3-layer network design · Activation function effects</li>
+  <li>RBM architecture · Dropout / CNN regularisation · Encoder–decoder diagram · RNN for sequence prediction</li>
+  <li>Undercomplete vs regularised AE · AE design for dimensionality reduction</li>
+</ul>
+<h3>Part A (2 marks): almost guaranteed topics</h3>
+<p>Define DL · Curse of dimensionality · Backprop · Activation functions / LReLU vs ReLU · RBM · Parameter sharing · BRNN · SGD · AE applications · Regularised vs stochastic AE · Supervised vs unsupervised · Encoder-decoder · MLP / deep feed-forward. <b>All of these are in the "Part-A quick answers" list at the end of each unit file.</b></p>
+
+<h2>🗓️ Study plan (backlog mode)</h2>
+<h3>If you have 3 days</h3>
+<table>
+  <tr><th>Day</th><th>Morning</th><th>Afternoon</th><th>Night (revision)</th></tr>
+  <tr><td>1</td><td>Unit 1: Q1 backprop (do both numericals by hand), Q2, Q3</td><td>Unit 2: Q1–Q4</td><td>Part-A lists of U1 and U2</td></tr>
+  <tr><td>2</td><td>Unit 3: Q1–Q4 (practise drawing the CNN and ResNet diagrams)</td><td>Unit 5: Q1–Q4</td><td>Part-A lists of U3 and U5</td></tr>
+  <tr><td>3</td><td>Unit 4: Q1–Q5 (LSTM diagram!)</td><td>Remaining ⭐ HIGH questions in all units</td><td>All Part-A lists + redraw all diagrams once</td></tr>
+</table>
+<h3>If you have only 1 day (≈ 10 hours)</h3>
+<ol>
+  <li>(1.5 h) Unit 1 Q1 backprop + numerical, Q2 curse of dimensionality.</li>
+  <li>(2 h) Unit 3 Q1 CNN + Q2 AlexNet/ResNet + Q3 parameter sharing.</li>
+  <li>(1.5 h) Unit 5 Q1–Q3 autoencoders.</li>
+  <li>(2 h) Unit 2 Q1 unsupervised training, Q2 RBM, Q3 activations, Q4 ML vs DL.</li>
+  <li>(1.5 h) Unit 4 Q2 LSTM + Q3 BRNN + Q4 encoder-decoder.</li>
+  <li>(1.5 h) Read every Part-A quick list and draw each diagram once from memory.</li>
+</ol>
+
+<h2>✍️ Answer-writing tips for RTU</h2>
+<ul>
+  <li><b>Diagrams get marks.</b> The paper itself says "Schematic diagrams must be shown wherever necessary." Every 4- and 10-mark answer should have one. Use a pencil and label everything.</li>
+  <li>Start each answer with a <b>one-line definition</b> in a box, then use headings and bullets. Examiners skim.</li>
+  <li>Write formulas in a separate line. Comparison questions → <b>always a table</b>.</li>
+  <li>For "design" questions, give a layer table (layer / neurons / activation) + loss + optimiser.</li>
+  <li>For numericals, write the given data, the formula, the substitution and the answer, then a "check" line.</li>
+  <li>Finish 10-mark answers with "Applications" and a 1-line conclusion.</li>
+</ul>
+
+<h2>📄 Full PYQ list (for practice)</h2>
+<h3>8AID4-01 — April/May 2025</h3>
+<p><b>Part A:</b> (1) Define Deep Learning and its significance in AI. (2) Curse of dimensionality? (3) Two activation functions. (4) Supervised vs unsupervised training of NNs. (5) Define backpropagation. (6) What are RBMs? (7) Purpose of parameter sharing in CNNs. (8) Define BRNNs. (9) Concept of SGD. (10) Regularised vs stochastic autoencoders.</p>
+<p><b>Part B:</b> (1) Address the curse of dimensionality with DL techniques for a high-dimensional dataset. (2) Design a 3-layer NN for binary classification. (3) Effect of different activation functions on performance, with example. (4) Updated weights via backprop for a single-layer perceptron (numerical). (5) Implement an RNN for a sequence-prediction problem. (6) How dropout prevents overfitting, with example. (7) Design an autoencoder for dimensionality reduction.</p>
+<p><b>Part C:</b> (1) CNN architecture, working and CV applications. (2) How an unsupervised NN is trained, with example. (3) Compare AlexNet and ResNet. (4) DL pipeline for speech recognition from preprocessing to LSTM evaluation. (5) Autoencoders, types and applications in anomaly detection.</p>
+<h3>8AID4-01 — April/May 2024 (Part A)</h3>
+<p>(1) Scope of DL. (2) Backpropagation algorithm. (3) ML vs DL. (4) Curse of dimensionality. (5) Popular activation functions. (6) Unsupervised training in NNs. (7) Define RBMs. (8) Applications of CNNs. (9) Bidirectional RNNs. (10) Applications of autoencoders.</p>
+<h3>7CAI4-01 Deep Learning and Its Applications — Nov–Dec 2025</h3>
+<p><b>Part A:</b> (1) Define MLP. (2) Problem LReLU solves vs ReLU. (3) One application of autoencoders. (4) Parameter sharing in CNNs. (5) Encoder-decoder in seq2seq. (6) A major use of DL in computer vision. (7) Purpose of a regularised autoencoder. (8) Define deep feed-forward network. (9) Supervised vs unsupervised (one difference). (10) One regularisation technique in CNNs.</p>
+<p><b>Part B:</b> (1) Backprop + derive the MLP weight update rule. (2) RBM architecture and working. (3) Purpose of regularisation in CNNs + two techniques. (4) Encoder-decoder seq2seq with diagram. (5) Undercomplete vs regularised autoencoders. (6) Deep networks in computer vision with a real-world example. (7) Unsupervised training of NNs: two approaches with examples.</p>
+<p><b>Part C:</b> (1) ML vs DL; how DL improves representation power. (2) Representation learning; how DL automates feature engineering (image/speech example). (3) AlexNet architecture and its improvement in ImageNet. (4) Compare RNN, LSTM and GRU. (5) Undercomplete autoencoder; how it avoids learning the identity function.</p>
+
+<div class="footer"><a href="pdf/plan.pdf">⬇ Download this page as PDF</a> · <a href="quiz.html">Test yourself with the quiz →</a><br>Sources: your 2025 paper (8E1961) · 2024 Part A: askfilo.com preview · 7CAI4-01 2025: exam-support.in · RTU syllabus 8AID4-01 · your class notes. All answers in the unit files were written for this syllabus. Cross-check any formula you're unsure of with your class notes.</div>
+</div></body></html>
